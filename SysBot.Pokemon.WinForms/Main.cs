@@ -30,7 +30,7 @@ public sealed partial class Main : Form
 
         RTB_Logs.MaxLength = 32_767; // character length
         LoadControls();
-        Text = $"{Text} ({Config.Mode})";
+        Text = $"{Text} {Config.Mode}";
         Task.Run(BotMonitor);
 
         InitUtil.InitializeStubs(Config.Mode);
@@ -64,7 +64,7 @@ public sealed partial class Main : Form
         ProgramMode.LA   => new PokeBotRunnerImpl<PA8>(cfg.Hub, new BotFactory8LA()),
         ProgramMode.SV   => new PokeBotRunnerImpl<PK9>(cfg.Hub, new BotFactory9SV()),
         ProgramMode.LZA  => new PokeBotRunnerImpl<PA9>(cfg.Hub, new BotFactory9LZA()),
-        _ => throw new IndexOutOfRangeException("Unsupported mode."),
+        _ => throw new IndexOutOfRangeException("Modo no soportado."),
     };
 
     private async Task BotMonitor()
@@ -145,13 +145,13 @@ public sealed partial class Main : Form
     {
         SaveCurrentConfig();
 
-        LogUtil.LogInfo("Starting all bots...", "Form");
+        LogUtil.LogInfo("Iniciando todos los bots...", "Form");
         RunningEnvironment.InitializeStart();
         SendAll(BotControlCommand.Start);
         Tab_Logs.Select();
 
         if (Bots.Count == 0)
-            WinFormsUtil.Alert("No bots configured, but all supporting services have been started.");
+            WinFormsUtil.Alert("No hay bots configurados, pero todos los servicios de soporte han sido iniciados.");
     }
 
     private void SendAll(BotControlCommand cmd)
@@ -159,7 +159,7 @@ public sealed partial class Main : Form
         foreach (var c in FLP_Bots.Controls.OfType<BotController>())
             c.SendCommand(cmd, false);
 
-        EchoUtil.Echo($"All bots have been issued a command to {cmd}.");
+        EchoUtil.Echo($"A todos los bots se les ha dado un comando para {cmd}.");
     }
 
     private void B_Stop_Click(object sender, EventArgs e)
@@ -167,7 +167,7 @@ public sealed partial class Main : Form
         var env = RunningEnvironment;
         if (!env.IsRunning && (ModifierKeys & Keys.Alt) == 0)
         {
-            WinFormsUtil.Alert("Nothing is currently running.");
+            WinFormsUtil.Alert("No hay nada ejecutándose actualmente.");
             return;
         }
 
@@ -177,12 +177,12 @@ public sealed partial class Main : Form
         {
             if (env.IsRunning)
             {
-                WinFormsUtil.Alert("Commanding all bots to Idle.", "Press Stop (without a modifier key) to hard-stop and unlock control, or press Stop with the modifier key again to resume.");
+                WinFormsUtil.Alert("Ordenando a todos los bots ponerse en espera.", "Presiona Detener (sin una tecla modificadora) para forzar la detención y desbloquear el control, o presiona Detener nuevamente con la tecla modificadora para reanudar.");
                 cmd = BotControlCommand.Idle;
             }
             else
             {
-                WinFormsUtil.Alert("Commanding all bots to resume their original task.", "Press Stop (without a modifier key) to hard-stop and unlock control.");
+                WinFormsUtil.Alert("Ordenando a todos los bots reanudar su tarea original.", "Presiona Detener (sin una tecla modificadora) para forzar la detención y desbloquear el control.");
                 cmd = BotControlCommand.Resume;
             }
         }
@@ -194,7 +194,7 @@ public sealed partial class Main : Form
         var cfg = CreateNewBotConfig();
         if (!AddBot(cfg))
         {
-            WinFormsUtil.Alert("Unable to add bot; ensure details are valid and not duplicate with an already existing bot.");
+            WinFormsUtil.Alert("No se pudo agregar el bot; asegúrate de que los datos sean válidos y que no dupliquen un bot ya existente.");
             return;
         }
         System.Media.SystemSounds.Asterisk.Play();
@@ -211,7 +211,7 @@ public sealed partial class Main : Form
         PokeRoutineExecutorBase newBot;
         try
         {
-            Console.WriteLine($"Current Mode ({Config.Mode}) does not support this type of bot ({cfg.CurrentRoutineType}).");
+            Console.WriteLine($"El modo actual ({Config.Mode}) no soporta este tipo de bot ({cfg.CurrentRoutineType}).");
             newBot = RunningEnvironment.CreateBotFromConfig(cfg);
         }
         catch

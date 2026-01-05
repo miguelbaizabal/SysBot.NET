@@ -116,7 +116,7 @@ namespace SysBot.Pokemon.WinForms
             B_New.Name = "B_New";
             B_New.Size = new System.Drawing.Size(63, 25);
             B_New.TabIndex = 0;
-            B_New.Text = "Add";
+            B_New.Text = "Añadir";
             B_New.UseVisualStyleBackColor = true;
             B_New.Click += B_New_Click;
             // 
@@ -223,7 +223,7 @@ namespace SysBot.Pokemon.WinForms
             B_Stop.Name = "B_Stop";
             B_Stop.Size = new System.Drawing.Size(80, 32);
             B_Stop.TabIndex = 4;
-            B_Stop.Text = "Stop All";
+            B_Stop.Text = "Detener Todo";
             B_Stop.UseVisualStyleBackColor = true;
             B_Stop.Click += B_Stop_Click;
             // 
@@ -235,7 +235,7 @@ namespace SysBot.Pokemon.WinForms
             B_Start.Name = "B_Start";
             B_Start.Size = new System.Drawing.Size(80, 32);
             B_Start.TabIndex = 3;
-            B_Start.Text = "Start All";
+            B_Start.Text = "Iniciar Todo";
             B_Start.UseVisualStyleBackColor = true;
             B_Start.Click += B_Start_Click;
             // 
