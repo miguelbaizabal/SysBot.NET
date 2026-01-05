@@ -11,10 +11,10 @@ public class RemoteControlBotLZA(PokeBotState Config) : PokeRoutineExecutor9LZA(
     {
         try
         {
-            Log("Identifying trainer data of the host console.");
+            Log("Identificando datos del entrenador del host.");
             await IdentifyTrainer(token).ConfigureAwait(false);
 
-            Log("Starting main loop, then waiting for commands.");
+            Log("Iniciando bucle principal, esperando comandos.");
             Config.IterateNextRoutine();
             while (!token.IsCancellationRequested)
             {
@@ -27,7 +27,7 @@ public class RemoteControlBotLZA(PokeBotState Config) : PokeRoutineExecutor9LZA(
             Log(e.Message);
         }
 
-        Log($"Ending {nameof(RemoteControlBotLZA)} loop.");
+        Log($"Finalizando bucle de {nameof(RemoteControlBotLZA)}.");
         await HardStop().ConfigureAwait(false);
     }
 
