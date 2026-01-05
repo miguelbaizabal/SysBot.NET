@@ -67,13 +67,13 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
         {
             BrilliantDiamondID => new PokeDataOffsetsBS_BD(),
             ShiningPearlID => new PokeDataOffsetsBS_SP(),
-            _ => throw new Exception($"{title} is not a valid Pokémon BDSP title. Is your mode correct?"),
+            _ => throw new Exception($"{title} no es un título válido de Pokémon BDSP. ¿Está activo el modo correcto?"),
         };
 
         // Verify the game version.
         var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
         if (!game_version.SequenceEqual(BSGameVersion))
-            throw new Exception($"Game version is not supported. Expected version {BSGameVersion}, and current game version is {game_version}.");
+            throw new Exception($"La versión del juego no es compatible. Versión esperada {BSGameVersion}, y la versión actual del juego es {game_version}.");
 
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
@@ -81,12 +81,11 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
         if (!IsValidTrainerData())
         {
             await CheckForRAMShiftingApps(token).ConfigureAwait(false);
-            throw new Exception("Refer to the SysBot.NET wiki (https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting) for more information.");
+            throw new Exception("Refiera a la wiki de SysBot.NET (https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting) para obtener más información.");
         }
 
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
-
+            throw new Exception("La velocidad del texto debe estar configurada en RÁPIDA. Corrija esto para un funcionamiento correcto.");
         return sav;
     }
 
@@ -114,15 +113,15 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
 
     public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
     {
-        Log("Detaching on startup.");
+        Log("Desacoplando al iniciar.");
         await DetachController(token).ConfigureAwait(false);
         if (settings.ScreenOff)
         {
-            Log("Turning off screen.");
+            Log("Apagando pantalla.");
             await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
         }
 
-        Log("Setting BDSP-specific hid waits.");
+        Log("Configurando tiempos de espera HID específicos de BDSP.");
         await Connection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.keySleepTime, 50), token).ConfigureAwait(false);
         await Connection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.pollRate, 50), token).ConfigureAwait(false);
     }
@@ -130,7 +129,7 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
     public async Task CleanExit(CancellationToken token)
     {
         await SetScreen(ScreenState.On, token).ConfigureAwait(false);
-        Log("Detaching controllers on routine exit.");
+        Log("Desacoplando los controladores al salir de la rutina.");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -148,14 +147,14 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
 
     public async Task ReOpenGame(PokeTradeHubConfig config, CancellationToken token)
     {
-        Log("Error detected, restarting the game!!");
+        Log("¡¡Error detectado, reiniciando el juego!!");
         await CloseGame(config, token).ConfigureAwait(false);
         await StartGame(config, token).ConfigureAwait(false);
     }
 
     public Task UnSoftBan(CancellationToken token)
     {
-        Log("Soft ban detected, unbanning.");
+        Log("Soft ban detectado, desbloqueando.");
         // Write the float value to 0.
         var data = BitConverter.GetBytes(0);
         return SwitchConnection.PointerPoke(data, Offsets.UnionWorkPenaltyPointer, token);
@@ -174,7 +173,7 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
         await Click(HOME, 2_000 + timing.ExtraTimeReturnHome, token).ConfigureAwait(false);
         await Click(X, 1_000, token).ConfigureAwait(false);
         await Click(A, 5_000 + timing.ExtraTimeCloseGame, token).ConfigureAwait(false);
-        Log("Closed out of the game!");
+        Log("El juego se cerró.");
     }
 
     public async Task StartGame(PokeTradeHubConfig config, CancellationToken token)
@@ -194,7 +193,7 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
 
         await Click(A, 0_600, token).ConfigureAwait(false);
 
-        Log("Restarting the game!");
+        Log("¡Reiniciando el juego!");
 
         // Switch Logo lag, skip cutscene, game load screen
         await Task.Delay(22_000 + timing.ExtraTimeLoadGame, token).ConfigureAwait(false);
@@ -211,7 +210,7 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
             // Don't risk it if hub is set to avoid updates.
             if (timer <= 0 && !timing.AvoidSystemUpdate)
             {
-                Log("Still not in the game, initiating rescue protocol!");
+                Log("¡Todavía no estamos en el juego, iniciando protocolo de rescate!");
                 while (!await IsSceneID(SceneID_Field, token).ConfigureAwait(false))
                     await Click(A, 6_000, token).ConfigureAwait(false);
                 break;
@@ -219,7 +218,7 @@ public abstract class PokeRoutineExecutor8BS(PokeBotState Config) : PokeRoutineE
         }
 
         await Task.Delay(2_000 + timing.ExtraTimeLoadOverworld, token).ConfigureAwait(false);
-        Log("Back in the overworld!");
+        Log("¡De regreso en el mundo exterior!");
     }
 
     private async Task<bool> IsSceneID(uint expected, CancellationToken token)
