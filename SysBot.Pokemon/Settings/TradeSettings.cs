@@ -12,39 +12,39 @@ public class TradeSettings : IBotStateSettings, ICountSettings
     private const string TradeConfig = nameof(TradeConfig);
     private const string Dumping = nameof(Dumping);
     private const string Counts = nameof(Counts);
-    public override string ToString() => "Trade Bot Settings";
+    public override string ToString() => "Configuración de Trade Bot";
 
-    [Category(TradeConfig), Description("Time to wait for a trade partner in seconds.")]
+    [Category(TradeConfig), Description("Tiempo en segundos que se espera a un compañero de intercambio.")]
     public int TradeWaitTime { get; set; } = 30;
 
-    [Category(TradeConfig), Description("Max amount of time in seconds pressing A to wait for a trade to process.")]
+    [Category(TradeConfig), Description("Tiempo máximo en segundos presionando A para esperar a que se procese un intercambio.")]
     public int MaxTradeConfirmTime { get; set; } = 25;
 
-    [Category(TradeCode), Description("Minimum Link Code.")]
+    [Category(TradeCode), Description("Código de intercambio mínimo.")]
     public int MinTradeCode { get; set; } = 8180;
 
-    [Category(TradeCode), Description("Maximum Link Code.")]
+    [Category(TradeCode), Description("Código de intercambio máximo.")]
     public int MaxTradeCode { get; set; } = 8199;
 
-    [Category(Dumping), Description("Dump Trade: Dumping routine will stop after a maximum number of dumps from a single user.")]
+    [Category(Dumping), Description("Dump Trade: La rutina de Dumping se detendrá después de un número máximo de dumps de un solo usuario.")]
     public int MaxDumpsPerTrade { get; set; } = 20;
 
-    [Category(Dumping), Description("Dump Trade: Dumping routine will stop after spending x seconds in trade.")]
+    [Category(Dumping), Description("Dump Trade: La rutina de Dumping se detendrá después de pasar x segundos en el intercambio.")]
     public int MaxDumpTradeTime { get; set; } = 180;
 
-    [Category(Dumping), Description("Dump Trade: If enabled, Dumping routine will output legality check information to the user.")]
+    [Category(Dumping), Description("Dump Trade: Si está habilitado, la rutina de Dumping mostrará información de verificación de legalidad al usuario.")]
     public bool DumpTradeLegalityCheck { get; set; } = true;
 
-    [Category(TradeConfig), Description("When enabled, the screen will be turned off during normal bot loop operation to save power.")]
+    [Category(TradeConfig), Description("Cuando está habilitado, la pantalla se apagará durante la operación normal del bot para ahorrar energía.")]
     public bool ScreenOff { get; set; }
 
-    [Category(TradeConfig), Description("When enabled, disallows requesting Pokémon from outside of their original context.")]
+    [Category(TradeConfig), Description("Cuando está habilitado, no se permite solicitar Pokémon fuera de su contexto original.")]
     public bool DisallowNonNatives { get; set; } = true;
 
-    [Category(TradeConfig), Description("When enabled, disallows requesting Pokémon if they have a HOME Tracker.")]
+    [Category(TradeConfig), Description("Cuando está habilitado, no se permite solicitar Pokémon si tienen un rastreador de HOME.")]
     public bool DisallowTracked { get; set; } = true;
 
-    [Category(TradeConfig), Description("When enabled, the bot will automatically cancel a trade if offered a Pokémon that will evolve.")]
+    [Category(TradeConfig), Description("Cuando está habilitado, el bot cancelará automáticamente un intercambio si se le ofrece un Pokémon que evolucionará.")]
     public bool DisallowTradeEvolve { get; set; } = true;
 
     /// <summary>
@@ -59,49 +59,49 @@ public class TradeSettings : IBotStateSettings, ICountSettings
     private int _completedClones;
     private int _completedDumps;
 
-    [Category(Counts), Description("Completed Surprise Trades")]
+    [Category(Counts), Description("Intercambios Sorpresa completados")]
     public int CompletedSurprise
     {
         get => _completedSurprise;
         set => _completedSurprise = value;
     }
 
-    [Category(Counts), Description("Completed Link Trades (Distribution)")]
+    [Category(Counts), Description("Intercambios completados (Distribución)")]
     public int CompletedDistribution
     {
         get => _completedDistribution;
         set => _completedDistribution = value;
     }
 
-    [Category(Counts), Description("Completed Link Trades (Specific User)")]
+    [Category(Counts), Description("Intercambios completados (Usuario específico)")]
     public int CompletedTrades
     {
         get => _completedTrades;
         set => _completedTrades = value;
     }
 
-    [Category(Counts), Description("Completed Seed Check Trades")]
+    [Category(Counts), Description("Verificaciones de Semilla completadas")]
     public int CompletedSeedChecks
     {
         get => _completedSeedChecks;
         set => _completedSeedChecks = value;
     }
 
-    [Category(Counts), Description("Completed Clone Trades (Specific User)")]
+    [Category(Counts), Description("Clonaciones completadas (Usuario específico)")]
     public int CompletedClones
     {
         get => _completedClones;
         set => _completedClones = value;
     }
 
-    [Category(Counts), Description("Completed Dump Trades (Specific User)")]
+    [Category(Counts), Description("Dumps completados (Usuario específico)")]
     public int CompletedDumps
     {
         get => _completedDumps;
         set => _completedDumps = value;
     }
 
-    [Category(Counts), Description("When enabled, the counts will be emitted when a status check is requested.")]
+    [Category(Counts), Description("Cuando está habilitado, las estadísticas se mostrarán cuando se solicite una verificación de estado.")]
     public bool EmitCountsOnStatusCheck { get; set; }
 
     public void AddCompletedTrade() => Interlocked.Increment(ref _completedTrades);
@@ -116,16 +116,16 @@ public class TradeSettings : IBotStateSettings, ICountSettings
         if (!EmitCountsOnStatusCheck)
             yield break;
         if (CompletedSeedChecks != 0)
-            yield return $"Seed Check Trades: {CompletedSeedChecks}";
+            yield return $"Verificaciones de Semilla: {CompletedSeedChecks}";
         if (CompletedClones != 0)
-            yield return $"Clone Trades: {CompletedClones}";
+            yield return $"Clonaciones: {CompletedClones}";
         if (CompletedDumps != 0)
-            yield return $"Dump Trades: {CompletedDumps}";
+            yield return $"Dumps: {CompletedDumps}";
         if (CompletedTrades != 0)
-            yield return $"Link Trades: {CompletedTrades}";
+            yield return $"Intercambios: {CompletedTrades}";
         if (CompletedDistribution != 0)
-            yield return $"Distribution Trades: {CompletedDistribution}";
+            yield return $"Intercambios de Distribución: {CompletedDistribution}";
         if (CompletedSurprise != 0)
-            yield return $"Surprise Trades: {CompletedSurprise}";
+            yield return $"Intercambios Sorpresa: {CompletedSurprise}";
     }
 }

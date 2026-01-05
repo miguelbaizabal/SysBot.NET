@@ -9,86 +9,85 @@ public class DiscordSettings
     private const string Channels = nameof(Channels);
     private const string Roles = nameof(Roles);
     private const string Users = nameof(Users);
-    public override string ToString() => "Discord Integration Settings";
+    public override string ToString() => "Configuración de Integración de Discord";
 
     // Startup
 
-    [Category(Startup), Description("Bot login token.")]
+    [Category(Startup), Description("Token de autenticación del bot.")]
     public string Token { get; set; } = string.Empty;
 
-    [Category(Startup), Description("Bot command prefix.")]
+    [Category(Startup), Description("Prefijo de comandos del bot.")]
     public string CommandPrefix { get; set; } = "$";
 
-    [Category(Startup), Description("List of modules that will not be loaded when the bot is started (comma separated).")]
+    [Category(Startup), Description("Lista de módulos que no se cargarán cuando se inicie el bot (separados por comas).")]
     public string ModuleBlacklist { get; set; } = string.Empty;
 
-    [Category(Startup), Description("Toggle to handle commands asynchronously or synchronously.")]
+    [Category(Startup), Description("Alternar para manejar comandos de forma asíncrona o sincrónica.")]
     public bool AsyncCommands { get; set; }
 
-    [Category(Startup), Description("Custom Status for playing a game.")]
+    [Category(Startup), Description("Estado personalizado de juego del bot de Discord.")]
     public string BotGameStatus { get; set; } = "SysBot.NET: Pokémon";
 
-    [Category(Startup), Description("Indicates the Discord presence status color only considering bots that are Trade-type.")]
+    [Category(Startup), Description("Indica el color del estado de presencia de Discord considerando solo bots tipo Trade.")]
     public bool BotColorStatusTradeOnly { get; set; } = true;
 
-    [Category(Operation), Description("Custom message the bot will reply with when a user says hello to it. Use string formatting to mention the user in the reply.")]
-    public string HelloResponse { get; set; } = "Hi {0}!";
-
+    [Category(Operation), Description("Mensaje personalizado que el bot responderá cuando un usuario le diga hola. Usa formato de cadena para mencionar al usuario en la respuesta.")]
+    public string HelloResponse { get; set; } = "¡Hola {0}!";
     // Whitelists
 
-    [Category(Roles), Description("Users with this role are allowed to enter the Trade queue.")]
+    [Category(Roles), Description("Usuarios con este rol pueden entrar a la cola de Trade.")]
     public RemoteControlAccessList RoleCanTrade { get; set; } = new() { AllowIfEmpty = false };
 
-    [Category(Roles), Description("Users with this role are allowed to enter the Seed Check queue.")]
+    [Category(Roles), Description("Usuarios con este rol pueden entrar a la cola de Seed Check.")]
     public RemoteControlAccessList RoleCanSeedCheck { get; set; } = new() { AllowIfEmpty = false };
 
-    [Category(Roles), Description("Users with this role are allowed to enter the Clone queue.")]
+    [Category(Roles), Description("Usuarios con este rol pueden entrar a la cola de Clone.")]
     public RemoteControlAccessList RoleCanClone { get; set; } = new() { AllowIfEmpty = false };
 
-    [Category(Roles), Description("Users with this role are allowed to enter the Dump queue.")]
+    [Category(Roles), Description("Usuarios con este rol pueden entrar a la cola de Dump.")]
     public RemoteControlAccessList RoleCanDump { get; set; } = new() { AllowIfEmpty = false };
 
-    [Category(Roles), Description("Users with this role are allowed to remotely control the console (if running as Remote Control Bot.")]
+    [Category(Roles), Description("Usuarios con este rol pueden controlar remotamente la consola (si se ejecuta como Bot de Control Remoto).")]
     public RemoteControlAccessList RoleRemoteControl { get; set; } = new() { AllowIfEmpty = false };
 
-    [Category(Roles), Description("Users with this role are allowed to bypass command restrictions.")]
+    [Category(Roles), Description("Usuarios con este rol pueden ignorar restricciones de comandos.")]
     public RemoteControlAccessList RoleSudo { get; set; } = new() { AllowIfEmpty = false };
 
     // Operation
 
-    [Category(Roles), Description("Users with this role are allowed to join the queue with a better position.")]
+    [Category(Roles), Description("Usuarios con este rol pueden entrar a la cola con una posición mejor.")]
     public RemoteControlAccessList RoleFavored { get; set; } = new() { AllowIfEmpty = false };
 
-    [Category(Users), Description("Users with these user IDs cannot use the bot.")]
+    [Category(Users), Description("Usuarios con estos IDs de usuario no pueden usar el bot.")]
     public RemoteControlAccessList UserBlacklist { get; set; } = new();
 
-    [Category(Channels), Description("Channels with these IDs are the only channels where the bot acknowledges commands.")]
+    [Category(Channels), Description("Canales con estos IDs son los únicos canales donde el bot reconoce comandos.")]
     public RemoteControlAccessList ChannelWhitelist { get; set; } = new();
 
-    [Category(Users), Description("Comma separated Discord user IDs that will have sudo access to the Bot Hub.")]
+    [Category(Users), Description("IDs de usuarios de Discord separados por comas que tendrán acceso sudo al Bot Hub.")]
     public RemoteControlAccessList GlobalSudoList { get; set; } = new();
 
-    [Category(Users), Description("Disabling this will remove global sudo support.")]
+    [Category(Users), Description("Desactivar esto eliminará el soporte global sudo.")]
     public bool AllowGlobalSudo { get; set; } = true;
 
-    [Category(Channels), Description("Channel IDs that will echo the log bot data.")]
+    [Category(Channels), Description("IDs de canales que mostrarán los datos del registro del bot.")]
     public RemoteControlAccessList LoggingChannels { get; set; } = new();
 
-    [Category(Channels), Description("Logger channels that will log trade start messages.")]
+    [Category(Channels), Description("Canales de registro que mostrarán mensajes de inicio de intercambio.")]
     public RemoteControlAccessList TradeStartingChannels { get; set; } = new();
 
-    [Category(Channels), Description("Echo channels that will log special messages.")]
+    [Category(Channels), Description("Canales de eco que registrarán mensajes especiales.")]
     public RemoteControlAccessList EchoChannels { get; set; } = new();
 
-    [Category(Operation), Description("Returns PKMs of Pokémon shown in the trade to the user.")]
+    [Category(Operation), Description("Devuelve PKMs de Pokémon mostrados en el intercambio al usuario.")]
     public bool ReturnPKMs { get; set; } = true;
 
-    [Category(Operation), Description("Replies to users if they are not allowed to use a given command in the channel. When false, the bot will silently ignore them instead.")]
+    [Category(Operation), Description("Responde a los usuarios si no tienen permiso para usar un comando en el canal. Cuando es falso, el bot lo ignorará silenciosamente.")]
     public bool ReplyCannotUseCommandInChannel { get; set; } = true;
 
-    [Category(Operation), Description("Bot listens to channel messages to reply with a ShowdownSet whenever a PKM file is attached (not with a command).")]
+    [Category(Operation), Description("El bot escucha los mensajes del canal para responder con un ShowdownSet cada vez que se adjunta un archivo PKM (no con un comando).")]
     public bool ConvertPKMToShowdownSet { get; set; } = true;
 
-    [Category(Operation), Description("Bot can reply with a ShowdownSet in Any channel the bot can see, instead of only channels the bot has been whitelisted to run in. Only make this true if you want the bot to serve more utility in non-bot channels.")]
+    [Category(Operation), Description("El bot puede responder con un ShowdownSet en cualquier canal que el bot pueda ver, en lugar de solo los canales en los que ha sido autorizado a ejecutarse. Solo habilítelo si desea que el bot sirva más utilidad en canales no-bots.")]
     public bool ConvertPKMReplyAnyChannel { get; set; }
 }

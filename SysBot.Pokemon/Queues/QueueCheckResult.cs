@@ -18,12 +18,12 @@ public sealed record QueueCheckResult<T>(
     public string GetMessage()
     {
         if (!InQueue || Detail is null)
-            return "You are not in the queue.";
+            return "No estás en la cola.";
         var position = $"{Position}/{QueueCount}";
-        var msg = $"You are in the {Detail.Type} queue! Position: {position} (ID {Detail.Trade.ID})";
+        var msg = $"Estás en la cola de {Detail.Type}! Posición: {position} (ID {Detail.Trade.ID})";
         var pk = Detail.Trade.TradeData;
         if (pk.Species != 0)
-            msg += $", Receiving: {GameInfo.GetStrings("en").Species[pk.Species]}";
+            msg += $", Recibiendo: {GameInfo.GetStrings("es").Species[pk.Species]}";
         return msg;
     }
 }

@@ -11,8 +11,8 @@ public class NoSeedSearchHandler<T> : ISeedSearchHandler<T> where T : PKM, new()
 {
     public void CalculateAndNotify(T pkm, PokeTradeDetail<T> detail, SeedCheckSettings settings, PokeRoutineExecutor<T> bot)
     {
-        const string msg = "Seed searching implementation not found. " +
-                           "Please let the person hosting the bot know that they need to provide the required Z3 files.";
+        const string msg = "Implementación de búsqueda de semillas no encontrada. " +
+                           "Por favor, avise a la persona que está ejecutando el bot que necesita proporcionar los archivos Z3 requeridos.";
         detail.SendNotification(bot, msg);
     }
 }

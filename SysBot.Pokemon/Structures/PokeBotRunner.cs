@@ -103,15 +103,15 @@ public abstract class PokeBotRunner<T>(PokeTradeHub<T> hub, BotFactory<T> Factor
 
         var path = Hub.Config.Folder.DistributeFolder;
         if (!Directory.Exists(path))
-            LogUtil.LogError("The distribution folder was not found. Please verify that it exists!", "Hub");
+            LogUtil.LogError("El directorio de distribución no fue encontrado. ¡Por favor, verifique que exista!", "Hub");
 
         path = Hub.Config.Folder.DumpFolder;
         if (Hub.Config.Folder.Dump && !Directory.Exists(path))
-            LogUtil.LogError("The program is configured to dump files, but the dump folder was not found. Please verify that it exists!", "Hub");
+            LogUtil.LogError("El programa está configurado para dumpear archivos, pero el directorio de dump no fue encontrado. ¡Por favor, verifique que exista!", "Hub");
 
         var pool = Hub.Ledy.Pool;
         if (!pool.Reload(Hub.Config.Folder.DistributeFolder))
-            LogUtil.LogError("Nothing to distribute for Empty Trade Queues!", "Hub");
+            LogUtil.LogError("No hay nada que distribuir para las colas de intercambio vacías!", "Hub");
     }
 
     public PokeRoutineExecutorBase CreateBotFromConfig(PokeBotState cfg) => Factory.CreateBot(Hub, cfg);

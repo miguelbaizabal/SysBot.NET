@@ -7,15 +7,15 @@ public class FolderSettings : IDumper
 {
     private const string FeatureToggle = nameof(FeatureToggle);
     private const string Files = nameof(Files);
-    public override string ToString() => "Folder / Dumping Settings";
+    public override string ToString() => "Configuración de Folder / Dumping";
 
-    [Category(FeatureToggle), Description("When enabled, dumps any received PKM files (trade results) to the DumpFolder.")]
+    [Category(FeatureToggle), Description("Cuando está habilitado, dumpeará cualquier archivo PKM recibido (resultados de intercambio) a la carpeta DumpFolder.")]
     public bool Dump { get; set; }
 
-    [Category(Files), Description("Source folder: where PKM files to distribute are selected from.")]
+    [Category(Files), Description("Source folder: donde se seleccionan los archivos PKM para distribuir.")]
     public string DistributeFolder { get; set; } = string.Empty;
 
-    [Category(Files), Description("Destination folder: where all received PKM files are dumped to.")]
+    [Category(Files), Description("Destination folder: donde se dumpean todos los archivos PKM recibidos.")]
     public string DumpFolder { get; set; } = string.Empty;
 
     public void CreateDefaults(string path)

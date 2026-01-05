@@ -60,7 +60,7 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
         Directory.CreateDirectory(dir);
         var fn = Path.Combine(dir, PathUtil.CleanFileName(pk.FileName));
         File.WriteAllBytes(fn, pk.DecryptedPartyData);
-        LogUtil.LogInfo($"Saved file: {fn}", "Dump");
+        LogUtil.LogInfo($"Archivo guardado: {fn}", "Dump");
     }
 
     public async Task<bool> TryReconnect(int attempts, int extraDelay, SwitchProtocol protocol, CancellationToken token)
@@ -72,7 +72,7 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
             // If ReconnectAttempts is set to -1, this should allow it to reconnect (essentially) indefinitely.
             for (int i = 0; i < (uint)attempts; i++)
             {
-                LogUtil.LogInfo($"Trying to reconnect... ({i + 1})", Connection.Label);
+                LogUtil.LogInfo($"Intentando reconectar... ({i + 1})", Connection.Label);
                 Connection.Reset();
                 if (Connection.Connected)
                     break;
@@ -90,8 +90,9 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
         if (version < BotbaseVersion || version is null)
         {
             var protocol = Config.Connection.Protocol;
-            var msg = protocol is SwitchProtocol.WiFi ? "sys-botbase" : "usb-botbase";
-            msg += $" version is not supported. Expected version {BotbaseVersion} or greater, and your current version is {data}. Please download the latest version from: ";
+            var msg = $"Versión de ";
+            msg += protocol is SwitchProtocol.WiFi ? "sys-botbase" : "usb-botbase";
+            msg += $" no soportada. Versión esperada {BotbaseVersion} o superior, y tu versión actual es {data}. Por favor descarga la última versión desde: ";
             if (protocol is SwitchProtocol.WiFi)
                 msg += "https://github.com/olliz0r/sys-botbase/releases/latest";
             else
@@ -106,29 +107,30 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
 
     public async Task CheckForRAMShiftingApps(CancellationToken token)
     {
-        Log("Trainer data is not valid.");
+        Log("Datos de entrenador no válidos.");
 
         bool found = false;
-        var msg = "Found ";
+        var msg = "";
         if (await SwitchConnection.IsProgramRunning(ovlloaderID, token).ConfigureAwait(false))
         {
-            msg += "Tesla Menu";
+            msg += "Menú Tesla";
             found = true;
         }
 
         if (await SwitchConnection.IsProgramRunning(dmntID, token).ConfigureAwait(false))
         {
             if (found)
-                msg += " and ";
-            msg += "dmnt (cheat codes?)";
+                msg += " y ";
+            msg += "dmnt (¿códigos de trampa?)";
             found = true;
         }
+        msg += " Encontrado";
 
         if (found)
         {
             msg += ".";
             Log(msg);
-            Log("Please remove interfering applications and reboot the Switch.");
+            Log("Por favor elimina las aplicaciones interferentes y reinicia la Switch.");
         }
     }
 
@@ -148,9 +150,9 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
             if (AbuseSettings.BlockDetectedBannedUser && bot is PokeRoutineExecutor8SWSH)
                 await BlockUser(token).ConfigureAwait(false);
 
-            var msg = $"{user.TrainerName}{useridmsg} is a banned user and was encountered in-game using OT: {TrainerName}.";
+            var msg = $"{user.TrainerName}{useridmsg} es un usuario baneado y fue encontrado en el juego usando OT: {TrainerName}.";
             if (!string.IsNullOrWhiteSpace(entry.Comment))
-                msg += $"\nUser was banned for: {entry.Comment}";
+                msg += $"\nUsuario baneado por: {entry.Comment}";
             if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                 msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
             EchoUtil.Echo(msg);
@@ -162,15 +164,15 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
         if (previous != null)
         {
             var delta = DateTime.Now - previous.Time; // Time that has passed since last trade.
-            Log($"Last traded with {user.TrainerName} {delta.TotalMinutes:F1} minutes ago (OT: {TrainerName}).");
+            Log($"Última vez intercambiado con {user.TrainerName} hace {delta.TotalMinutes:F1} minutos (OT: {TrainerName}).");
 
             // Allows setting a cooldown for repeat trades. If the same user is encountered within the cooldown period for the same trade type, the user is warned and the trade will be ignored.
             var cd = AbuseSettings.TradeCooldown;     // Time they must wait before trading again.
             if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
             {
                 var wait = TimeSpan.FromMinutes(cd) - delta;
-                poke.Notifier.SendNotification(bot, poke, $"You are still on trade cooldown and cannot trade for another {wait.TotalMinutes:F1} minute(s).");
-                var msg = $"Found {user.TrainerName}{useridmsg} ignoring the {cd} minute trade cooldown. Last encountered {delta.TotalMinutes:F1} minutes ago.";
+                poke.Notifier.SendNotification(bot, poke, $"Aún estás en tiempo de espera de intercambio y no puedes intercambiar durante otros {wait.TotalMinutes:F1} minuto(s).");
+                var msg = $"{user.TrainerName}{useridmsg} encontrado ignorando el tiempo de espera de intercambio de {cd} minutos. Última vez encontrado hace {delta.TotalMinutes:F1} minutos.";
                 if (AbuseSettings.EchoNintendoOnlineIDCooldown)
                     msg += $"\nID: {TrainerNID}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.CooldownAbuseEchoMention))
@@ -190,14 +192,14 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
                         await BlockUser(token).ConfigureAwait(false);
                         if (AbuseSettings.BanIDWhenBlockingUser || bot is not PokeRoutineExecutor8SWSH) // Only ban ID if blocking in SWSH, always in other games.
                         {
-                            AbuseSettings.BannedIDs.AddIfNew([GetReference(TrainerName, TrainerNID, "in-game block for multiple accounts")]);
-                            Log($"Added {TrainerNID} to the BannedIDs list.");
+                            AbuseSettings.BannedIDs.AddIfNew([GetReference(TrainerName, TrainerNID, "bloqueado en el juego por cuentas múltiples")]);
+                            Log($"{TrainerNID} añadido a la lista de BannedIDs.");
                         }
                     }
                     quit = true;
                 }
 
-                var msg = $"Found {user.TrainerName}{useridmsg} using multiple accounts.\nPreviously traded with {previous.Name} ({previous.RemoteID}) {delta.TotalMinutes:F1} minutes ago on OT: {TrainerName}.";
+                var msg = $"{user.TrainerName}{useridmsg} encontrado usando múltiples cuentas.\nIntercambiado anteriormente con {previous.Name} ({previous.RemoteID}) hace {delta.TotalMinutes:F1} minutos usando OT: {TrainerName}.";
                 if (AbuseSettings.EchoNintendoOnlineIDMulti)
                     msg += $"\nID: {TrainerNID}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiAbuseEchoMention))
@@ -220,14 +222,14 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
                         await BlockUser(token).ConfigureAwait(false);
                         if (AbuseSettings.BanIDWhenBlockingUser || bot is not PokeRoutineExecutor8SWSH) // Only ban ID if blocking in SWSH, always in other games.
                         {
-                            AbuseSettings.BannedIDs.AddIfNew([GetReference(TrainerName, TrainerNID, "in-game block for sending to multiple in-game players")]);
-                            Log($"Added {TrainerNID} to the BannedIDs list.");
+                            AbuseSettings.BannedIDs.AddIfNew([GetReference(TrainerName, TrainerNID, "bloqueado en el juego por enviar a varios jugadores")]);
+                            Log($"{TrainerNID} añadido a la lista de BannedIDs.");
                         }
                     }
                     quit = true;
                 }
 
-                var msg = $"Found {user.TrainerName}{useridmsg} sending to multiple in-game players. Previous OT: {previous_remote.Name}, Current OT: {TrainerName}";
+                var msg = $"{user.TrainerName}{useridmsg} encontrado enviando a varios jugadores en el juego. OT anterior: {previous_remote.Name}, OT actual: {TrainerName}";
                 if (AbuseSettings.EchoNintendoOnlineIDMultiRecipients)
                     msg += $"\nID: {TrainerNID}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiRecipientEchoMention))
@@ -255,13 +257,13 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
     {
         ID = id,
         Name = name,
-        Comment = $"Added automatically on {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
+        Comment = $"Añadido automáticamente el {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
     };
 
     // Blocks a user from the box during in-game trades (SWSH).
     private async Task BlockUser(CancellationToken token)
     {
-        Log("Blocking user in-game...");
+        Log("Bloqueando usuario en el juego...");
         await PressAndHold(RSTICK, 0_750, 0, token).ConfigureAwait(false);
         await Click(DUP, 0_300, token).ConfigureAwait(false);
         await Click(A, 1_300, token).ConfigureAwait(false);

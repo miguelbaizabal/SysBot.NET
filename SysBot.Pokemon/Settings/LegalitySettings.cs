@@ -12,16 +12,16 @@ public class LegalitySettings
     private string DefaultTrainerName = "SysBot";
     private const string Generate = nameof(Generate);
     private const string Misc = nameof(Misc);
-    public override string ToString() => "Legality Generating Settings";
+    public override string ToString() => "Configuración de Generación de Legalidad";
 
     // Generate
-    [Category(Generate), Description("MGDB directory path for Wonder Cards.")]
+    [Category(Generate), Description("Directorio MGDB para las Wonder Cards.")]
     public string MGDBPath { get; set; } = string.Empty;
 
-    [Category(Generate), Description("Folder for PKM files with trainer data to use for regenerated PKM files.")]
+    [Category(Generate), Description("Directorio para archivos PKM con datos de entrenador a usar para archivos PKM regenerados.")]
     public string GeneratePathTrainerInfo { get; set; } = string.Empty;
 
-    [Category(Generate), Description("Default Original Trainer name for PKM files that don't match any of the provided PKM files.")]
+    [Category(Generate), Description("Nombre predeterminado del entrenador original para archivos PKM que no coincidan con ninguno de los archivos proporcionados.")]
     public string GenerateOT
     {
         get => DefaultTrainerName;
@@ -32,37 +32,37 @@ public class LegalitySettings
         }
     }
 
-    [Category(Generate), Description("Default 16-bit Trainer ID (TID) for requests that don't match any of the provided trainer data files. This should be a 5-digit number.")]
+    [Category(Generate), Description("ID de Entrenador 16-bit predeterminado (TID) para solicitudes que no coincidan con ninguno de los archivos de datos de entrenador proporcionados. Esto debe ser un número de 5 dígitos.")]
     public ushort GenerateTID16 { get; set; } = 12345;
 
-    [Category(Generate), Description("Default 16-bit Secret ID (SID) for requests that don't match any of the provided trainer data files. This should be a 5-digit number.")]
+    [Category(Generate), Description("ID Secreto 16-bit predeterminado (SID) para solicitudes que no coincidan con ninguno de los archivos de datos de entrenador proporcionados. Esto debe ser un número de 5 dígitos.")]
     public ushort GenerateSID16 { get; set; } = 54321;
 
-    [Category(Generate), Description("Default language for PKM files that don't match any of the provided PKM files.")]
+    [Category(Generate), Description("Idioma predeterminado para archivos PKM que no coincidan con ninguno de los archivos proporcionados.")]
     public LanguageID GenerateLanguage { get; set; } = LanguageID.English;
 
-    [Category(Generate), Description("Method of searching for encounters when generating Pokémon. \"NativeOnly\" searches current game pair only, \"NewestFirst\" searches from most recent game, and \"PriorityOrder\" uses the order designated in the \"GameVersionPriority\" setting.")]
+    [Category(Generate), Description("Método de búsqueda de encuentros al generar Pokémon. \"NativeOnly\" busca solo en la pareja de juegos actuales, \"NewestFirst\" busca desde el juego más reciente, y \"PriorityOrder\" usa el orden designado en la configuración \"GameVersionPriority\".")]
     public GameVersionPriorityType GameVersionPriority { get; set; } = GameVersionPriorityType.NativeOnly;
 
-    [Category(Generate), Description("Specifies the order of games to use to generate encounters. Set PrioritizeGame to \"true\" to enable.")]
+    [Category(Generate), Description("Especifica el orden de juegos a usar para generar encuentros. Establece PrioritizeGame en \"true\" para habilitar.")]
     public List<GameVersion> PriorityOrder { get; set; } = Enum.GetValues<GameVersion>().Where(GameUtil.IsValidSavedVersion).Reverse().ToList();
 
-    [Category(Generate), Description("Set all possible legal ribbons for any generated Pokémon.")]
+    [Category(Generate), Description("Establece todas las cintas legales posibles para cualquier Pokémon generado.")]
     public bool SetAllLegalRibbons { get; set; }
 
-    [Category(Generate), Description("Set a matching ball (based on color) for any generated Pokémon.")]
+    [Category(Generate), Description("Establece una ball coincidente (basada en color) para cualquier Pokémon generado.")]
     public bool SetMatchingBalls { get; set; } = true;
 
-    [Category(Generate), Description("Force the specified ball if legal.")]
+    [Category(Generate), Description("Forzar la ball especificada si es legal.")]
     public bool ForceSpecifiedBall { get; set; } = true;
 
-    [Category(Generate), Description("Assumes level 50 sets are level 100 competitive sets.")]
+    [Category(Generate), Description("Asume que los conjuntos de nivel 50 son conjuntos competitivos de nivel 100.")]
     public bool ForceLevel100for50 { get; set; }
 
-    [Category(Generate), Description("Requires HOME tracker when trading Pokémon that had to have traveled between the Switch games.")]
+    [Category(Generate), Description("Requiere el rastreador HOME al intercambiar Pokémon que tuvieron que haber viajado entre los juegos de Switch.")]
     public bool EnableHOMETrackerCheck { get; set; }
 
-    [Category(Generate), Description("The order in which Pokémon encounter types are attempted.")]
+    [Category(Generate), Description("El orden en el que se intentan los tipos de encuentros de Pokémon.")]
     public List<EncounterTypeGroup> PrioritizeEncounters { get; set; } =
     [
         EncounterTypeGroup.Egg, EncounterTypeGroup.Slot,
@@ -70,23 +70,23 @@ public class LegalitySettings
         EncounterTypeGroup.Trade,
     ];
 
-    [Category(Generate), Description("Adds Battle Version for games that support it (SWSH only) for using past-gen Pokémon in online competitive play.")]
+    [Category(Generate), Description("Agrega la Versión de Batalla para juegos que lo soportan (SWSH solamente) para usar Pokémon de generaciones anteriores en juegos competitivos online.")]
     public bool SetBattleVersion { get; set; }
 
-    [Category(Generate), Description("Bot will create an Easter Egg Pokémon if provided an illegal set.")]
+    [Category(Generate), Description("El bot creará un Pokémon de Huevo de Pascua si se le proporciona un conjunto ilegal.")]
     public bool EnableEasterEggs { get; set; }
 
-    [Category(Generate), Description("Allow users to submit custom OT, TID, SID, and OT Gender in Showdown sets.")]
+    [Category(Generate), Description("Permite a los usuarios enviar datos de entrenador personalizados (OT, TID, SID y género de OT) en conjuntos de Showdown.")]
     public bool AllowTrainerDataOverride { get; set; }
 
-    [Category(Generate), Description("Allow users to submit further customization with Batch Editor commands.")]
+    [Category(Generate), Description("Permite a los usuarios enviar personalización adicional con comandos del Editor por Lotes.")]
     public bool AllowBatchCommands { get; set; }
 
-    [Category(Generate), Description("Maximum time in seconds to spend when generating a set before canceling. This prevents difficult sets from freezing the bot.")]
+    [Category(Generate), Description("Tiempo máximo en segundos para gastar al generar un conjunto antes de cancelar. Esto evita que los conjuntos difíciles congelen el bot.")]
     public int Timeout { get; set; } = 15;
 
     // Misc
 
-    [Category(Misc), Description("Zero out HOME trackers for cloned and user-requested PKM files. It is recommended to leave this disabled to avoid creating invalid HOME data.")]
+    [Category(Misc), Description("Reestablece los rastreadores HOME para archivos PKM clonados y solicitados por el usuario. Se recomienda dejar esto deshabilitado para evitar crear datos HOME inválidos.")]
     public bool ResetHOMETracker { get; set; }
 }

@@ -17,7 +17,7 @@ public sealed class PokeTradeHubConfig : BaseConfig
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public QueueSettings Queues { get; set; } = new();
 
-    [Category(Operation), Description("Add extra time for slower Switches.")]
+    [Category(Operation), Description("Añade tiempo extra para Switches más lentos.")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public TimingSettings Timings { get; set; } = new();
 
@@ -27,7 +27,7 @@ public sealed class PokeTradeHubConfig : BaseConfig
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public TradeSettings Trade { get; set; } = new();
 
-    [Category(BotTrade), Description("Settings for idle distribution trades.")]
+    [Category(BotTrade), Description("Configuración para intercambios de distribución en espera.")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public DistributionSettings Distribution { get; set; } = new();
 
@@ -49,7 +49,7 @@ public sealed class PokeTradeHubConfig : BaseConfig
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public RaidSettings RaidSWSH { get; set; } = new();
 
-    [Category(BotEncounter), Description("Stop conditions for EncounterBot.")]
+    [Category(BotEncounter), Description("Condiciones de detención para EncounterBot.")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public StopConditionSettings StopConditions { get; set; } = new();
 
@@ -67,11 +67,11 @@ public sealed class PokeTradeHubConfig : BaseConfig
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public YouTubeSettings YouTube { get; set; } = new();
 
-    [Category(Integration), Description("Configure generation of assets for streaming.")]
+    [Category(Integration), Description("Configura la generación de assets para streaming.")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public StreamSettings Stream { get; set; } = new();
 
-    [Category(Integration), Description("Allows favored users to join the queue with a more favorable position than unfavored users.")]
+    [Category(Integration), Description("Permite a usuarios favoritos unirse a la cola con una posición más favorable que usuarios no favoritos.")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public FavoredPrioritySettings Favoritism { get; set; } = new();
 }

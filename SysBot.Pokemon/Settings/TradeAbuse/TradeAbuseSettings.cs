@@ -5,50 +5,50 @@ namespace SysBot.Pokemon;
 public class TradeAbuseSettings
 {
     private const string Monitoring = nameof(Monitoring);
-    public override string ToString() => "Trade Abuse Monitoring Settings";
+    public override string ToString() => "Configuración de Monitoreo de Abuso en Intercambios";
 
-    [Category(Monitoring), Description("When a person appears again in less than this setting's value (minutes), a notification will be sent.")]
+    [Category(Monitoring), Description("Cuando una persona aparece nuevamente en menos de este valor (minutos), se enviará una notificación.")]
     public double TradeCooldown { get; set; }
 
-    [Category(Monitoring), Description("When a person ignores a trade cooldown, the echo message will include their Nintendo Account ID.")]
+    [Category(Monitoring), Description("Cuando una persona ignora un tiempo de espera de intercambio, el mensaje de eco incluirá su ID de cuenta Nintendo.")]
     public bool EchoNintendoOnlineIDCooldown { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user violates trade cooldown. For Discord, use <@userIDnumber> to mention.")]
+    [Category(Monitoring), Description("Si no está vacío, la cadena proporcionada se agregará a las alertas de eco para notificar a quien usted especifique cuando un usuario viola el tiempo de espera de intercambio. Para Discord, use <@userIDnumber> para mencionar.")]
     public string CooldownAbuseEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("When a person appears with a different Discord/Twitch account in less than this setting's value (minutes), a notification will be sent.")]
+    [Category(Monitoring), Description("Cuando una persona aparece con una cuenta diferente de Discord/Twitch en menos de este valor (minutos), se enviará una notificación.")]
     public double TradeAbuseExpiration { get; set; } = 120;
 
-    [Category(Monitoring), Description("When a person using multiple Discord/Twitch accounts is detected, the echo message will include their Nintendo Account ID.")]
+    [Category(Monitoring), Description("Cuando una persona usando múltiples cuentas de Discord/Twitch es detectada, el mensaje de eco incluirá su ID de cuenta Nintendo.")]
     public bool EchoNintendoOnlineIDMulti { get; set; } = true;
 
-    [Category(Monitoring), Description("When a person sending to multiple in-game accounts is detected, the echo message will include their Nintendo Account ID.")]
+    [Category(Monitoring), Description("Cuando una persona que envía a múltiples cuentas en juego es detectada, el mensaje de eco incluirá su ID de cuenta Nintendo.")]
     public bool EchoNintendoOnlineIDMultiRecipients { get; set; } = true;
 
-    [Category(Monitoring), Description("When a person using multiple Discord/Twitch accounts is detected, this action is taken.")]
+    [Category(Monitoring), Description("Cuando una persona usando múltiples cuentas de Discord/Twitch es detectada, esta acción se tomará.")]
     public TradeAbuseAction TradeAbuseAction { get; set; } = TradeAbuseAction.Quit;
 
-    [Category(Monitoring), Description("When a person is blocked in-game for multiple accounts, their online ID is added to BannedIDs.")]
+    [Category(Monitoring), Description("Cuando una persona es bloqueada en el juego por múltiples cuentas, su ID en línea se agrega a BannedIDs.")]
     public bool BanIDWhenBlockingUser { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user is found using multiple accounts. For Discord, use <@userIDnumber> to mention.")]
+    [Category(Monitoring), Description("Si no está vacío, la cadena proporcionada se agregará a las alertas de eco para notificar a quien usted especifique cuando un usuario es encontrado usando múltiples cuentas. Para Discord, use <@userIDnumber> para mencionar.")]
     public string MultiAbuseEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user is found sending to multiple players in-game. For Discord, use <@userIDnumber> to mention.")]
+    [Category(Monitoring), Description("Si no está vacío, la cadena proporcionada se agregará a las alertas de eco para notificar a quien usted especifique cuando un usuario es encontrado enviando a múltiples jugadores en el juego. Para Discord, use <@userIDnumber> para mencionar.")]
     public string MultiRecipientEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("Banned online IDs that will trigger trade exit or in-game block.")]
+    [Category(Monitoring), Description("IDs baneados en línea que activarán la salida del intercambio o bloqueo in-game.")]
     public RemoteControlAccessList BannedIDs { get; set; } = new();
 
-    [Category(Monitoring), Description("When a person is encountered with a banned ID, block them in-game before quitting the trade.")]
+    [Category(Monitoring), Description("Cuando una persona es encontrada con un ID baneado, bloquearla en el juego antes de salir del intercambio.")]
     public bool BlockDetectedBannedUser { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user matches a banned ID. For Discord, use <@userIDnumber> to mention.")]
+    [Category(Monitoring), Description("Si no está vacío, la cadena proporcionada se agregará a las alertas de eco para notificar a quien usted especifique cuando un usuario coincide con un ID baneado. Para Discord, use <@userIDnumber> para mencionar.")]
     public string BannedIDMatchEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("When a person using Ledy nickname swaps is detected of abuse, the echo message will include their Nintendo Account ID.")]
+    [Category(Monitoring), Description("Cuando se detecta abuso por parte de una persona que usa intercambios de apodo de Ledy, el mensaje de eco incluirá su ID de Cuenta Nintendo.")]
     public bool EchoNintendoOnlineIDLedy { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user violates Ledy trade rules. For Discord, use <@userIDnumber> to mention.")]
+    [Category(Monitoring), Description("Si no está vacío, la cadena proporcionada se agregará a las alertas de eco para notificar a quien usted especifique cuando un usuario viola las reglas de intercambio de Ledy. Para Discord, use <@userIDnumber> para mencionar.")]
     public string LedyAbuseEchoMention { get; set; } = string.Empty;
 }

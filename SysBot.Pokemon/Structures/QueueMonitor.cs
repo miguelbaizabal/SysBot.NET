@@ -29,8 +29,8 @@ public class QueueMonitor<T>(PokeTradeHub<T> Hub)
             // Queue setting has been updated. Echo out that things have changed.
             secWaited = 0;
             var state = queues.GetCanQueue()
-                ? "Users are now able to join the trade queue."
-                : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+                ? "Los usuarios ahora pueden unirse a la cola de intercambio."
+                : "Configuración de cola cambiada: **Los usuarios NO pueden unirse a la cola hasta que se reactive.**";
             EchoUtil.Echo(state);
         }
     }

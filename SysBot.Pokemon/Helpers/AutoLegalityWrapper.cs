@@ -173,7 +173,7 @@ public static class AutoLegalityWrapper
         if (typeof(T) == typeof(PA9))
             return TrainerSettings.GetSavedTrainerData(GameVersion.ZA);
 
-        throw new ArgumentException("Type does not have a recognized trainer fetch.", typeof(T).Name);
+        throw new ArgumentException("El tipo no tiene una obtención de entrenador reconocida.", typeof(T).Name);
     }
 
     public static ITrainerInfo GetTrainerInfo(byte gen) => TrainerSettings.GetSavedTrainerData(gen);
@@ -183,10 +183,10 @@ public static class AutoLegalityWrapper
         var result = sav.GetLegalFromSet(set);
         res = result.Status switch
         {
-            LegalizationResult.Regenerated     => "Regenerated",
-            LegalizationResult.Failed          => "Failed",
-            LegalizationResult.Timeout         => "Timeout",
-            LegalizationResult.VersionMismatch => "VersionMismatch",
+            LegalizationResult.Regenerated     => "Regenerado",
+            LegalizationResult.Failed          => "Fallido",
+            LegalizationResult.Timeout         => "Tiempo agotado",
+            LegalizationResult.VersionMismatch => "Versión no coincidente",
             _ => "",
         };
         return result.Created;

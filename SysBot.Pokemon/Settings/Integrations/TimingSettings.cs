@@ -8,72 +8,72 @@ public class TimingSettings
     private const string CloseGame = nameof(CloseGame);
     private const string Raid = nameof(Raid);
     private const string Misc = nameof(Misc);
-    public override string ToString() => "Extra Time Settings";
+    public override string ToString() => "Configuración de Tiempo Extra";
 
     // Opening the game.
-    [Category(OpenGame), Description("Extra time in milliseconds to wait for profiles to load when starting the game.")]
+    [Category(OpenGame), Description("Tiempo extra en milisegundos para esperar a que se carguen los perfiles al iniciar el juego.")]
     public int ExtraTimeLoadProfile { get; set; }
 
-    [Category(OpenGame), Description("Extra time in milliseconds to wait before clicking A in title screen.")]
+    [Category(OpenGame), Description("Tiempo extra en milisegundos para esperar antes de hacer clic en A en la pantalla de título.")]
     public int ExtraTimeLoadGame { get; set; } = 5000;
 
-    [Category(OpenGame), Description("Extra time in milliseconds to wait for the overworld to load after the title screen.")]
+    [Category(OpenGame), Description("Tiempo extra en milisegundos para esperar a que se cargue el mundo exterior después de la pantalla de título.")]
     public int ExtraTimeLoadOverworld { get; set; } = 3000;
 
     // Closing the game.
-    [Category(CloseGame), Description("Extra time in milliseconds to wait after pressing HOME to minimize the game.")]
+    [Category(CloseGame), Description("Tiempo extra en milisegundos para esperar después de presionar HOME para minimizar el juego.")]
     public int ExtraTimeReturnHome { get; set; }
 
-    [Category(CloseGame), Description("Extra time in milliseconds to wait after clicking to close the game.")]
+    [Category(CloseGame), Description("Tiempo extra en milisegundos para esperar después de hacer clic para cerrar el juego.")]
     public int ExtraTimeCloseGame { get; set; }
 
     // Raid-specific timings.
-    [Category(Raid), Description("[RaidBot] Extra time in milliseconds to wait for the raid to load after clicking on the den.")]
+    [Category(Raid), Description("[RaidBot] Tiempo extra en milisegundos para esperar a que se cargue la raid después de hacer clic en el den.")]
     public int ExtraTimeLoadRaid { get; set; }
 
-    [Category(Raid), Description("[RaidBot] Extra time in milliseconds to wait after clicking \"Invite Others\" before locking into a Pokémon.")]
+    [Category(Raid), Description("[RaidBot] Tiempo extra en milisegundos para esperar después de hacer clic en \"Invitar a otros\" antes de bloquearse en un Pokémon.")]
     public int ExtraTimeOpenRaid { get; set; }
 
-    [Category(Raid), Description("[RaidBot] Extra time in milliseconds to wait before closing the game to reset the raid.")]
+    [Category(Raid), Description("[RaidBot] Tiempo extra en milisegundos para esperar antes de cerrar el juego para reiniciar la raid.")]
     public int ExtraTimeEndRaid { get; set; }
 
-    [Category(Raid), Description("[RaidBot] Extra time in milliseconds to wait after accepting a friend.")]
+    [Category(Raid), Description("[RaidBot] Tiempo extra en milisegundos para esperar después de aceptar un amigo.")]
     public int ExtraTimeAddFriend { get; set; }
 
-    [Category(Raid), Description("[RaidBot] Extra time in milliseconds to wait after deleting a friend.")]
+    [Category(Raid), Description("[RaidBot] Tiempo extra en milisegundos para esperar después de eliminar un amigo.")]
     public int ExtraTimeDeleteFriend { get; set; }
 
     // Miscellaneous settings.
-    [Category(Misc), Description("[SWSH/SV] Extra time in milliseconds to wait after clicking + to connect to Y-Comm (SWSH) or L to connect online (SV).")]
+    [Category(Misc), Description("[SWSH/SV] Tiempo extra en milisegundos para esperar después de hacer clic en + para conectarse a Y-Comm (SWSH) o L para conectarse en línea (SV).")]
     public int ExtraTimeConnectOnline { get; set; }
 
-    [Category(Misc), Description("Number of times to attempt reconnecting to a socket connection after a connection is lost. Set this to -1 to try indefinitely.")]
+    [Category(Misc), Description("Número de veces que se intentará reconectar a una conexión socket después de perder la conexión. Establezca esto en -1 para intentar indefinidamente.")]
     public int ReconnectAttempts { get; set; } = 30;
 
-    [Category(Misc), Description("Extra time in milliseconds to wait between attempts to reconnect. Base time is 30 seconds.")]
+    [Category(Misc), Description("Tiempo extra en milisegundos para esperar entre intentos de reconexión. El tiempo base es 30 segundos.")]
     public int ExtraReconnectDelay { get; set; }
 
-    [Category(Misc), Description("[BDSP] Extra time in milliseconds to wait for the overworld to load after leaving the Union Room.")]
+    [Category(Misc), Description("[BDSP] Tiempo extra en milisegundos para esperar a que se cargue el mundo tras salir de la Sala Unión.")]
     public int ExtraTimeLeaveUnionRoom { get; set; } = 1000;
 
-    [Category(Misc), Description("[BDSP] Extra time in milliseconds to wait for the Y Menu to load at the start of each trade loop.")]
+    [Category(Misc), Description("[BDSP] Tiempo extra en milisegundos para esperar a que se cargue el menú Y al inicio de cada bucle de intercambio.")]
     public int ExtraTimeOpenYMenu { get; set; } = 500;
 
-    [Category(Misc), Description("[BDSP] Extra time in milliseconds to wait for the Union Room to load before trying to call for a trade.")]
+    [Category(Misc), Description("[BDSP] Tiempo extra en milisegundos para esperar a que se cargue la Sala Unión antes de intentar llamar a un intercambio.")]
     public int ExtraTimeJoinUnionRoom { get; set; } = 500;
 
-    [Category(Misc), Description("[SV] Extra time in milliseconds to wait for the Poké Portal to load.")]
+    [Category(Misc), Description("[SV] Tiempo extra en milisegundos para esperar a que se cargue el Poké Portal.")]
     public int ExtraTimeLoadPortal { get; set; } = 1000;
 
-    [Category(Misc), Description("Extra time in milliseconds to wait for the box to load after finding a trade.")]
+    [Category(Misc), Description("Tiempo extra en milisegundos para esperar a que se cargue la caja después de encontrar un intercambio.")]
     public int ExtraTimeOpenBox { get; set; } = 1000;
 
-    [Category(Misc), Description("Time to wait after opening the keyboard for code entry during trades.")]
+    [Category(Misc), Description("Tiempo extra en milisegundos para esperar después de abrir el teclado para ingresar códigos durante los intercambios.")]
     public int ExtraTimeOpenCodeEntry { get; set; } = 1000;
 
-    [Category(Misc), Description("Time to wait after each keypress when navigating Switch menus or entering Link Code.")]
+    [Category(Misc), Description("Tiempo a esperar después de cada pulsación de tecla al navegar por los menús de la consola o ingresar el código de enlace.")]
     public int KeypressTime { get; set; }
 
-    [Category(Misc), Description("Enable this to decline incoming system updates.")]
+    [Category(Misc), Description("Habilita esto para rechazar actualizaciones del sistema entrantes.")]
     public bool AvoidSystemUpdate { get; set; }
 }

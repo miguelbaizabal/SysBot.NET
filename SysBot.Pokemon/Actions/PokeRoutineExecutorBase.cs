@@ -34,7 +34,7 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
         InGameName = sav.OT;
         Context = sav.Context;
         Connection.Label = $"{InGameName}-{sav.DisplayTID:000000}";
-        Log($"{Connection.Name} identified as {Connection.Label}, using {GameLang}.");
+        Log($"{Connection.Name} identificado como {Connection.Label}, usando {GameLang}.");
     }
 
     protected bool IsValidTrainerData()
@@ -59,10 +59,10 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
 
     public string GetSpeciesName(ushort species)
     {
-        var strings = GameInfo.GetStrings("en");
+        var strings = GameInfo.GetStrings("es");
         var speciesName = strings.Species;
         if (species == 0 || species >= speciesName.Count)
-            return "Unknown";
+            return "Desconocido";
         return strings.Species[species];
     }
 

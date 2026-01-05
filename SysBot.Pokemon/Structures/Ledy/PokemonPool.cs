@@ -75,7 +75,7 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
 
             if (dest.Species == 0)
             {
-                LogUtil.LogInfo("SKIPPED: Provided file is not valid: " + dest.FileName, nameof(PokemonPool<T>));
+                LogUtil.LogInfo("Omitido: El archivo proporcionado no es válido: " + dest.FileName, nameof(PokemonPool<T>));
                 continue;
             }
 
@@ -83,18 +83,18 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
             if (!la.Valid)
             {
                 var reason = la.Report();
-                LogUtil.LogInfo($"SKIPPED: Provided file is not legal: {dest.FileName} -- {reason}", nameof(PokemonPool<T>));
+                LogUtil.LogInfo($"Omitido: El archivo proporcionado no es legal: {dest.FileName} -- {reason}", nameof(PokemonPool<T>));
                 continue;
             }
             if (!dest.CanBeTraded(la.EncounterOriginal))
             {
-                LogUtil.LogInfo($"SKIPPED: Provided file cannot be traded: {dest.FileName}", nameof(PokemonPool<T>));
+                LogUtil.LogInfo($"Omitido: El archivo proporcionado no puede ser intercambiado: {dest.FileName}", nameof(PokemonPool<T>));
                 continue;
             }
 
             if (typeof(T) == typeof(PK8) && DisallowRandomRecipientTrade(dest))
             {
-                LogUtil.LogInfo($"Provided file was loaded but can't be Surprise Traded: {dest.FileName}", nameof(PokemonPool<T>));
+                LogUtil.LogInfo($"El archivo proporcionado fue cargado pero no puede ser intercambiado por Intercambio Sorpresa: {dest.FileName}", nameof(PokemonPool<T>));
                 surpriseBlocked++;
             }
 
@@ -112,13 +112,13 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
             }
             else
             {
-                LogUtil.LogInfo("Provided file was not added due to duplicate name: " + dest.FileName, nameof(PokemonPool<T>));
+                LogUtil.LogInfo("El archivo proporcionado no fue agregado debido a nombre duplicado: " + dest.FileName, nameof(PokemonPool<T>));
             }
             loadedAny = true;
         }
 
         if (typeof(T) == typeof(PK8) && surpriseBlocked == Count)
-            LogUtil.LogInfo("Surprise trading will fail; failed to load any compatible files.", nameof(PokemonPool<T>));
+            LogUtil.LogInfo("El intercambio sorpresa fallará; no se cargó ningún archivo compatible.", nameof(PokemonPool<T>));
 
         return loadedAny;
     }

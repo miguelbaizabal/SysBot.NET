@@ -11,16 +11,16 @@ public abstract class BaseConfig
     protected const string Operation = nameof(Operation);
     private const string Debug = nameof(Debug);
 
-    [Category(FeatureToggle), Description("When enabled, the bot will press the B button occasionally when it is not processing anything (to avoid sleep).")]
+    [Category(FeatureToggle), Description("Cuando está habilitado, el bot presionará el botón B ocasionalmente cuando no esté procesando nada (para evitar que se duerma).")]
     public bool AntiIdle { get; set; }
 
-    [Category(FeatureToggle), Description("Enables text logs. Restart to apply changes.")]
+    [Category(FeatureToggle), Description("Habilita los registros de texto. Reinicie para aplicar los cambios.")]
     public bool LoggingEnabled { get; set; } = true;
 
-    [Category(FeatureToggle), Description("Maximum number of old text log files to retain. Set this to <= 0 to disable log cleanup. Restart to apply changes.")]
+    [Category(FeatureToggle), Description("Número máximo de archivos de registro antiguos a conservar. Establezca este valor en <= 0 para deshabilitar la limpieza de registros. Reinicie para aplicar los cambios.")]
     public int MaxArchiveFiles { get; set; } = 14;
 
-    [Category(Debug), Description("Skips creating bots when the program is started; helpful for testing integrations.")]
+    [Category(Debug), Description("Omite la creación de bots cuando se inicia el programa; útil para probar integraciones.")]
     public bool SkipConsoleBotCreation { get; set; }
 
     [Category(Operation)]

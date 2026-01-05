@@ -10,71 +10,71 @@ public class QueueSettings
     private const string UserBias = nameof(UserBias);
     private const string TimeBias = nameof(TimeBias);
     private const string QueueToggle = nameof(QueueToggle);
-    public override string ToString() => "Queue Joining Settings";
+    public override string ToString() => "Configuración de Unión a Cola";
 
     // General
 
-    [Category(FeatureToggle), Description("Toggles if users can join the queue.")]
+    [Category(FeatureToggle), Description("Determina si los usuarios pueden unirse a la cola.")]
     public bool CanQueue { get; set; } = true;
 
-    [Category(FeatureToggle), Description("Prevents adding users if there are this many users in the queue already.")]
+    [Category(FeatureToggle), Description("Previene agregar usuarios si ya hay este número de usuarios en la cola.")]
     public int MaxQueueCount { get; set; } = 999;
 
-    [Category(FeatureToggle), Description("Allows users to dequeue while being traded.")]
+    [Category(FeatureToggle), Description("Permite a los usuarios salir de la cola mientras son intercambiados.")]
     public bool CanDequeueIfProcessing { get; set; }
 
-    [Category(FeatureToggle), Description("Determines how Flex Mode will process the queues.")]
+    [Category(FeatureToggle), Description("Determina cómo se procesarán las colas en el modo flexible.")]
     public FlexYieldMode FlexMode { get; set; } = FlexYieldMode.Weighted;
 
-    [Category(FeatureToggle), Description("Determines when the queue is turned on and off.")]
+    [Category(FeatureToggle), Description("Determina cuándo se enciende y apaga la cola.")]
     public QueueOpening QueueToggleMode { get; set; } = QueueOpening.Threshold;
 
     // Queue Toggle
 
-    [Category(QueueToggle), Description("Threshold Mode: Count of users that will cause the queue to open.")]
+    [Category(QueueToggle), Description("Threshold Mode: Conteo de usuarios que causarán que la cola se abra.")]
     public int ThresholdUnlock { get; set; }
 
-    [Category(QueueToggle), Description("Threshold Mode: Count of users that will cause the queue to close.")]
+    [Category(QueueToggle), Description("Threshold Mode: Conteo de usuarios que causarán que la cola se cierre.")]
     public int ThresholdLock { get; set; } = 30;
 
-    [Category(QueueToggle), Description("Scheduled Mode: Seconds of being open before the queue locks.")]
+    [Category(QueueToggle), Description("Scheduled Mode: Segundos de estar abierta antes de que la cola se cierre.")]
     public int IntervalOpenFor { get; set; } = 5 * 60;
 
-    [Category(QueueToggle), Description("Scheduled Mode: Seconds of being closed before the queue unlocks.")]
+    [Category(QueueToggle), Description("Scheduled Mode: Segundos de estar cerrada antes de que la cola se abra.")]
     public int IntervalCloseFor { get; set; } = 15 * 60;
 
     // Flex Users
 
-    [Category(UserBias), Description("Biases the Trade Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), Description("Ajusta el peso de la cola de intercambios según cuántos usuarios haya en la cola.")]
     public int YieldMultCountTrade { get; set; } = 100;
 
-    [Category(UserBias), Description("Biases the Seed Check Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), Description("Ajusta el peso de la cola de verificación de semillas según cuántos usuarios haya en la cola.")]
     public int YieldMultCountSeedCheck { get; set; } = 100;
 
-    [Category(UserBias), Description("Biases the Clone Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), Description("Ajusta el peso de la cola de clonación según cuántos usuarios haya en la cola.")]
     public int YieldMultCountClone { get; set; } = 100;
 
-    [Category(UserBias), Description("Biases the Dump Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), Description("Ajusta el peso de la cola de dumpeo según cuántos usuarios haya en la cola.")]
     public int YieldMultCountDump { get; set; } = 100;
 
     // Flex Time
 
-    [Category(TimeBias), Description("Determines whether the weight should be added or multiplied to the total weight.")]
+    [Category(TimeBias), Description("Determina si el peso debe ser sumado o multiplicado al peso total.")]
     public FlexBiasMode YieldMultWait { get; set; } = FlexBiasMode.Multiply;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Trade queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), Description("Verifica el tiempo transcurrido desde que el usuario se unió a la cola de intercambio, y aumenta el peso de la cola en consecuencia.")]
     public int YieldMultWaitTrade { get; set; } = 1;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Seed Check queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), Description("Verifica el tiempo transcurrido desde que el usuario se unió a la cola de verificación de semillas, y aumenta el peso de la cola en consecuencia.")]
     public int YieldMultWaitSeedCheck { get; set; } = 1;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Clone queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), Description("Verifica el tiempo transcurrido desde que el usuario se unió a la cola de clonación, y aumenta el peso de la cola en consecuencia.")]
     public int YieldMultWaitClone { get; set; } = 1;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Dump queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), Description("Verifica el tiempo transcurrido desde que el usuario se unió a la cola de dumpeo, y aumenta el peso de la cola en consecuencia.")]
     public int YieldMultWaitDump { get; set; } = 1;
 
-    [Category(TimeBias), Description("Multiplies the amount of users in queue to give an estimate of how much time it will take until the user is processed.")]
+    [Category(TimeBias), Description("Multiplica la cantidad de usuarios en la cola para dar una estimación del tiempo que tomará hasta que el usuario sea procesado.")]
     public float EstimatedDelayFactor { get; set; } = 1.1f;
 
     private int GetCountBias(PokeTradeType type) => type switch

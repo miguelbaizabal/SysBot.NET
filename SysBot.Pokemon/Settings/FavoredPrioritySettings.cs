@@ -7,7 +7,7 @@ public class FavoredPrioritySettings : IFavoredCPQSetting
 {
     private const string Operation = nameof(Operation);
     private const string Configure = nameof(Configure);
-    public override string ToString() => "Favoritism Settings";
+    public override string ToString() => "Configuración de Favoritismo";
 
     // We want to allow hosts to give preferential treatment, while still providing service to users without favor.
     // These are the minimum values that we permit. These values yield a fair placement for the favored.
@@ -22,34 +22,34 @@ public class FavoredPrioritySettings : IFavoredCPQSetting
     private float _exponent = 0.777f;
     private float _multiply = 0.5f;
 
-    [Category(Operation), Description("Determines how the insertion position of favored users is calculated. \"None\" will prevent any favoritism from being applied.")]
+    [Category(Operation), Description("Determina cómo se calcula la posición de inserción de los usuarios favoritos. \"None\" evitará que se aplique ningún favoritismo.")]
     public FavoredMode Mode { get; set; }
 
-    [Category(Configure), Description("Inserted after (unfavored users)^(exponent) unfavored users.")]
+    [Category(Configure), Description("Insertado después de (usuarios no favoritos)^(exponente) usuarios no favoritos.")]
     public float Exponent
     {
         get => _exponent;
         set => _exponent = Math.Max(_mexp, value);
     }
 
-    [Category(Configure), Description("Multiply: Inserted after (unfavored users)*(multiply) unfavored users. Setting this to 0.2 adds in after 20% of users.")]
+    [Category(Configure), Description("Multiply: Insertado después de (usuarios no favoritos)*(multiplicar) usuarios no favoritos. Establecer esto en 0.2 agrega después del 20% de usuarios.")]
     public float Multiply
     {
         get => _multiply;
         set => _multiply = Math.Max(_mmul, value);
     }
 
-    [Category(Configure), Description("Number of unfavored users to not skip over. This only is enforced if a significant number of unfavored users are in the queue.")]
+    [Category(Configure), Description("Número de usuarios no favoritos a no saltarse. Esto solo se aplica si hay un número significativo de usuarios no favoritos en la cola.")]
     public int MinimumFreeAhead
     {
         get => _minimumFreeAhead;
         set => _minimumFreeAhead = Math.Max(_mfi, value);
     }
 
-    [Category(Configure), Description("Minimum number of unfavored users in queue to cause {MinimumFreeAhead} to be enforced. When the aforementioned number is higher than this value, a favored user is not placed ahead of {MinimumFreeAhead} unfavored users.")]
+    [Category(Configure), Description("Número mínimo de usuarios no favoritos en cola para causar que {MinimumFreeAhead} sea aplicado. Cuando el número mencionado es mayor que este valor, un usuario favorito no se coloca por delante de {MinimumFreeAhead} usuarios no favoritos.")]
     public int MinimumFreeBypass => (int)Math.Ceiling(MinimumFreeAhead * MinimumFreeBypassFactor);
 
-    [Category(Configure), Description("Scalar that is multiplied with {MinimumFreeAhead} to determine the {MinimumFreeBypass} value.")]
+    [Category(Configure), Description("Escalar que se multiplica con {MinimumFreeAhead} para determinar el valor de {MinimumFreeBypass}.")]
     public float MinimumFreeBypassFactor
     {
         get => _bypassFactor;
