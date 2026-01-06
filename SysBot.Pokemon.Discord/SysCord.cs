@@ -141,7 +141,7 @@ public sealed class SysCord<T> where T : PKM, new()
 
         _client.Disconnected += (exception) =>
         {
-            LogUtil.LogText($"Discord connection lost. Reason: {exception?.Message ?? "Unknown"}");
+            LogUtil.LogText($"Conexión con Discord perdida. Motivo: {exception?.Message ?? "Desconocido"}");
             Task.Run(() => ReconnectAsync());
             return Task.CompletedTask;
         };
@@ -157,7 +157,7 @@ public sealed class SysCord<T> where T : PKM, new()
         // Prevent multiple concurrent reconnection attempts
         if (!await _reconnectSemaphore.WaitAsync(0).ConfigureAwait(false))
         {
-            LogUtil.LogText("Client is already attempting to reconnect.");
+            LogUtil.LogText("El Cliente ya está intentando reconectarse.");
             return;
         }
 
@@ -180,7 +180,7 @@ public sealed class SysCord<T> where T : PKM, new()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    LogUtil.LogText("Reconnection attempt cancelled.");
+                    LogUtil.LogText("Intento de reconexión cancelado.");
                     return;
                 }
 
@@ -188,32 +188,32 @@ public sealed class SysCord<T> where T : PKM, new()
                 {
                     if (_client.ConnectionState == ConnectionState.Connected)
                     {
-                        LogUtil.LogText("Client reconnected automatically.");
+                        LogUtil.LogText("Cliente reconectado automáticamente.");
                         return; // Already reconnected
                     }
 
                     // Check if the client is in the process of reconnecting
                     if (_client.ConnectionState == ConnectionState.Connecting)
                     {
-                        LogUtil.LogText("Waiting for automatic reconnection...");
+                        LogUtil.LogText("Esperando reconexión automática...");
                         await Task.Delay(delayBetweenRetries, cancellationToken).ConfigureAwait(false);
                         continue;
                     }
 
                     await _client.StartAsync().ConfigureAwait(false);
-                    LogUtil.LogText("Reconnected successfully.");
+                    LogUtil.LogText("Reconectado exitosamente.");
                     return;
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogText($"Reconnection attempt {i + 1} failed: {ex.Message}");
+                    LogUtil.LogText($"Intento de reconexión {i + 1} fallido: {ex.Message}");
                     if (i < maxRetries - 1)
                         await Task.Delay(delayBetweenRetries, cancellationToken).ConfigureAwait(false);
                 }
             }
 
             // If all attempts to reconnect fail, stop and restart the bot
-            LogUtil.LogText("Failed to reconnect after maximum attempts. Restarting the bot...");
+            LogUtil.LogText("Error al reconectar después de los intentos máximos. Reiniciando el bot...");
 
             try
             {
@@ -226,20 +226,20 @@ public sealed class SysCord<T> where T : PKM, new()
 
                 // Restart the bot
                 await _client.StartAsync().ConfigureAwait(false);
-                LogUtil.LogText("Bot restarted successfully.");
+                LogUtil.LogText("Bot reiniciado exitosamente.");
             }
             catch (Exception ex)
             {
-                LogUtil.LogText($"Failed to restart bot: {ex.Message}");
+                LogUtil.LogText($"Error al reiniciar el bot: {ex.Message}");
             }
         }
         catch (OperationCanceledException)
         {
-            LogUtil.LogText("Reconnection cancelled.");
+            LogUtil.LogText("Intento de reconexión cancelado.");
         }
         catch (Exception ex)
         {
-            LogUtil.LogText($"Unexpected error in ReconnectAsync: {ex.Message}");
+            LogUtil.LogText($"Error inesperado en ReconnectAsync: {ex.Message}");
         }
         finally
         {
@@ -253,13 +253,13 @@ public sealed class SysCord<T> where T : PKM, new()
             return;
 
         var botName = string.IsNullOrEmpty(SysCordSettings.HubConfig.BotName) ? "SysBot" : SysCordSettings.HubConfig.BotName;
-        var fullStatusMessage = $"**Status**: {botName} is {status}!";
+        var fullStatusMessage = $"**Estado**: {botName} is {status}!";
         var thumbnailUrl = status == "Online"
             ? "https://raw.githubusercontent.com/hexbyt3/sprites/main/botgo.png"
             : "https://raw.githubusercontent.com/hexbyt3/sprites/main/botstop.png";
 
         var embed = new EmbedBuilder()
-            .WithTitle("Bot Status Report")
+            .WithTitle("Reporte de Estado del Bot")
             .WithDescription(fullStatusMessage)
             .WithColor(EmbedColorConverter.ToDiscordColor(color))
             .WithThumbnailUrl(thumbnailUrl)
@@ -307,26 +307,26 @@ public sealed class SysCord<T> where T : PKM, new()
                         }
                         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions)
                         {
-                            LogUtil.LogInfo("SysCord", $"Cannot update channel name for {channelId}: Missing Manage Channel permission");
+                            LogUtil.LogInfo("SysCord", $"No se puede actualizar el nombre del canal para {channelId}: Permisos insuficientes para gestionar canales");
                         }
                         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.RequestEntityTooLarge)
                         {
-                            LogUtil.LogInfo("SysCord", $"Cannot update channel name for {channelId}: Rate limited");
+                            LogUtil.LogInfo("SysCord", $"No se puede actualizar el nombre del canal para {channelId}: Límite de solicitudes alcanzado");
                         }
                         catch (Exception ex)
                         {
-                            LogUtil.LogInfo("SysCord", $"Failed to update channel name for {channelId}: {ex.Message}");
+                            LogUtil.LogInfo("SysCord", $"Error al actualizar el nombre del canal para {channelId}: {ex.Message}");
                         }
                     }
                 }
                 else
                 {
-                    LogUtil.LogInfo("SysCord", $"Channel {channelId} is not a text channel or could not be found");
+                    LogUtil.LogInfo("SysCord", $"El canal {channelId} no es un canal de texto o no se pudo encontrar");
                 }
             }
             catch (Exception ex)
             {
-                LogUtil.LogInfo("SysCord", $"AnnounceBotStatus: Exception in channel {channelId}: {ex.Message}");
+                LogUtil.LogInfo("SysCord", $"AnnounceBotStatus: Excepción en canal {channelId}: {ex.Message}");
             }
         }
     }
@@ -335,11 +335,11 @@ public sealed class SysCord<T> where T : PKM, new()
     {
         try
         {
-            await AnnounceBotStatus("Online", EmbedColorOption.Green);
+            await AnnounceBotStatus("En línea", EmbedColorOption.Green);
         }
         catch (Exception ex)
         {
-            LogUtil.LogText($"HandleBotStart: Exception when announcing bot start: {ex.Message}");
+            LogUtil.LogText($"HandleBotStart: Excepción al anunciar el inicio del bot: {ex.Message}");
         }
     }
 
@@ -347,11 +347,11 @@ public sealed class SysCord<T> where T : PKM, new()
     {
         try
         {
-            await AnnounceBotStatus("Offline", EmbedColorOption.Red);
+            await AnnounceBotStatus("Desconectado", EmbedColorOption.Red);
         }
         catch (Exception ex)
         {
-            LogUtil.LogText($"HandleBotStop: Exception when announcing bot stop: {ex.Message}");
+            LogUtil.LogText($"HandleBotStop: Excepción al anunciar la detención del bot: {ex.Message}");
         }
     }
 
@@ -380,7 +380,7 @@ public sealed class SysCord<T> where T : PKM, new()
         // Hook up the recovery events
         RecoveryNotificationHelper.HookRecoveryEvents(recoveryService);
         
-        LogUtil.LogInfo("Recovery notifications initialized for Discord", "Recovery");
+        LogUtil.LogInfo("Notificaciones de recuperación inicializadas para Discord", "Recovery");
     }
 
     public async Task InitCommands()
@@ -437,9 +437,9 @@ public sealed class SysCord<T> where T : PKM, new()
         catch (OperationCanceledException)
         {
             // Handle the cancellation and perform cleanup tasks
-            LogUtil.LogText("MainAsync: Bot is disconnecting due to cancellation...");
-            await AnnounceBotStatus("Offline", EmbedColorOption.Red);
-            LogUtil.LogText("MainAsync: Cleanup tasks completed.");
+            LogUtil.LogText("MainAsync: El bot está desconectándose debido a la cancelación...");
+            await AnnounceBotStatus("Desconectado", EmbedColorOption.Red);
+            LogUtil.LogText("MainAsync: Tareas de limpieza completadas.");
         }
         finally
         {
@@ -505,16 +505,16 @@ public sealed class SysCord<T> where T : PKM, new()
 
         var responses = new List<string>
         {
-            "You're welcome! ❤️",
-            "No problem at all!",
-            "Anytime, glad to help!",
-            "It's my pleasure! ❤️",
-            "Not a problem! You're welcome!",
-            "Always here to help!",
-            "Glad I could assist!",
-            "Happy to serve!",
-            "Of course! You're welcome!",
-            "Sure thing!"
+            "¡De nada! ❤️",
+            "¡No hay problema!",
+            "¡Siempre aquí para ayudar!",
+            "¡Es un placer! ❤️",
+            "¡No hay problema! ¡De nada!",
+            "¡Siempre aquí para ayudar!",
+            "¡Me alegra haber podido ayudar!",
+            "¡Siempre aquí para servir!",
+            "¡Por supuesto! ¡De nada!",
+            "¡Claro que sí!"
         };
 
         var randomResponse = responses[new Random().Next(responses.Count)];
@@ -567,7 +567,7 @@ public sealed class SysCord<T> where T : PKM, new()
                 return;
 
             string thanksText = msg.Content.ToLower();
-            if (SysCordSettings.Settings.ReplyToThanks && (thanksText.Contains("thank") || thanksText.Contains("thx")))
+            if (SysCordSettings.Settings.ReplyToThanks && (thanksText.Contains("thank") || thanksText.Contains("gracias")))
             {
                 await SysCord<T>.RespondToThanksMessage(msg).ConfigureAwait(false);
                 return;
@@ -590,7 +590,7 @@ public sealed class SysCord<T> where T : PKM, new()
                 var command = content.Split(' ')[0][1..];
                 if (_validCommands.Contains(command))
                 {
-                    await SafeSendMessageAsync(msg.Channel, $"Incorrect prefix! The correct command is **{correctPrefix}{command}**").ConfigureAwait(false);
+                    await SafeSendMessageAsync(msg.Channel, $"¡Prefijo incorrecto! El comando correcto es **{correctPrefix}{command}**").ConfigureAwait(false);
                     return;
                 }
             }
@@ -602,11 +602,11 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions) // Missing Permissions
         {
-            await Log(new LogMessage(LogSeverity.Warning, "Command", $"Missing permissions to handle a message in channel {arg.Channel.Name}")).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Warning, "Command", $"Permisos insuficientes para manejar un mensaje en el canal {arg.Channel.Name}")).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await Log(new LogMessage(LogSeverity.Error, "Command", $"Unhandled exception in HandleMessageAsync: {ex.Message}", ex)).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Error, "Command", $"Excepción no controlada en HandleMessageAsync: {ex.Message}", ex)).ConfigureAwait(false);
         }
         finally
         {
@@ -614,9 +614,9 @@ public sealed class SysCord<T> where T : PKM, new()
             if (stopwatch.ElapsedMilliseconds > 1000) // Log if processing takes more than 1 second
             {
                 await Log(new LogMessage(LogSeverity.Warning, "Gateway",
-                    $"A MessageReceived handler is blocking the gateway task. " +
-                    $"Method: HandleMessageAsync, Execution Time: {stopwatch.ElapsedMilliseconds}ms, " +
-                    $"Message Content: {arg.Content[..Math.Min(arg.Content.Length, 100)]}...")).ConfigureAwait(false);
+                    $"Un controlador de MessageReceived está bloqueando la tarea del gateway. " +
+                    $"Método: HandleMessageAsync, Tiempo de Ejecución: {stopwatch.ElapsedMilliseconds}ms, " +
+                    $"Contenido del Mensaje: {arg.Content[..Math.Min(arg.Content.Length, 100)]}...")).ConfigureAwait(false);
             }
         }
     }
@@ -640,7 +640,7 @@ public sealed class SysCord<T> where T : PKM, new()
         TradeStartModule<T>.RestoreTradeStarting(_client);
 
         // Don't let it load more than once in case of Discord hiccups.
-        await Log(new LogMessage(LogSeverity.Info, "LoadLoggingAndEcho()", "Logging and Echo channels loaded!")).ConfigureAwait(false);
+        await Log(new LogMessage(LogSeverity.Info, "LoadLoggingAndEcho()", "¡Canales de Logging y Echo cargados!")).ConfigureAwait(false);
         MessageChannelsLoaded = true;
 
         var game = Hub.Config.Discord.BotGameStatus;
@@ -714,26 +714,26 @@ public sealed class SysCord<T> where T : PKM, new()
             // Check if the user is in the bannedIDs list
             if (msg.Author is SocketGuildUser user && AbuseSettings.BannedIDs.List.Any(z => z.ID == user.Id))
             {
-                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "You are banned from using this bot.").ConfigureAwait(false);
+                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "Estás baneado de usar este bot.").ConfigureAwait(false);
                 return true;
             }
 
             var mgr = Manager;
             if (!mgr.CanUseCommandUser(msg.Author.Id))
             {
-                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "You are not permitted to use this command.").ConfigureAwait(false);
+                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "No tienes permiso para usar este comando.").ConfigureAwait(false);
                 return true;
             }
 
             if (!mgr.CanUseCommandChannel(msg.Channel.Id) && msg.Author.Id != mgr.Owner)
             {
                 if (Hub.Config.Discord.ReplyCannotUseCommandInChannel)
-                    await SysCord<T>.SafeSendMessageAsync(msg.Channel, "You can't use that command here.").ConfigureAwait(false);
+                    await SysCord<T>.SafeSendMessageAsync(msg.Channel, "No puedes usar ese comando aquí.").ConfigureAwait(false);
                 return true;
             }
 
             var guild = msg.Channel is SocketGuildChannel g ? g.Guild.Name : "Unknown Guild";
-            await Log(new LogMessage(LogSeverity.Info, "Command", $"Executing command from {guild}#{msg.Channel.Name}:@{msg.Author.Username}. Content: {msg}")).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Info, "Command", $"Ejecutando comando desde {guild}#{msg.Channel.Name}:@{msg.Author.Username}. Contenido: {msg}")).ConfigureAwait(false);
 
             var result = await _commands.ExecuteAsync(context, pos, _services).ConfigureAwait(false);
 
@@ -747,7 +747,7 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            await Log(new LogMessage(LogSeverity.Error, "Command", $"Error executing command: {ex.Message}", ex)).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Error, "Command", $"Error ejecutando comando: {ex.Message}", ex)).ConfigureAwait(false);
             return false;
         }
     }
@@ -760,11 +760,11 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions) // Missing Permissions
         {
-            await Log(new LogMessage(LogSeverity.Warning, "Command", $"Missing permissions to send message in channel {channel.Name}")).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Warning, "Command", $"Permisos insuficientes para enviar mensaje en el canal {channel.Name}")).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await Log(new LogMessage(LogSeverity.Error, "Command", $"Error sending message: {ex.Message}", ex)).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Error, "Command", $"Error enviando mensaje: {ex.Message}", ex)).ConfigureAwait(false);
         }
     }
 }
