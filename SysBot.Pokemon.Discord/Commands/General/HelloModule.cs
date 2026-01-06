@@ -9,7 +9,7 @@ namespace SysBot.Pokemon.Discord
     {
         [Command("hello")]
         [Alias("hi")]
-        [Summary("Say hello to the bot and get a response.")]
+        [Summary("Di hola al bot y recibe una respuesta.")]
         public async Task PingAsync()
         {
             var str = SysCordSettings.Settings.HelloResponse;
@@ -27,7 +27,7 @@ namespace SysBot.Pokemon.Discord
             }
 
             var embedBuilder = new EmbedBuilder()
-                .WithTitle("Hello!")
+                .WithTitle("¡Hola!")
                 .WithDescription(msg)
                 .WithColor(Color.Green);
 

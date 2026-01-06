@@ -16,9 +16,9 @@ namespace SysBot.Pokemon.Discord;
 // Copyright 2017, Christopher F. <foxbot@protonmail.com>
 public class InfoModule : ModuleBase<SocketCommandContext>
 {
-    private const string detail = "I am an open-source Pokemon Trading Discord bot developed by hexbyt3.";
+    private const string detail = "Soy un bot de intercambio de Pokémon en Discord de código abierto desarrollado por hexbyt3 y traducido por miguelbaizabal.";
 
-    private const string repo = "https://github.com/hexbyt3/PokeBot";
+    private const string repo = "https://github.com/miguelbaizabal/SysBot.NET/tree/pokebot-es";
 
     [Command("info")]
     [Alias("about", "whoami", "owner")]
@@ -32,27 +32,27 @@ public class InfoModule : ModuleBase<SocketCommandContext>
             Description = detail,
         };
 
-        builder.AddField("Info",
-            $"- [Source Code]({repo})\n" +
-            $"- {Format.Bold("Owner")}: {app.Owner} ({app.Owner.Id})\n" +
-            $"- {Format.Bold("Library")}: Discord.Net ({DiscordConfig.Version})\n" +
-            $"- {Format.Bold("Uptime")}: {GetUptime()}\n" +
+        builder.AddField("Información",
+            $"- [Código Fuente]({repo})\n" +
+            $"- {Format.Bold("Propietario")}: {app.Owner} ({app.Owner.Id})\n" +
+            $"- {Format.Bold("Librería")}: Discord.Net ({DiscordConfig.Version})\n" +
+            $"- {Format.Bold("Tiempo en línea")}: {GetUptime()}\n" +
             $"- {Format.Bold("Runtime")}: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.ProcessArchitecture} " +
             $"({RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture})\n" +
-            $"- {Format.Bold("Buildtime")}: {GetVersionInfo("SysBot.Base", false)}\n" +
-            $"- {Format.Bold("SysBot+ Version")}: {PokeBot.Version}\n" +
-            $"- {Format.Bold("Core Version")}: {GetVersionInfo("PKHeX.Core")}\n" +
-            $"- {Format.Bold("AutoLegality Version")}: {GetVersionInfo("PKHeX.Core.AutoMod")}\n"
+            $"- {Format.Bold("Fecha de compilación")}: {GetVersionInfo("SysBot.Base", false)}\n" +
+            $"- {Format.Bold("Versión de SysBot+")}: {PokeBot.Version}\n" +
+            $"- {Format.Bold("Versión del Core")}: {GetVersionInfo("PKHeX.Core")}\n" +
+            $"- {Format.Bold("Versión de AutoLegality")}: {GetVersionInfo("PKHeX.Core.AutoMod")}\n"
         );
 
-        builder.AddField("Stats",
-            $"- {Format.Bold("Heap Size")}: {GetHeapSize()}MiB\n" +
-            $"- {Format.Bold("Guilds")}: {Context.Client.Guilds.Count}\n" +
-            $"- {Format.Bold("Channels")}: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
-            $"- {Format.Bold("Users")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n"
+        builder.AddField("Estadísticas",
+            $"- {Format.Bold("Tamaño del Heap")}: {GetHeapSize()}MiB\n" +
+            $"- {Format.Bold("Servidores")}: {Context.Client.Guilds.Count}\n" +
+            $"- {Format.Bold("Canales")}: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
+            $"- {Format.Bold("Usuarios")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n"
         );
 
-        await ReplyAsync("Here's a bit about me!", embed: builder.Build()).ConfigureAwait(false);
+        await ReplyAsync("¡Aquí tienes un poco sobre mí!", embed: builder.Build()).ConfigureAwait(false);
     }
 
     private static string GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2).ToString(CultureInfo.CurrentCulture);
