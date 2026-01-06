@@ -9,34 +9,34 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Clears and toggles Queue features.")]
+[Summary("Limpia y alterna las funciones de cola.")]
 public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
     [Command("queueMode")]
     [Alias("qm")]
-    [Summary("Changes how queueing is controlled (manual/threshold/interval).")]
+    [Summary("Cambia cómo se controla el sistema de cola (manual/threshold/interval).")]
     [RequireSudo]
-    public async Task ChangeQueueModeAsync([Summary("Queue mode")] QueueOpening mode)
+    public async Task ChangeQueueModeAsync([Summary("Modo de cola")] QueueOpening mode)
     {
         SysCord<T>.Runner.Hub.Config.Queues.QueueToggleMode = mode;
-        await ReplyAsync($"Changed queue mode to {mode}.").ConfigureAwait(false);
+        await ReplyAsync($"Modo de cola cambiado a {mode}.").ConfigureAwait(false);
     }
 
     [Command("queueClearAll")]
     [Alias("qca", "tca")]
-    [Summary("Clears all users from the trade queues.")]
+    [Summary("Limpia todos los usuarios de las colas de intercambio.")]
     [RequireSudo]
     public async Task ClearAllTradesAsync()
     {
         Info.ClearAllQueues();
-        await ReplyAsync("Cleared all in the queue.").ConfigureAwait(false);
+        await ReplyAsync("Se ha limpiado la cola de intercambio.").ConfigureAwait(false);
     }
 
     [Command("queueClear")]
     [Alias("qc", "tc")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("Limpia al usuario de las colas de intercambio. No eliminará al usuario si está siendo procesado.")]
     public async Task ClearTradeAsync()
     {
         string msg = ClearTrade(Context.User.Id);
@@ -45,7 +45,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueClearUser")]
     [Alias("qcu", "tcu")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("Limpia al usuario de las colas de intercambio. No eliminará al usuario si está siendo procesado.")]
     [RequireSudo]
     public async Task ClearTradeUserAsync([Summary("Discord user ID")] ulong id)
     {
@@ -55,9 +55,9 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueClearUser")]
     [Alias("qcu", "tcu")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("Limpia al usuario de las colas de intercambio. No eliminará al usuario si está siendo procesado.")]
     [RequireSudo]
-    public async Task ClearTradeUserAsync([Summary("Username of the person to clear")] string _)
+    public async Task ClearTradeUserAsync([Summary("Nombre de usuario de la persona a limpiar")] string _)
     {
         foreach (var user in Context.Message.MentionedUsers)
         {
@@ -68,14 +68,14 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueClearUser")]
     [Alias("qcu", "tcu")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("Limpia al usuario de las colas de intercambio. No eliminará al usuario si está siendo procesado.")]
     [RequireSudo]
     public async Task ClearTradeUserAsync()
     {
         var users = Context.Message.MentionedUsers;
         if (users.Count == 0)
         {
-            await ReplyAsync("No users mentioned").ConfigureAwait(false);
+            await ReplyAsync("Ningún usuario mencionado").ConfigureAwait(false);
             return;
         }
         foreach (var u in users)
@@ -84,7 +84,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("deleteTradeCode")]
     [Alias("dtc")]
-    [Summary("Deletes the stored trade code for the user.")]
+    [Summary("Elimina el código de intercambio almacenado para el usuario.")]
     public async Task DeleteTradeCodeAsync()
     {
         var userID = Context.User.Id;
@@ -94,7 +94,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueStatus")]
     [Alias("qs", "ts")]
-    [Summary("Checks the user's position in the queue.")]
+    [Summary("Verifica la posición del usuario en la cola.")]
     public async Task GetTradePositionAsync()
     {
         var userID = Context.User.Id;
@@ -108,7 +108,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         }
         else
         {
-            msg = Context.User.Mention + " - You are not currently in the queue.";
+            msg = Context.User.Mention + " - No estás actualmente en la cola.";
         }
 
         await ReplyAndDeleteAsync(msg, 5, Context.Message).ConfigureAwait(false);
@@ -116,7 +116,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueList")]
     [Alias("ql")]
-    [Summary("Shows a nice embed of the current queue with species, trade type, and username.")]
+    [Summary("Muestra una lista embebida de la cola actual con especie, tipo de intercambio y nombre de usuario.")]
     [RequireSudo]
     public async Task ListUserQueue()
     {
@@ -124,12 +124,12 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (!queue.Any())
         {
-            await ReplyAsync("Queue list is empty.").ConfigureAwait(false);
+            await ReplyAsync("La lista de cola está vacía.").ConfigureAwait(false);
             return;
         }
 
         var embedBuilder = new EmbedBuilder()
-            .WithTitle($"📋 Current Trade Queue ({queue.Count()} users)")
+            .WithTitle($"📋 Cola de intercambio actual ({queue.Count()} usuarios)")
             .WithColor(Color.Blue)
             .WithCurrentTimestamp();
 
@@ -148,7 +148,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         // Discord embeds have a 4096 character limit for description
         if (description.Length > 4000)
         {
-            description = description.Substring(0, 4000) + "\n... (list truncated)";
+            description = description.Substring(0, 4000) + "\n... (lista truncada)";
         }
 
         embedBuilder.WithDescription(description);
@@ -158,14 +158,14 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueToggle")]
     [Alias("qt", "tt")]
-    [Summary("Toggles on/off the ability to join the trade queue.")]
+    [Summary("Activa o desactiva la capacidad de unirse a la cola de intercambio.")]
     [RequireSudo]
     public Task ToggleQueueTradeAsync()
     {
         var state = Info.ToggleQueue();
         var msg = state
-            ? "Users are now able to join the trade queue."
-            : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+            ? "Los usuarios ahora pueden unirse a la cola de intercambio."
+            : "Configuración de cola cambiada: **Los usuarios NO pueden unirse a la cola hasta que se active de nuevo.**";
 
         return Context.Channel.EchoAndReply(msg);
     }
@@ -182,19 +182,19 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         bool success = tradeCodeStorage.DeleteTradeCode(userID);
 
         if (success)
-            return "Your stored trade code has been deleted successfully.";
+            return "Tu código de intercambio almacenado ha sido eliminado con éxito.";
         else
-            return "No stored trade code found for your user ID.";
+            return "No se encontró un código de intercambio almacenado para tu ID de usuario.";
     }
 
     private static string GetClearTradeMessage(QueueResultRemove result)
     {
         return result switch
         {
-            QueueResultRemove.Removed => "Removed your pending trades from the queue.",
-            QueueResultRemove.CurrentlyProcessing => "Looks like you have trades currently being processed! Did not remove those from the queue.",
-            QueueResultRemove.CurrentlyProcessingRemoved => "Looks like you have trades currently being processed! Removed other pending trades from the queue.",
-            QueueResultRemove.NotInQueue => "Sorry, you are not currently in the queue.",
+            QueueResultRemove.Removed => "Eliminaste tus intercambios pendientes de la cola.",
+            QueueResultRemove.CurrentlyProcessing => "¡Parece que tienes intercambios actualmente en proceso! No se eliminaron esos de la cola.",
+            QueueResultRemove.CurrentlyProcessingRemoved => "¡Parece que tienes intercambios actualmente en proceso! Se eliminaron otros intercambios pendientes de la cola.",
+            QueueResultRemove.NotInQueue => "Lo siento, no estás actualmente en la cola.",
             _ => throw new ArgumentOutOfRangeException(nameof(result), result, null),
         };
     }
@@ -233,8 +233,8 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("changeTradeCode")]
     [Alias("ctc")]
-    [Summary("Changes the user's trade code if trade code storage is turned on.")]
-    public async Task ChangeTradeCodeAsync([Summary("New 8-digit trade code")] string newCode)
+    [Summary("Cambia el código de intercambio del usuario si el almacenamiento de códigos está activo.")]
+    public async Task ChangeTradeCodeAsync([Summary("Nuevo código de intercambio de 8 dígitos")] string newCode)
     {
         // Delete user's message immediately to protect the trade code
         await Context.Message.DeleteAsync().ConfigureAwait(false);
@@ -253,17 +253,17 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             int code = int.Parse(newCode);
             if (tradeCodeStorage.UpdateTradeCode(userID, code))
             {
-                await SendTemporaryMessageAsync("Your trade code has been successfully updated.").ConfigureAwait(false);
+                await SendTemporaryMessageAsync("Tu código de intercambio ha sido actualizado con éxito.").ConfigureAwait(false);
             }
             else
             {
-                await SendTemporaryMessageAsync("You don't have a trade code set. Use the trade command to generate one first.").ConfigureAwait(false);
+                await SendTemporaryMessageAsync("No tienes un código de intercambio establecido. Usa el comando trade para generar uno primero.").ConfigureAwait(false);
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error changing trade code for user {userID}: {ex.Message}", nameof(QueueModule<T>));
-            await SendTemporaryMessageAsync("An error occurred while changing your trade code. Please try again later.").ConfigureAwait(false);
+            LogUtil.LogError($"Error al cambiar el código de intercambio para el usuario {userID}: {ex.Message}", nameof(QueueModule<T>));
+            await SendTemporaryMessageAsync("Ocurrió un error al cambiar tu código de intercambio. Por favor, inténtalo de nuevo más tarde.").ConfigureAwait(false);
         }
     }
 
@@ -283,19 +283,19 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (code.Length != 8)
         {
-            errorMessage = "Trade code must be exactly 8 digits long.";
+            errorMessage = "El código de intercambio debe tener exactamente 8 dígitos.";
             return false;
         }
 
         if (!Regex.IsMatch(code, @"^\d{8}$"))
         {
-            errorMessage = "Trade code must contain only digits.";
+            errorMessage = "El código de intercambio debe contener solo dígitos.";
             return false;
         }
 
         if (QueueModule<T>.IsEasilyGuessableCode(code))
         {
-            errorMessage = "Trade code is too easy to guess. Please choose a more complex code.";
+            errorMessage = "El código de intercambio es demasiado fácil de adivinar. Por favor, elige un código más complejo.";
             return false;
         }
 

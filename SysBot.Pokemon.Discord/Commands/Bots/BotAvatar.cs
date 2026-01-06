@@ -11,7 +11,7 @@ namespace SysBot.Pokemon.Discord
     {
         [Command("setavatar")]
         [Alias("botavatar", "changeavatar", "sa", "ba")]
-        [Summary("Sets the bot's avatar to a specified GIF.")]
+        [Summary("Establece el avatar del bot a un GIF especificado.")]
         [RequireOwner]
         public async Task SetAvatarAsync()
         {
@@ -19,7 +19,7 @@ namespace SysBot.Pokemon.Discord
 
             if (userMessage.Attachments.Count == 0)
             {
-                var reply = await ReplyAsync("Please attach a GIF image to set as the avatar."); // standard (boring) images can be set via dashboard
+                var reply = await ReplyAsync("Por favor adjunta una imagen GIF para establecer como avatar."); // standard (boring) images can be set via dashboard
                 await Task.Delay(60000);
                 await userMessage.DeleteAsync();
                 await reply.DeleteAsync();
@@ -28,7 +28,7 @@ namespace SysBot.Pokemon.Discord
             var attachment = userMessage.Attachments.First();
             if (!attachment.Filename.EndsWith(".gif"))
             {
-                var reply = await ReplyAsync("Please provide a GIF image.");
+                var reply = await ReplyAsync("Por favor proporciona una imagen GIF.");
                 await Task.Delay(60000);
                 await userMessage.DeleteAsync();
                 await reply.DeleteAsync();
@@ -42,7 +42,7 @@ namespace SysBot.Pokemon.Discord
             var image = new Image(ms);
             await Context.Client.CurrentUser.ModifyAsync(user => user.Avatar = image);
 
-            var successReply = await ReplyAsync("Avatar updated successfully!");
+            var successReply = await ReplyAsync("Avatar actualizado correctamente!");
             await Task.Delay(60000);
             await userMessage.DeleteAsync();
             await successReply.DeleteAsync();

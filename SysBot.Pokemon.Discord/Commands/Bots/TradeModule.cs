@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Queues new Link Code trades")]
+[Summary("Añade a la cola nuevos intercambios en línea")]
 public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
@@ -21,7 +21,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("medals")]
     [Alias("ml")]
-    [Summary("Shows your current trade count and medal status")]
+    [Summary("Muestra tu cantidad actual de intercambios y estado de medallas")]
     public async Task ShowMedalsCommand()
     {
         var tradeCodeStorage = new TradeCodeStorage();
@@ -29,7 +29,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (totalTrades == 0)
         {
-            await ReplyAsync($"{Context.User.Username}, you haven't made any trades yet. Start trading to earn your first medal!");
+            await ReplyAsync($"{Context.User.Username}, aún no has hecho ningún intercambio. ¡Comienza a intercambiar para ganar tu primera medalla!");
             return;
         }
 
@@ -44,9 +44,9 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("trade")]
     [Alias("t")]
-    [Summary("Makes the bot trade you a Pokémon converted from the provided Showdown Set.")]
+    [Summary("Hace que el bot te intercambie un Pokémon convertido desde el conjunto de Showdown proporcionado.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public Task TradeAsync([Summary("Showdown Set")][Remainder] string content)
+    public Task TradeAsync([Summary("Conjunto de Showdown")][Remainder] string content)
     {
         var userID = Context.User.Id;
         var code = Info.GetRandomTradeCode(userID);
@@ -55,16 +55,16 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("trade")]
     [Alias("t")]
-    [Summary("Makes the bot trade you a Pokémon converted from the provided Showdown Set.")]
+    [Summary("Hace que el bot te intercambie un Pokémon convertido desde el conjunto de Showdown proporcionado.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public Task TradeAsync([Summary("Trade Code")] int code, [Summary("Showdown Set")][Remainder] string content)
+    public Task TradeAsync([Summary("Código de intercambio")] int code, [Summary("Conjunto de Showdown")][Remainder] string content)
         => ProcessTradeAsync(code, content);
 
     [Command("trade")]
     [Alias("t")]
-    [Summary("Makes the bot trade you the provided Pokémon file.")]
+    [Summary("Hace que el bot te intercambie el archivo Pokémon proporcionado.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public Task TradeAsyncAttach([Summary("Trade Code")] int code, [Summary("Ignore AutoOT")] bool ignoreAutoOT = false)
+    public Task TradeAsyncAttach([Summary("Código de intercambio")] int code, [Summary("Ignorar AutoOT")] bool ignoreAutoOT = false)
     {
         var sig = Context.User.GetFavor();
         return ProcessTradeAttachmentAsync(code, sig, Context.User, ignoreAutoOT: ignoreAutoOT);
@@ -72,9 +72,9 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("trade")]
     [Alias("t")]
-    [Summary("Makes the bot trade you the attached file.")]
+    [Summary("Hace que el bot te intercambie el archivo Pokémon adjunto.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public async Task TradeAsyncAttach([Summary("Ignore AutoOT")] bool ignoreAutoOT = false)
+    public async Task TradeAsyncAttach([Summary("Ignorar AutoOT")] bool ignoreAutoOT = false)
     {
         var userID = Context.User.Id;
         var code = Info.GetRandomTradeCode(userID);
@@ -91,9 +91,9 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("hidetrade")]
     [Alias("ht")]
-    [Summary("Makes the bot trade you a Pokémon without showing trade embed details.")]
+    [Summary("Hace que el bot te intercambie un Pokémon sin mostrar detalles del embed de intercambio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public Task HideTradeAsync([Summary("Showdown Set")][Remainder] string content)
+    public Task HideTradeAsync([Summary("Conjunto de Showdown")][Remainder] string content)
     {
         var userID = Context.User.Id;
         var code = Info.GetRandomTradeCode(userID);
@@ -102,16 +102,16 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("hidetrade")]
     [Alias("ht")]
-    [Summary("Makes the bot trade you a Pokémon without showing trade embed details.")]
+    [Summary("Hace que el bot te intercambie un Pokémon sin mostrar detalles del embed de intercambio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public Task HideTradeAsync([Summary("Trade Code")] int code, [Summary("Showdown Set")][Remainder] string content)
+    public Task HideTradeAsync([Summary("Código de intercambio")] int code, [Summary("Conjunto de Showdown")][Remainder] string content)
         => ProcessTradeAsync(code, content, isHiddenTrade: true);
 
     [Command("hidetrade")]
     [Alias("ht")]
-    [Summary("Makes the bot trade you the provided file without showing trade embed details.")]
+    [Summary("Hace que el bot te intercambie el archivo Pokémon proporcionado sin mostrar detalles del embed de intercambio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public Task HideTradeAsyncAttach([Summary("Trade Code")] int code, [Summary("Ignore AutoOT")] bool ignoreAutoOT = false)
+    public Task HideTradeAsyncAttach([Summary("Código de intercambio")] int code, [Summary("Ignorar AutoOT")] bool ignoreAutoOT = false)
     {
         var sig = Context.User.GetFavor();
         return ProcessTradeAttachmentAsync(code, sig, Context.User, isHiddenTrade: true, ignoreAutoOT: ignoreAutoOT);
@@ -119,9 +119,9 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("hidetrade")]
     [Alias("ht")]
-    [Summary("Makes the bot trade you the attached file without showing trade embed details.")]
+    [Summary("Hace que el bot te intercambie el archivo Pokémon adjunto sin mostrar detalles del embed de intercambio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public async Task HideTradeAsyncAttach([Summary("Ignore AutoOT")] bool ignoreAutoOT = false)
+    public async Task HideTradeAsyncAttach([Summary("Ignorar AutoOT")] bool ignoreAutoOT = false)
     {
         var userID = Context.User.Id;
         var code = Info.GetRandomTradeCode(userID);
@@ -135,19 +135,19 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("tradeUser")]
     [Alias("tu", "tradeOther")]
-    [Summary("Makes the bot trade the mentioned user the attached file.")]
+    [Summary("Hace que el bot intercambie al usuario mencionado el archivo Pokémon adjunto.")]
     [RequireSudo]
-    public async Task TradeAsyncAttachUser([Summary("Trade Code")] int code, [Remainder] string _)
+    public async Task TradeAsyncAttachUser([Summary("Código de intercambio")] int code, [Remainder] string _)
     {
         if (Context.Message.MentionedUsers.Count > 1)
         {
-            await ReplyAsync("Too many mentions. Queue one user at a time.").ConfigureAwait(false);
+            await ReplyAsync("Demasiadas menciones. Coloca un usuario a la vez.").ConfigureAwait(false);
             return;
         }
 
         if (Context.Message.MentionedUsers.Count == 0)
         {
-            await ReplyAsync("A user must be mentioned in order to do this.").ConfigureAwait(false);
+            await ReplyAsync("Un usuario debe ser mencionado para hacer esto.").ConfigureAwait(false);
             return;
         }
 
@@ -158,7 +158,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("tradeUser")]
     [Alias("tu", "tradeOther")]
-    [Summary("Makes the bot trade the mentioned user the attached file.")]
+    [Summary("Hace que el bot intercambie al usuario mencionado el archivo Pokémon adjunto.")]
     [RequireSudo]
     public Task TradeAsyncAttachUser([Remainder] string _)
     {
@@ -173,7 +173,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("egg")]
     [Alias("Egg")]
-    [Summary("Trades an egg generated from the provided Pokémon name.")]
+    [Summary("Intercambia un huevo generado a partir del nombre del Pokémon proporcionado.")]
     public async Task TradeEgg([Remainder] string egg)
     {
         var userID = Context.User.Id;
@@ -183,15 +183,15 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("egg")]
     [Alias("Egg")]
-    [Summary("Trades an egg generated from the provided Pokémon name.")]
+    [Summary("Intercambia un huevo generado a partir del nombre del Pokémon proporcionado.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public async Task TradeEggAsync([Summary("Trade Code")] int code, [Summary("Showdown Set")][Remainder] string content)
+    public async Task TradeEggAsync([Summary("Código de intercambio")] int code, [Summary("Set de Showdown")][Remainder] string content)
     {
         var userID = Context.User.Id;
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no puede ser cancelado. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -211,8 +211,8 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                 if (result != LegalizationResult.Regenerated)
                 {
                     var reason = result == LegalizationResult.Timeout
-                        ? "Egg generation took too long."
-                        : "Failed to generate egg from the provided set.";
+                        ? "La generación del huevo tomó demasiado tiempo."
+                        : "No se pudo generar el huevo a partir del set proporcionado.";
                     await Helpers<T>.ReplyAndDeleteAsync(Context, reason, 2);
                     return;
                 }
@@ -220,7 +220,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                 pkm = EntityConverter.ConvertToType(pkm, typeof(T), out _) ?? pkm;
                 if (pkm is not T pk)
                 {
-                    await Helpers<T>.ReplyAndDeleteAsync(Context, "Oops! I wasn't able to create an egg for that.", 2);
+                    await Helpers<T>.ReplyAndDeleteAsync(Context, "Oops! No fui capaz de crear un huevo para ese Pokémon.", 2);
                     return;
                 }
 
@@ -230,7 +230,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             catch (Exception ex)
             {
                 LogUtil.LogSafe(ex, nameof(TradeModule<T>));
-                await Helpers<T>.ReplyAndDeleteAsync(Context, "An error occurred while processing the request.", 2);
+                await Helpers<T>.ReplyAndDeleteAsync(Context, "Ocurrió un error mientras se procesaba la solicitud.", 2);
             }
         });
 
@@ -240,7 +240,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("fixOT")]
     [Alias("fix", "f")]
-    [Summary("Fixes OT and Nickname of a Pokémon you show via Link Trade if an advert is detected.")]
+    [Summary("Corrige el OT y el apodo de un Pokémon que muestras a través del intercambio en línea si se detecta un anuncio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesFixOT))]
     public async Task FixAdOT()
     {
@@ -248,7 +248,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no puede ser cancelado. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -258,15 +258,15 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("fixOT")]
     [Alias("fix", "f")]
-    [Summary("Fixes OT and Nickname of a Pokémon you show via Link Trade if an advert is detected.")]
+    [Summary("Corrige el OT y el apodo de un Pokémon que muestras a través del intercambio en línea si se detecta un anuncio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesFixOT))]
-    public async Task FixAdOT([Summary("Trade Code")] int code)
+    public async Task FixAdOT([Summary("Código de intercambio")] int code)
     {
         var userID = Context.User.Id;
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no puede ser cancelado. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -288,15 +288,15 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("dittoTrade")]
     [Alias("dt", "ditto")]
-    [Summary("Makes the bot trade you a Ditto with a requested stat spread and language.")]
-    public async Task DittoTrade([Summary("A combination of \"ATK/SPA/SPE\" or \"6IV\"")] string keyword,
-        [Summary("Language")] string language, [Summary("Nature")] string nature)
+    [Summary("Hace que el bot te intercambie un Ditto con una distribución de estadísticas e idioma solicitados.")]
+    public async Task DittoTrade([Summary("Una combinación de \"ATK/SPA/SPE\" o \"6IV\"")] string keyword,
+        [Summary("Idioma")] string language, [Summary("Naturaleza")] string nature)
     {
         var userID = Context.User.Id;
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no puede ser cancelado. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -306,16 +306,16 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("dittoTrade")]
     [Alias("dt", "ditto")]
-    [Summary("Makes the bot trade you a Ditto with a requested stat spread and language.")]
-    public async Task DittoTrade([Summary("Trade Code")] int code,
-        [Summary("A combination of \"ATK/SPA/SPE\" or \"6IV\"")] string keyword,
-        [Summary("Language")] string language, [Summary("Nature")] string nature)
+    [Summary("Hace que el bot te intercambie un Ditto con una distribución de estadísticas e idioma solicitados.")]
+    public async Task DittoTrade([Summary("Código de intercambio")] int code,
+        [Summary("Una combinación de \"ATK/SPA/SPE\" o \"6IV\"")] string keyword,
+        [Summary("Idioma")] string language, [Summary("Naturaleza")] string nature)
     {
         var userID = Context.User.Id;
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no puede ser cancelado. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -328,19 +328,19 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (!Enum.TryParse(language, true, out LanguageID lang))
         {
-            await Helpers<T>.ReplyAndDeleteAsync(Context, $"Couldn't recognize language: {language}.", 2);
+            await Helpers<T>.ReplyAndDeleteAsync(Context, $"No se reconoce el idioma: {language}.", 2);
             return;
         }
 
         nature = nature.Trim()[..1].ToUpper() + nature.Trim()[1..].ToLower();
-        var set = new ShowdownSet($"{keyword}(Ditto)\nLanguage: {lang}\nNature: {nature}");
+        var set = new ShowdownSet($"{keyword}(Ditto)\nIdioma: {lang}\nNaturaleza: {nature}");
         var template = AutoLegalityWrapper.GetTemplate(set);
         var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
         var pkm = sav.GetLegal(template, out var result);
 
         if (pkm == null)
         {
-            await ReplyAsync("Set took too long to legalize.");
+            await ReplyAsync("El conjunto tomó demasiado tiempo para legalizarse.");
             return;
         }
 
@@ -349,8 +349,8 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (pkm is not T pk || !la.Valid)
         {
-            var reason = result == "Timeout" ? "That set took too long to generate." : "I wasn't able to create something from that.";
-            var imsg = $"Oops! {reason} Here's my best attempt for that Ditto!";
+            var reason = result == "Timeout" ? "Ese conjunto tomó demasiado tiempo para generarse." : "No pude crear algo a partir de eso.";
+            var imsg = $"¡Oops! {reason} ¡Aquí está mi mejor intento para ese Ditto!";
             await Context.Channel.SendPKMAsync(pkm, imsg).ConfigureAwait(false);
             return;
         }
@@ -362,7 +362,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         {
             if (TradeExtensions<T>.HasAdName(pk, out string ad))
             {
-                await Helpers<T>.ReplyAndDeleteAsync(Context, "Detected Adname in the Pokémon's name or trainer name, which is not allowed.", 5);
+                await Helpers<T>.ReplyAndDeleteAsync(Context, "Adname detectado en el nombre del Pokémon o del entrenador, lo cual no está permitido.", 5);
                 return;
             }
         }
@@ -377,14 +377,14 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("itemTrade")]
     [Alias("it", "item")]
-    [Summary("Makes the bot trade you a Pokémon holding the requested item.")]
+    [Summary("Hace que el bot te intercambie un Pokémon que lleva el objeto solicitado.")]
     public async Task ItemTrade([Remainder] string item)
     {
         var userID = Context.User.Id;
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no puede ser cancelado. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -394,14 +394,14 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("itemTrade")]
     [Alias("it", "item")]
-    [Summary("Makes the bot trade you a Pokémon holding the requested item.")]
-    public async Task ItemTrade([Summary("Trade Code")] int code, [Remainder] string item)
+    [Summary("Hace que el bot te intercambie un Pokémon que lleva el objeto solicitado.")]
+    public async Task ItemTrade([Summary("Código de intercambio")] int code, [Remainder] string item)
     {
         var userID = Context.User.Id;
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no puede ser cancelado. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -421,7 +421,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (pkm == null)
         {
-            await ReplyAsync("Set took too long to legalize.");
+            await ReplyAsync("El conjunto tomó demasiado tiempo para legalizarse.");
             return;
         }
 
@@ -429,15 +429,15 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (pkm.HeldItem == 0)
         {
-            await Helpers<T>.ReplyAndDeleteAsync(Context, $"{Context.User.Username}, the item you entered wasn't recognized.", 2);
+            await Helpers<T>.ReplyAndDeleteAsync(Context, $"{Context.User.Username}, el objeto que ingresaste no fue reconocido.", 2);
             return;
         }
 
         var la = new LegalityAnalysis(pkm);
         if (pkm is not T pk || !la.Valid)
         {
-            var reason = result == "Timeout" ? "That set took too long to generate." : "I wasn't able to create something from that.";
-            var imsg = $"Oops! {reason} Here's my best attempt for that {species}!";
+            var reason = result == "Timeout" ? "Ese conjunto tomó demasiado tiempo para generarse." : "No pude crear algo a partir de eso.";
+            var imsg = $"¡Oops! {reason} ¡Aquí está mi mejor intento para ese {species}!";
             await Context.Channel.SendPKMAsync(pkm, imsg).ConfigureAwait(false);
             return;
         }
@@ -457,7 +457,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("tradeList")]
     [Alias("tl")]
-    [Summary("Prints the users in the trade queues.")]
+    [Summary("Imprime los usuarios en las colas de intercambio.")]
     [RequireSudo]
     public async Task GetTradeListAsync()
     {
@@ -465,16 +465,16 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         var embed = new EmbedBuilder();
         embed.AddField(x =>
         {
-            x.Name = "Pending Trades";
+            x.Name = "Intercambios Pendientes";
             x.Value = msg;
             x.IsInline = false;
         });
-        await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+        await ReplyAsync("Estos son los usuarios que están actualmente esperando:", embed: embed.Build()).ConfigureAwait(false);
     }
 
     [Command("fixOTList")]
     [Alias("fl", "fq")]
-    [Summary("Prints the users in the FixOT queue.")]
+    [Summary("Imprime los usuarios en la cola de FixOT.")]
     [RequireSudo]
     public async Task GetFixListAsync()
     {
@@ -482,16 +482,16 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         var embed = new EmbedBuilder();
         embed.AddField(x =>
         {
-            x.Name = "Pending Trades";
+            x.Name = "Intercambios Pendientes";
             x.Value = msg;
             x.IsInline = false;
         });
-        await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+        await ReplyAsync("Estos son los usuarios que están actualmente esperando:", embed: embed.Build()).ConfigureAwait(false);
     }
 
     [Command("listevents")]
     [Alias("le")]
-    [Summary("Lists available event files, filtered by a specific letter or substring, and sends the list via DM.")]
+    [Summary("Lista los archivos de eventos disponibles, filtrados por una letra o subcadena específica, y envía la lista por DM.")]
     public Task ListEventsAsync([Remainder] string args = "")
         => ListHelpers<T>.HandleListCommandAsync(
             Context,
@@ -503,7 +503,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("battlereadylist")]
     [Alias("brl")]
-    [Summary("Lists available battle-ready files, filtered by a specific letter or substring, and sends the list via DM.")]
+    [Summary("Lista los archivos listos para la batalla disponibles, filtrados por una letra o subcadena específica, y envía la lista por DM.")]
     public Task BattleReadyListAsync([Remainder] string args = "")
         => ListHelpers<T>.HandleListCommandAsync(
             Context,
@@ -519,7 +519,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("eventrequest")]
     [Alias("er")]
-    [Summary("Downloads event attachments from the specified EventsFolder and adds to trade queue.")]
+    [Summary("Descarga los archivos adjuntos de eventos desde la carpeta EventsFolder especificada y los agrega a la cola de intercambio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
     public Task EventRequestAsync(int index)
         => ListHelpers<T>.HandleRequestCommandAsync(
@@ -532,7 +532,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("battlereadyrequest")]
     [Alias("brr", "br")]
-    [Summary("Downloads battle-ready attachments from the specified folder and adds to trade queue.")]
+    [Summary("Descarga los archivos listos para la batalla adjuntos desde la carpeta BattleReadyPKMFolder especificada y los agrega a la cola de intercambio.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
     public Task BattleReadyRequestAsync(int index)
         => ListHelpers<T>.HandleRequestCommandAsync(
@@ -549,9 +549,9 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("batchTrade")]
     [Alias("bt")]
-    [Summary("Makes the bot trade multiple Pokémon from the provided list, up to a maximum of 4 trades.")]
+    [Summary("Hace que el bot intercambie múltiples Pokémon de la lista proporcionada, hasta un máximo de 4 intercambios.")]
     [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
-    public async Task BatchTradeAsync([Summary("List of Showdown Sets separated by '---'")][Remainder] string content)
+    public async Task BatchTradeAsync([Summary("Lista de Sets de Showdown separados por '---'")][Remainder] string content)
     {
         var tradeConfig = SysCord<T>.Runner.Config.Trade.TradeConfiguration;
 
@@ -559,7 +559,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         if (!tradeConfig.AllowBatchTrades)
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "Batch trades are currently disabled by the bot administrator.", 2);
+                "Los intercambios por lotes están actualmente deshabilitados por el administrador del bot.", 2);
             return;
         }
 
@@ -567,7 +567,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio existente en la cola que no se puede borrar. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
         content = ReusableActions.StripCodeBlock(content);
@@ -579,12 +579,11 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         if (trades.Count > maxTradesAllowed)
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                $"You can only process up to {maxTradesAllowed} trades at a time. Please reduce the number of trades in your batch.", 5);
+                $"Solo puedes procesar hasta {maxTradesAllowed} intercambios a la vez. Por favor, reduce el número de intercambios en tu lote.", 5);
             return;
         }
 
-        var processingMessage = await Context.Channel.SendMessageAsync($"{Context.User.Mention} Processing your batch trade with {trades.Count} Pokémon...");
-
+        var processingMessage = await Context.Channel.SendMessageAsync($"{Context.User.Mention} Procesando tu intercambio por lotes con {trades.Count} Pokémon...");
         _ = Task.Run(async () =>
         {
             try
@@ -607,7 +606,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                         {
                             TradeNumber = i + 1,
                             SpeciesName = speciesName,
-                            ErrorMessage = error ?? "Unknown error",
+                            ErrorMessage = error ?? "Error desconocido",
                             LegalizationHint = legalizationHint,
                             ShowdownSet = set != null ? string.Join("\n", set.GetSetLines()) : trades[i]
                         });
@@ -635,8 +634,8 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                 }
                 catch { }
 
-                await Context.Channel.SendMessageAsync($"{Context.User.Mention} An error occurred while processing your batch trade. Please try again.");
-                Base.LogUtil.LogError($"Batch trade processing error: {ex.Message}", nameof(BatchTradeAsync));
+                await Context.Channel.SendMessageAsync($"{Context.User.Mention} Ocurrió un error mientras se procesaba tu intercambio por lotes. Por favor, inténtalo de nuevo.");
+                Base.LogUtil.LogError($"Error al procesar intercambio por lotes: {ex.Message}", nameof(BatchTradeAsync));
             }
         });
 
@@ -654,7 +653,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(Context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio existente en la cola que no se puede borrar. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -686,7 +685,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             catch (Exception ex)
             {
                 LogUtil.LogSafe(ex, nameof(TradeModule<T>));
-                var msg = "Oops! An unexpected problem happened with this Showdown Set.";
+                var msg = "¡Oops! Ocurrió un problema inesperado con este conjunto de Showdown.";
                 await Helpers<T>.ReplyAndDeleteAsync(Context, msg, 2);
             }
         });

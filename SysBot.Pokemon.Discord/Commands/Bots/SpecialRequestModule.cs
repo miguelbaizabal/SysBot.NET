@@ -57,7 +57,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("specialrequestpokemon")]
         [Alias("srp")]
-        [Summary("Lists available wondercard events from the specified generation or game or requests a specific event if a number is provided.")]
+        [Summary("Lista los eventos disponibles desde la generación o juego especificado o solicita un evento específico si se proporciona un número.")]
         public async Task ListSpecialEventsAsync(string generationOrGame, [Remainder] string args = "")
         {
             var botPrefix = SysCord<T>.Runner.Config.Discord.CommandPrefix;
@@ -85,14 +85,14 @@ namespace SysBot.Pokemon.Discord
             var eventData = GetEventData(generationOrGame);
             if (eventData == null)
             {
-                await ReplyAsync($"Invalid generation or game: {generationOrGame}").ConfigureAwait(false);
+                await ReplyAsync($"Generación o juego inválido: {generationOrGame}").ConfigureAwait(false);
                 return;
             }
 
             var allEvents = GetFilteredEvents(eventData, speciesName);
             if (!allEvents.Any())
             {
-                await ReplyAsync($"No events found for {generationOrGame} with the specified filter.").ConfigureAwait(false);
+                await ReplyAsync($"Ningun evento encontrado para {generationOrGame} con el filtro especificado.").ConfigureAwait(false);
                 return;
             }
 
@@ -105,20 +105,20 @@ namespace SysBot.Pokemon.Discord
 
         [Command("specialrequestpokemon")]
         [Alias("srp")]
-        [Summary("Downloads wondercard event attachments from the specified generation and adds to trade queue.")]
+        [Summary("Descarga los archivos adjuntos de eventos de wondercard desde la generación especificada y los agrega a la cola de intercambio.")]
         [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
         public async Task SpecialEventRequestAsync(string generationOrGame, [Remainder] string args = "")
         {
             if (!int.TryParse(args, out int index))
             {
-                await ReplyAsync("Invalid event index. Please provide a valid event number.").ConfigureAwait(false);
+                await ReplyAsync("Número de evento inválido. Por favor, proporciona un número de evento válido.").ConfigureAwait(false);
                 return;
             }
 
             var userID = Context.User.Id;
             if (Info.IsUserInQueue(userID))
             {
-                await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+                await ReplyAsync("Ya tienes un intercambio en cola. Por favor, espera hasta que sea procesado.").ConfigureAwait(false);
                 return;
             }
 
@@ -127,14 +127,14 @@ namespace SysBot.Pokemon.Discord
                 var eventData = GetEventData(generationOrGame);
                 if (eventData == null)
                 {
-                    await ReplyAsync($"Invalid generation or game: {generationOrGame}").ConfigureAwait(false);
+                    await ReplyAsync($"Generación o juego inválido: {generationOrGame}").ConfigureAwait(false);
                     return;
                 }
 
                 var entityEvents = eventData.Where(gift => gift.IsEntity && !gift.IsItem).ToArray();
                 if (index < 1 || index > entityEvents.Length)
                 {
-                    await ReplyAsync($"Invalid event index. Please use a valid event number from the `{SysCord<T>.Runner.Config.Discord.CommandPrefix}srp {generationOrGame}` command.").ConfigureAwait(false);
+                    await ReplyAsync($"Número de evento inválido. Por favor, usa un número de evento válido del comando `{SysCord<T>.Runner.Config.Discord.CommandPrefix}srp {generationOrGame}`.").ConfigureAwait(false);
                     return;
                 }
 
@@ -142,7 +142,7 @@ namespace SysBot.Pokemon.Discord
                 var pk = ConvertEventToPKM(selectedEvent);
                 if (pk == null)
                 {
-                    await ReplyAsync("Wondercard data provided is not compatible with this module!").ConfigureAwait(false);
+                    await ReplyAsync("¡Los datos de evento proporcionados no son compatibles con este módulo!").ConfigureAwait(false);
                     return;
                 }
 
@@ -154,7 +154,7 @@ namespace SysBot.Pokemon.Discord
             }
             catch (Exception ex)
             {
-                await ReplyAsync($"An error occurred: {ex.Message}").ConfigureAwait(false);
+                await ReplyAsync($"Ocurrió un error: {ex.Message}").ConfigureAwait(false);
             }
             finally
             {
@@ -174,7 +174,7 @@ namespace SysBot.Pokemon.Discord
                 "swsh" => EncounterEvent.MGDB_G8,
                 "pla" or "la" => EncounterEvent.MGDB_G8A,
                 "bdsp" => EncounterEvent.MGDB_G8B,
-                "9" or "gen9" => EncounterEvent.MGDB_G9,
+                "9" or "gen9" or "sv" => EncounterEvent.MGDB_G9,
                 "plza" or "9a" or "gen9a" => EncounterEvent.MGDB_G9A,
                 _ => null,
             };
@@ -207,13 +207,13 @@ namespace SysBot.Pokemon.Discord
         private static EmbedBuilder BuildEventListEmbed(string generationOrGame, IEnumerable<(int Index, string EventInfo)> allEvents, int page, int pageCount, string botPrefix)
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"Available Events - {generationOrGame.ToUpperInvariant()}")
-                .WithDescription($"Page {page} of {pageCount}")
+                .WithTitle($"Eventos Disponibles - {generationOrGame.ToUpperInvariant()}")
+                .WithDescription($"Página {page} de {pageCount}")
                 .WithColor(DiscordColor.Blue);
 
             foreach (var item in allEvents.Skip((page - 1) * itemsPerPage).Take(itemsPerPage))
             {
-                embed.AddField($"{item.Index}. {item.EventInfo}", $"Use `{botPrefix}srp {generationOrGame} {item.Index}` to request this event.");
+                embed.AddField($"{item.Index}. {item.EventInfo}", $"Usa `{botPrefix}srp {generationOrGame} {item.Index}` para solicitar este evento.");
             }
 
             return embed;
@@ -223,7 +223,7 @@ namespace SysBot.Pokemon.Discord
         {
             if (Context.User is not IUser user)
             {
-                await ReplyAsync("**Error**: Unable to send a DM. Please check your **Server Privacy Settings**.");
+                await ReplyAsync("**Error**: No se puede enviar un mensaje directo. Por favor, revisa tus **Configuraciones de Privacidad del Servidor**.");
                 return;
             }
 
@@ -231,11 +231,11 @@ namespace SysBot.Pokemon.Discord
             {
                 var dmChannel = await user.CreateDMChannelAsync();
                 await dmChannel.SendMessageAsync(embed: embed.Build());
-                await ReplyAsync($"{Context.User.Mention}, I've sent you a DM with the list of events.");
+                await ReplyAsync($"{Context.User.Mention}, Te he enviado un mensaje directo con la lista de eventos.");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
-                await ReplyAsync($"{Context.User.Mention}, I'm unable to send you a DM. Please check your **Server Privacy Settings**.");
+                await ReplyAsync($"{Context.User.Mention}, No puedo enviarte un mensaje directo. Por favor, revisa tus **Configuraciones de Privacidad del Servidor**.");
             }
         }
 
@@ -328,7 +328,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("geteventpokemon")]
         [Alias("gep")]
-        [Summary("Downloads the requested event as a pk file and sends it to the user. Optionally, specify the language.")]
+        [Summary("Descarga el evento solicitado como un archivo pk y se lo envía al usuario. Opcionalmente, especifica el idioma.")]
         public async Task GetEventPokemonAsync(string generationOrGame, int eventIndex, byte? language = null)
         {
             try
@@ -336,14 +336,14 @@ namespace SysBot.Pokemon.Discord
                 var eventData = GetEventData(generationOrGame);
                 if (eventData == null)
                 {
-                    await ReplyAsync($"Invalid generation or game: {generationOrGame}").ConfigureAwait(false);
+                    await ReplyAsync($"Generación o juego inválido: {generationOrGame}").ConfigureAwait(false);
                     return;
                 }
 
                 var entityEvents = eventData.Where(gift => gift.IsEntity && !gift.IsItem).ToArray();
                 if (eventIndex < 1 || eventIndex > entityEvents.Length)
                 {
-                    await ReplyAsync($"Invalid event index. Please use a valid event number from the `{SysCord<T>.Runner.Config.Discord.CommandPrefix}gep {generationOrGame}` command.").ConfigureAwait(false);
+                    await ReplyAsync($"Número de evento inválido. Por favor, usa un número de evento válido con el comando `{SysCord<T>.Runner.Config.Discord.CommandPrefix}gep {generationOrGame}`.").ConfigureAwait(false);
                     return;
                 }
 
@@ -351,7 +351,7 @@ namespace SysBot.Pokemon.Discord
                 var pk = ConvertEventToPKM(selectedEvent);
                 if (pk == null)
                 {
-                    await ReplyAsync("Wondercard data provided is not compatible with this module!").ConfigureAwait(false);
+                    await ReplyAsync("¡Los datos de evento proporcionados no son compatibles con este módulo!").ConfigureAwait(false);
                     return;
                 }
 
@@ -364,16 +364,16 @@ namespace SysBot.Pokemon.Discord
                 try
                 {
                     await Context.User.SendPKMAsync(pk);
-                    await ReplyAsync($"{Context.User.Mention}, I've sent you the PK file via DM.");
+                    await ReplyAsync($"{Context.User.Mention}, Te he enviado el archivo PK por mensaje directo.");
                 }
                 catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
                 {
-                    await ReplyAsync($"{Context.User.Mention}, I'm unable to send you a DM. Please check your **Server Privacy Settings**.");
+                    await ReplyAsync($"{Context.User.Mention}, No puedo enviarte un mensaje directo. Por favor, revisa tus **Configuraciones de Privacidad del Servidor**.");
                 }
             }
             catch (Exception ex)
             {
-                await ReplyAsync($"An error occurred: {ex.Message}").ConfigureAwait(false);
+                await ReplyAsync($"Ocurrió un error: {ex.Message}").ConfigureAwait(false);
             }
             finally
             {
@@ -387,8 +387,8 @@ namespace SysBot.Pokemon.Discord
             var la = new LegalityAnalysis(pk);
             if (!la.Valid)
             {
-                string responseMessage = pk.IsEgg ? "Invalid Showdown Set for this Egg. Please review your information and try again." :
-                    $"{typeof(T).Name} attachment is not legal, and cannot be traded!\n\n{la.Report()}\n";
+                string responseMessage = pk.IsEgg ? "Conjunto de Showdown invalido para este huevo. Por favor, revisa tu información y vuelve a intentarlo." :
+                    $"¡El archivo adjunto {typeof(T).Name} no es legal y no puede ser intercambiado!\n\n{la.Report()}\n";
                 var reply = await ReplyAsync(responseMessage).ConfigureAwait(false);
                 await Task.Delay(6000);
                 await reply.DeleteAsync().ConfigureAwait(false);

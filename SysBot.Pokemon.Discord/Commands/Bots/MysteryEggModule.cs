@@ -18,21 +18,21 @@ namespace SysBot.Pokemon.Discord
 
         [Command("mysteryegg")]
         [Alias("me")]
-        [Summary("Trades an egg generated from a random Pokémon.")]
+        [Summary("Intercambia un huevo generado de un Pokémon aleatorio.")]
         public async Task TradeMysteryEggAsync()
         {
             // LGPE does not support eggs/breeding
             var context = GetContext();
             if (context == EntityContext.None || typeof(T).Name == "PB7")
             {
-                await ReplyAsync("Mystery Eggs are not available for Let's Go Pikachu/Eevee as the game does not support breeding.").ConfigureAwait(false);
+                await ReplyAsync("Los huevos misteriosos no están disponibles para Let's Go Pikachu/Eevee ya que el juego no soporta la crianza.").ConfigureAwait(false);
                 return;
             }
 
             var userID = Context.User.Id;
             if (Info.IsUserInQueue(userID))
             {
-                await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+                await ReplyAsync("Ya tienes un intercambio existente en la cola. Por favor, espera hasta que sea procesado.").ConfigureAwait(false);
                 return;
             }
 
@@ -52,14 +52,14 @@ namespace SysBot.Pokemon.Discord
 
         [Command("batchMysteryEgg")]
         [Alias("bme")]
-        [Summary("Trades multiple Mystery Eggs at once (up to 4).")]
-        public async Task BatchMysteryEggAsync([Summary("Number of eggs (1-4)")] int count = 2)
+        [Summary("Intercambia múltiples huevos misteriosos a la vez (hasta 4).")]
+        public async Task BatchMysteryEggAsync([Summary("Número de huevos (1-4)")] int count = 2)
         {
             // LGPE does not support eggs/breeding
             var context = GetContext();
             if (context == EntityContext.None || typeof(T).Name == "PB7")
             {
-                await ReplyAsync("Mystery Eggs are not available for Let's Go Pikachu/Eevee as the game does not support breeding.").ConfigureAwait(false);
+                await ReplyAsync("Los huevos misteriosos no están disponibles para Let's Go Pikachu/Eevee ya que el juego no soporta la crianza.").ConfigureAwait(false);
                 return;
             }
 
@@ -67,7 +67,7 @@ namespace SysBot.Pokemon.Discord
             if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
             {
                 await Helpers<T>.ReplyAndDeleteAsync(Context,
-                    "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                    "Ya tienes un intercambio existente en la cola que no puede ser eliminado. Por favor, espera hasta que sea procesado.", 2);
                 return;
             }
 
@@ -76,12 +76,11 @@ namespace SysBot.Pokemon.Discord
             if (count < 1 || count > maxEggs)
             {
                 await Helpers<T>.ReplyAndDeleteAsync(Context,
-                    $"Invalid number of eggs. Please specify between 1 and {maxEggs} eggs.", 5);
+                    $"Numero de huevos inválido. Por favor, especifica entre 1 y {maxEggs} huevos.", 5);
                 return;
             }
 
-            var processingMessage = await Context.Channel.SendMessageAsync($"{Context.User.Mention} Generating {count} Mystery Eggs...");
-
+            var processingMessage = await Context.Channel.SendMessageAsync($"{Context.User.Mention} Generando {count} Huevos Misteriosos...");
             _ = Task.Run(async () =>
             {
                 try
@@ -108,14 +107,14 @@ namespace SysBot.Pokemon.Discord
                     // Check if we generated any eggs
                     if (batchEggList.Count == 0)
                     {
-                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} Failed to generate any Mystery Eggs. Please try again.");
+                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} Error al generar huevos misteriosos. Por favor, inténtalo de nuevo.");
                         return;
                     }
 
                     // Warn if some eggs failed
                     if (failedCount > 0)
                     {
-                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} Warning: Failed to generate {failedCount} egg(s). Proceeding with {batchEggList.Count} egg(s).");
+                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} Advertencia: Error al generar {failedCount} huevo(s). Procediendo con {batchEggList.Count} huevo(s).");
                     }
 
                     // Add batch to queue
@@ -130,8 +129,8 @@ namespace SysBot.Pokemon.Discord
                     }
                     catch { }
 
-                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} An error occurred while processing your batch Mystery Egg request. Please try again.");
-                    Base.LogUtil.LogError($"Batch Mystery Egg processing error: {ex.Message}", nameof(BatchMysteryEggAsync));
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Ocurrió un error mientras se procesaba tu solicitud de huevos misteriosos por lotes. Por favor, inténtalo de nuevo.");
+                    Base.LogUtil.LogError($"Error al procesar el lote de huevos misteriosos: {ex.Message}", nameof(BatchMysteryEggAsync));
                 }
             });
 
@@ -170,7 +169,7 @@ namespace SysBot.Pokemon.Discord
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                await context.Channel.SendMessageAsync("You are already in the queue!").ConfigureAwait(false);
+                await context.Channel.SendMessageAsync("¡Ya estás en la cola!").ConfigureAwait(false);
                 return;
             }
 
@@ -179,7 +178,7 @@ namespace SysBot.Pokemon.Discord
             var baseEta = position.Position > botct ? Info.Hub.Config.Queues.EstimateDelay(position.Position, botct) : 0;
 
             // Send initial batch summary message
-            await context.Channel.SendMessageAsync($"{context.User.Mention} - Added batch of {batchEggList.Count} Mystery Eggs to the queue! Position: {position.Position}. Estimated: {baseEta:F1} min(s).").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync($"{context.User.Mention} - Lote de {batchEggList.Count} Huevos Misteriosos añadidos a la cola! Posición: {position.Position}. Tiempo estimado: {baseEta:F1} min(s).").ConfigureAwait(false);
 
             // Create and send embeds for each egg
             if (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.UseEmbeds)
@@ -203,12 +202,12 @@ namespace SysBot.Pokemon.Discord
         {
             var embedBuilder = new EmbedBuilder()
                 .WithColor(global::Discord.Color.Gold)
-                .WithTitle($"🥚 Mystery Egg {eggNumber} of {totalEggs}")
-                .WithDescription("A mysterious egg containing a random Pokémon!")
+                .WithTitle($"🥚 Huevo Misterioso número {eggNumber} de {totalEggs}")
+                .WithDescription("¡Un huevo misterioso que contiene un Pokémon aleatorio!")
                 .WithImageUrl("https://raw.githubusercontent.com/hexbyt3/sprites/main/mysteryegg3.png")
-                .WithFooter($"Batch Trade {eggNumber} of {totalEggs}" + (eggNumber == 1 ? $" | Position: {queuePosition}" : ""))
+                .WithFooter($"Intercambio por Lotes número {eggNumber} de {totalEggs}" + (eggNumber == 1 ? $" | Posición: {queuePosition}" : ""))
                 .WithAuthor(new EmbedAuthorBuilder()
-                    .WithName($"Mystery Egg for {context.User.Username}")
+                    .WithName($"Huevo Misterioso para {context.User.Username}")
                     .WithIconUrl(context.User.GetAvatarUrl() ?? context.User.GetDefaultAvatarUrl())
                     .WithUrl("https://genpkm.com"));
 
@@ -311,7 +310,7 @@ namespace SysBot.Pokemon.Discord
             }
             catch (Exception ex)
             {
-                LogUtil.LogSafe(ex, $"Failed to get hidden ability for species {species}");
+                LogUtil.LogSafe(ex, $"Error al obtener la habilidad oculta para la especie {species}");
             }
 
             return null;
@@ -379,7 +378,7 @@ namespace SysBot.Pokemon.Discord
             var mysteryEgg = GenerateLegalMysteryEgg();
             if (mysteryEgg == null)
             {
-                await ReplyAsync("Failed to generate a legal mystery egg. Please try again later.").ConfigureAwait(false);
+                await ReplyAsync("Error al generar un huevo misterioso legal. Por favor, inténtalo de nuevo más tarde.").ConfigureAwait(false);
                 return;
             }
 

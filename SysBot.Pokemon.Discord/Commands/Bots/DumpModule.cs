@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Queues new Dump trades")]
+[Summary("Añade a la cola nuevos intercambios de dumpeo")]
 public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("Dumpea los Pokémon que muestras mediante un intercambio en línea.")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
     public async Task DumpAsync(int code)
     {
@@ -42,9 +42,9 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("Dumpea los Pokémon que muestras mediante un intercambio en línea.")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
-    public async Task DumpAsync([Summary("Trade Code")][Remainder] string code)
+    public async Task DumpAsync([Summary("Código de intercambio")][Remainder] string code)
     {
         if (await CheckUserInQueueAsync())
             return;
@@ -56,7 +56,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("Dumpea los Pokémon que muestras mediante un intercambio en línea.")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
     public async Task DumpAsync()
     {
@@ -69,7 +69,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dumpList")]
     [Alias("dl", "dq")]
-    [Summary("Prints the users in the Dump queue.")]
+    [Summary("Imprime los usuarios en la cola de dumpeo.")]
     [RequireSudo]
     public async Task GetListAsync()
     {
@@ -77,11 +77,11 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var embed = new EmbedBuilder();
         embed.AddField(x =>
         {
-            x.Name = "Pending Trades";
+            x.Name = "Intercambios Pendientes";
             x.Value = msg;
             x.IsInline = false;
         });
-        await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+        await ReplyAsync("Estos son los usuarios que están actualmente esperando:", embed: embed.Build()).ConfigureAwait(false);
     }
 
     private async Task<bool> CheckUserInQueueAsync()
@@ -89,7 +89,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+            await ReplyAsync("Ya tienes un intercambio existente en la cola. Por favor, espera hasta que sea procesado.").ConfigureAwait(false);
             return true;
         }
         return false;
