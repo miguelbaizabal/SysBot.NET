@@ -294,7 +294,7 @@ public sealed class SysCord<T> where T : PKM, new()
                     {
                         try
                         {
-                            var emoji = status == "Online"
+                            var emoji = status == "En línea"
                                 ? SysCordSettings.Settings.OnlineEmoji
                                 : SysCordSettings.Settings.OfflineEmoji;
                             var currentName = textChannel.Name;
