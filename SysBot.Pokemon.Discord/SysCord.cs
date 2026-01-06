@@ -253,8 +253,8 @@ public sealed class SysCord<T> where T : PKM, new()
             return;
 
         var botName = string.IsNullOrEmpty(SysCordSettings.HubConfig.BotName) ? "SysBot" : SysCordSettings.HubConfig.BotName;
-        var fullStatusMessage = $"**Estado**: {botName} is {status}!";
-        var thumbnailUrl = status == "Online"
+        var fullStatusMessage = $"**Estado**: ¡{botName} está {status}!";
+        var thumbnailUrl = status == "En línea"
             ? "https://raw.githubusercontent.com/hexbyt3/sprites/main/botgo.png"
             : "https://raw.githubusercontent.com/hexbyt3/sprites/main/botstop.png";
 
