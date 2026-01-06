@@ -10,7 +10,7 @@ namespace SysBot.Pokemon.Discord;
 public class PoolModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     [Command("pool")]
-    [Summary("Displays the details of Pokémon files in the random pool.")]
+    [Summary("Muestra los detalles de los archivos de Pokémon en el pool aleatorio.")]
     public async Task DisplayPoolCountAsync()
     {
         var me = SysCord<T>.Runner;
@@ -25,20 +25,20 @@ public class PoolModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
             var embed = new EmbedBuilder();
             embed.AddField(x =>
             {
-                x.Name = $"Count: {count}";
+                x.Name = $"Número: {count}";
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("Pool Details", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Detalles del Pool", embed: embed.Build()).ConfigureAwait(false);
         }
         else
         {
-            await ReplyAsync($"Pool Count: {count}").ConfigureAwait(false);
+            await ReplyAsync($"Número de Pokémon en el Pool: {count}").ConfigureAwait(false);
         }
     }
 
     [Command("poolReload")]
-    [Summary("Reloads the bot pool from the setting's folder.")]
+    [Summary("Rerecarga el pool del bot desde el directorio de configuración.")]
     [RequireSudo]
     public async Task ReloadPoolAsync()
     {
@@ -47,8 +47,8 @@ public class PoolModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
         var pool = hub.Ledy.Pool.Reload(hub.Config.Folder.DistributeFolder);
         if (!pool)
-            await ReplyAsync("Failed to reload from folder.").ConfigureAwait(false);
+            await ReplyAsync("No se pudo recargar desde el directorio.").ConfigureAwait(false);
         else
-            await ReplyAsync($"Reloaded from folder. Pool count: {hub.Ledy.Pool.Count}").ConfigureAwait(false);
+            await ReplyAsync($"Recargado desde el directorio. Cantidad de Pokémon en el Pool: {hub.Ledy.Pool.Count}").ConfigureAwait(false);
     }
 }

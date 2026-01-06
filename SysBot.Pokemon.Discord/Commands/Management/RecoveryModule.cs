@@ -14,19 +14,19 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
 
     [Command("recovery")]
     [Alias("recover")]
-    [Summary("Shows the recovery status of all bots.")]
+    [Summary("Muestra el estado de recuperación de todos los bots.")]
     [RequireSudo]
     public async Task ShowRecoveryStatusAsync()
     {
         if (Runner == null)
         {
-            await ReplyAsync("Bot runner is not initialized.").ConfigureAwait(false);
+            await ReplyAsync("El bot runner no está inicializado.").ConfigureAwait(false);
             return;
         }
 
         if (Runner is not PokeBotRunner<T> runner)
         {
-            await ReplyAsync("Recovery service is not available for this bot runner type.").ConfigureAwait(false);
+            await ReplyAsync("El servicio de recuperación no está disponible para este tipo de bot runner.").ConfigureAwait(false);
             return;
         }
         
@@ -34,12 +34,12 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
         
         if (recoveryService == null)
         {
-            await ReplyAsync("Recovery service is not enabled.").ConfigureAwait(false);
+            await ReplyAsync("El servicio de recuperación no está habilitado.").ConfigureAwait(false);
             return;
         }
 
         var embed = new EmbedBuilder()
-            .WithTitle("Bot Recovery Status")
+            .WithTitle("Estado de Recuperación del Bot")
             .WithColor(Color.Blue)
             .WithTimestamp(DateTimeOffset.Now);
 
@@ -50,17 +50,17 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
             if (state != null && (state.ConsecutiveFailures > 0 || state.CrashHistory.Count > 0))
             {
                 hasRecoveryData = true;
-                var status = bot.IsRunning ? "🟢 Running" : "🔴 Stopped";
+                var status = bot.IsRunning ? "🟢 En ejecución" : "🔴 Detenido";
                 if (state.IsRecovering)
-                    status = "🟠 Recovering";
+                    status = "🟠 Recuperando";
 
-                var fieldValue = $"Status: {status}\n" +
-                                $"Crashes: {state.CrashHistory.Count}\n" +
-                                $"Failed Attempts: {state.ConsecutiveFailures}";
+                var fieldValue = $"Estado: {status}\n" +
+                                $"Crasheos: {state.CrashHistory.Count}\n" +
+                                $"Intentos Fallidos: {state.ConsecutiveFailures}";
                 
                 if (state.LastRecoveryAttempt.HasValue)
                 {
-                    fieldValue += $"\nLast Recovery: {state.LastRecoveryAttempt.Value:HH:mm:ss}";
+                    fieldValue += $"\nÚltima Recuperación: {state.LastRecoveryAttempt.Value:HH:mm:ss}";
                 }
                 
                 embed.AddField(bot.Bot.Connection.Name, fieldValue, true);
@@ -69,7 +69,7 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
 
         if (!hasRecoveryData)
         {
-            embed.WithDescription("All bots are running normally with no recovery history.");
+            embed.WithDescription("Todos los bots están funcionando normalmente sin historial de recuperación.");
         }
 
         await ReplyAsync(embed: embed.Build()).ConfigureAwait(false);
@@ -77,7 +77,7 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
 
     [Command("recoveryReset")]
     [Alias("resetRecovery")]
-    [Summary("Resets the recovery state for a specific bot.")]
+    [Summary("Reinicia el estado de recuperación para un bot específico.")]
     [RequireSudo]
     public async Task ResetRecoveryAsync([Remainder] string botName)
     {
@@ -85,13 +85,13 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
         
         if (Runner == null)
         {
-            await ReplyAsync("Bot runner is not initialized.").ConfigureAwait(false);
+            await ReplyAsync("El bot runner no está inicializado.").ConfigureAwait(false);
             return;
         }
 
         if (Runner is not PokeBotRunner<T> runner)
         {
-            await ReplyAsync("Recovery service is not available for this bot runner type.").ConfigureAwait(false);
+            await ReplyAsync("El servicio de recuperación no está disponible para este tipo de bot runner.").ConfigureAwait(false);
             return;
         }
         
@@ -99,44 +99,44 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
         
         if (recoveryService == null)
         {
-            await ReplyAsync("Recovery service is not enabled.").ConfigureAwait(false);
+            await ReplyAsync("El servicio de recuperación no está habilitado.").ConfigureAwait(false);
             return;
         }
 
         var bot = Runner.Bots.FirstOrDefault(b => b.Bot.Connection.Name.Equals(botName, StringComparison.OrdinalIgnoreCase));
         if (bot == null)
         {
-            await ReplyAsync($"Bot '{botName}' not found.").ConfigureAwait(false);
+            await ReplyAsync($"Bot '{botName}' no encontrado.").ConfigureAwait(false);
             return;
         }
 
         recoveryService.ResetRecoveryState(bot.Bot.Connection.Name);
-        await ReplyAsync($"Recovery state for bot '{bot.Bot.Connection.Name}' has been reset.").ConfigureAwait(false);
+        await ReplyAsync($"El estado de recuperación para el bot '{bot.Bot.Connection.Name}' ha sido reiniciado.").ConfigureAwait(false);
     }
 
     [Command("recoveryToggle")]
     [Alias("toggleRecovery")]
-    [Summary("Enables or disables the recovery system.")]
+    [Summary("Habilita o deshabilita el sistema de recuperación.")]
     [RequireSudo]
     public async Task ToggleRecoveryAsync()
     {
         if (Runner == null)
         {
-            await ReplyAsync("Bot runner is not initialized.").ConfigureAwait(false);
+            await ReplyAsync("El bot runner no está inicializado.").ConfigureAwait(false);
             return;
         }
 
         if (Runner is not PokeBotRunner<T> runner)
         {
-            await ReplyAsync("Recovery service is not available for this bot runner type.").ConfigureAwait(false);
+            await ReplyAsync("El servicio de recuperación no está disponible para este tipo de bot runner.").ConfigureAwait(false);
             return;
         }
         
         var config = Runner.Config.Recovery;
         config.EnableRecovery = !config.EnableRecovery;
 
-        var status = config.EnableRecovery ? "enabled" : "disabled";
-        await ReplyAsync($"Recovery system has been {status}.").ConfigureAwait(false);
+        var status = config.EnableRecovery ? "habilitado" : "deshabilitado";
+        await ReplyAsync($"El sistema de recuperación ha sido {status}.").ConfigureAwait(false);
         
         // Update the recovery service state
         if (config.EnableRecovery)
@@ -147,31 +147,31 @@ public class RecoveryModule<T> : ModuleBase<SocketCommandContext> where T : PKM,
 
     [Command("recoveryConfig")]
     [Alias("recoveryCfg")]
-    [Summary("Shows the current recovery configuration.")]
+    [Summary("Muestra la configuración actual de recuperación.")]
     [RequireSudo]
     public async Task ShowRecoveryConfigAsync()
     {
         if (Runner == null)
         {
-            await ReplyAsync("Bot runner is not initialized.").ConfigureAwait(false);
+            await ReplyAsync("El bot runner no está inicializado.").ConfigureAwait(false);
             return;
         }
 
         var config = Runner.Config.Recovery;
         
         var embed = new EmbedBuilder()
-            .WithTitle("Recovery Configuration")
+            .WithTitle("Configuración de Recuperación del Bot")
             .WithColor(Color.Blue)
             .WithTimestamp(DateTimeOffset.Now)
-            .AddField("Enabled", config.EnableRecovery ? "✅ Yes" : "❌ No", true)
-            .AddField("Max Attempts", config.MaxRecoveryAttempts, true)
-            .AddField("Initial Delay", $"{config.InitialRecoveryDelaySeconds}s", true)
-            .AddField("Max Delay", $"{config.MaxRecoveryDelaySeconds}s", true)
-            .AddField("Backoff Multiplier", $"{config.BackoffMultiplier}x", true)
-            .AddField("Crash Window", $"{config.CrashHistoryWindowMinutes} min", true)
-            .AddField("Max Crashes/Window", config.MaxCrashesInWindow, true)
-            .AddField("Recover Intentional", config.RecoverIntentionalStops ? "✅" : "❌", true)
-            .AddField("Stable Uptime", $"{config.MinimumStableUptimeSeconds}s", true);
+            .AddField("Habilitado", config.EnableRecovery ? "✅ Sí" : "❌ No", true)
+            .AddField("Intentos máximos", config.MaxRecoveryAttempts, true)
+            .AddField("Retraso inicial", $"{config.InitialRecoveryDelaySeconds}s", true)
+            .AddField("Retraso máximo", $"{config.MaxRecoveryDelaySeconds}s", true)
+            .AddField("Multiplicador de retraso", $"{config.BackoffMultiplier}x", true)
+            .AddField("Ventana de crasheos", $"{config.CrashHistoryWindowMinutes} min", true)
+            .AddField("Máx. crasheos por ventana", config.MaxCrashesInWindow, true)
+            .AddField("Recuperar detenciones intencionales", config.RecoverIntentionalStops ? "✅" : "❌", true)
+            .AddField("Uptime estable mínimo", $"{config.MinimumStableUptimeSeconds}s", true);
 
         await ReplyAsync(embed: embed.Build()).ConfigureAwait(false);
     }

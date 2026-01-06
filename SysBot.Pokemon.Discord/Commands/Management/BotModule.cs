@@ -13,7 +13,7 @@ namespace SysBot.Pokemon.Discord
     public class BotModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         [Command("botStatus")]
-        [Summary("Gets the status of the bots.")]
+        [Summary("Obtiene el estado de los bots.")]
         [RequireSudo]
         public async Task GetStatusAsync()
         {
@@ -21,7 +21,7 @@ namespace SysBot.Pokemon.Discord
             var bots = me.Bots.Select(z => z.Bot).OfType<PokeRoutineExecutorBase>().ToArray();
             if (bots.Length == 0)
             {
-                await ReplyAsync("No bots configured.").ConfigureAwait(false);
+                await ReplyAsync("No hay bots configurados.").ConfigureAwait(false);
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace SysBot.Pokemon.Discord
             catch (Exception ex)
             {
                 // Handle any errors that occur during reading or parsing the file
-                Console.WriteLine($"Error reading config file: {ex.Message}");
+                Console.WriteLine($"Error al leer el archivo de configuración: {ex.Message}");
                 return "192.168.1.1"; // Default IP if error occurs
             }
         }
@@ -58,9 +58,9 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("botStart")]
-        [Summary("Starts the currently running bot.")]
+        [Summary("Inicia el bot actualmente en ejecución.")]
         [RequireSudo]
-        public async Task StartBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task StartBotAsync([Summary("Dirección IP del bot")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -68,18 +68,18 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"Ningún bot tiene esa dirección IP ({ip}).").ConfigureAwait(false);
                 return;
             }
 
             bot.Start();
-            await ReplyAsync("Bot has been started.").ConfigureAwait(false);
+            await ReplyAsync("El bot ha sido iniciado.").ConfigureAwait(false);
         }
 
         [Command("botStop")]
-        [Summary("Stops the currently running bot.")]
+        [Summary("Detiene el bot actualmente en ejecución.")]
         [RequireSudo]
-        public async Task StopBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task StopBotAsync([Summary("Dirección IP del bot")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -87,19 +87,19 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"Ningún bot tiene esa dirección IP ({ip}).").ConfigureAwait(false);
                 return;
             }
 
             bot.Stop();
-            await ReplyAsync("Bot has been stopped.").ConfigureAwait(false);
+            await ReplyAsync("El bot ha sido detenido.").ConfigureAwait(false);
         }
 
         [Command("botIdle")]
         [Alias("botPause")]
-        [Summary("Commands the currently running bot to Idle.")]
+        [Summary("Envía un comando al bot actualmente en ejecución para que entre en estado de espera.")]
         [RequireSudo]
-        public async Task IdleBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task IdleBotAsync([Summary("Dirección IP del bot")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -107,18 +107,18 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"Ningún bot tiene esa dirección IP ({ip}).").ConfigureAwait(false);
                 return;
             }
 
             bot.Pause();
-            await ReplyAsync("Bot has been set to idle.").ConfigureAwait(false);
+            await ReplyAsync("El bot ha sido puesto en espera.").ConfigureAwait(false);
         }
 
         [Command("botChange")]
-        [Summary("Changes the routine of the currently running bot (trades).")]
+        [Summary("Cambia la rutina del bot actualmente en ejecución (intercambios).")]
         [RequireSudo]
-        public async Task ChangeTaskAsync([Summary("Routine enum name")] PokeRoutineType task, [Summary("IP address of the bot")] string? ip = null)
+        public async Task ChangeTaskAsync([Summary("Nombre del tipo de rutina")] PokeRoutineType task, [Summary("Dirección IP del bot")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -126,18 +126,18 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"Ningún bot tiene esa dirección IP ({ip}).").ConfigureAwait(false);
                 return;
             }
 
             bot.Bot.Config.Initialize(task);
-            await ReplyAsync($"Bot has changed its routine to {task}.").ConfigureAwait(false);
+            await ReplyAsync($"El bot ha cambiado su rutina a {task}.").ConfigureAwait(false);
         }
 
         [Command("botRestart")]
-        [Summary("Restarts the currently running bot(s).")]
+        [Summary("Reinicia el bot actualmente en ejecución.")]
         [RequireSudo]
-        public async Task RestartBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task RestartBotAsync([Summary("Dirección IP del bot")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -145,14 +145,14 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"Ningún bot tiene esa dirección IP ({ip}).").ConfigureAwait(false);
                 return;
             }
 
             var c = bot.Bot.Connection;
             c.Reset();
             bot.Start();
-            await ReplyAsync("Bot has been restarted.").ConfigureAwait(false);
+            await ReplyAsync("El bot ha sido reiniciado.").ConfigureAwait(false);
         }
     }
 }

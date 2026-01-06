@@ -13,9 +13,9 @@ namespace SysBot.Pokemon.Discord;
 public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     [Command("banID")]
-    [Summary("Bans online user IDs.")]
+    [Summary("Banea IDs de usuarios en línea.")]
     [RequireSudo]
-    public async Task BanOnlineIDs([Summary("Comma Separated Online IDs")][Remainder] string content)
+    public async Task BanOnlineIDs([Summary("IDs en línea separados por comas")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         var objects = IDs.Select(GetReference);
@@ -23,11 +23,11 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var me = SysCord<T>.Runner;
         var hub = me.Hub;
         hub.Config.TradeAbuse.BannedIDs.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("bannedIDComment")]
-    [Summary("Adds a comment for a banned online user ID.")]
+    [Summary("Agrega un comentario para un ID de usuario en línea baneado.")]
     [RequireSudo]
     public async Task BanOnlineIDs(ulong id, [Remainder] string comment)
     {
@@ -36,71 +36,71 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var obj = hub.Config.TradeAbuse.BannedIDs.List.Find(z => z.ID == id);
         if (obj is null)
         {
-            await ReplyAsync($"Unable to find a user with that online ID ({id}).").ConfigureAwait(false);
+            await ReplyAsync($"No se puede encontrar un usuario con ese ID en línea ({id}).").ConfigureAwait(false);
             return;
         }
 
         var oldComment = obj.Comment;
         obj.Comment = comment;
-        await ReplyAsync($"Done. Changed existing comment ({oldComment}) to ({comment}).").ConfigureAwait(false);
+        await ReplyAsync($"Hecho. Cambió el comentario existente ({oldComment}) a ({comment}).").ConfigureAwait(false);
     }
 
     [Command("blacklistId")]
-    [Summary("Blacklists Discord user IDs. (Useful if user is not in the server).")]
+    [Summary("Agrega IDs de usuarios de Discord a la lista negra. (Útil si el usuario no está en el servidor).")]
     [RequireSudo]
-    public async Task BlackListIDs([Summary("Comma Separated Discord IDs")][Remainder] string content)
+    public async Task BlackListIDs([Summary("IDs de Discord separados por comas")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         var objects = IDs.Select(GetReference);
         SysCordSettings.Settings.UserBlacklist.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("blacklist")]
-    [Summary("Blacklists a mentioned Discord user.")]
+    [Summary("Agrega a la lista negra a un usuario mencionado de Discord.")]
     [RequireSudo]
     public async Task BlackListUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.UserBlacklist.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("blacklistComment")]
-    [Summary("Adds a comment for a blacklisted Discord user ID.")]
+    [Summary("Agrega un comentario para un ID de usuario de Discord en la lista negra.")]
     [RequireSudo]
     public async Task BlackListUsers(ulong id, [Remainder] string comment)
     {
         var obj = SysCordSettings.Settings.UserBlacklist.List.Find(z => z.ID == id);
         if (obj is null)
         {
-            await ReplyAsync($"Unable to find a user with that ID ({id}).").ConfigureAwait(false);
+            await ReplyAsync($"No se puede encontrar un usuario con ese ID ({id}).").ConfigureAwait(false);
             return;
         }
 
         var oldComment = obj.Comment;
         obj.Comment = comment;
-        await ReplyAsync($"Done. Changed existing comment ({oldComment}) to ({comment}).").ConfigureAwait(false);
+        await ReplyAsync($"Hecho. Cambió el comentario existente ({oldComment}) a ({comment}).").ConfigureAwait(false);
     }
 
     [Command("forgetUser")]
     [Alias("forget")]
-    [Summary("Forgets users that were previously encountered.")]
+    [Summary("Olvida los usuarios que fueron encontrados previamente.")]
     [RequireSudo]
-    public async Task ForgetPreviousUser([Summary("Comma Separated Online IDs")][Remainder] string content)
+    public async Task ForgetPreviousUser([Summary("IDs en línea separados por comas")][Remainder] string content)
     {
         foreach (var ID in GetIDs(content))
         {
             PokeRoutineExecutorBase.PreviousUsers.RemoveAllNID(ID);
             PokeRoutineExecutorBase.PreviousUsersDistribution.RemoveAllNID(ID);
         }
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("bannedIDSummary")]
     [Alias("printBannedID", "bannedIDPrint")]
-    [Summary("Prints the list of banned online IDs.")]
+    [Summary("Imprime la lista de IDs en línea prohibidos.")]
     [RequireSudo]
     public async Task PrintBannedOnlineIDs()
     {
@@ -113,7 +113,7 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("blacklistSummary")]
     [Alias("printBlacklist", "blacklistPrint")]
-    [Summary("Prints the list of blacklisted Discord users.")]
+    [Summary("Imprime la lista de usuarios de Discord en la lista negra.")]
     [RequireSudo]
     public async Task PrintBlacklist()
     {
@@ -124,7 +124,7 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("previousUserSummary")]
     [Alias("prevUsers")]
-    [Summary("Prints a list of previously encountered users.")]
+    [Summary("Imprime una lista de usuarios encontrados previamente.")]
     [RequireSudo]
     public async Task PrintPreviousUsers()
     {
@@ -133,7 +133,7 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         if (lines.Count != 0)
         {
             found = true;
-            var msg = "Previous Users:\n" + string.Join("\n", lines);
+            var msg = "Usuarios anteriores:\n" + string.Join("\n", lines);
             await ReplyAsync(Format.Code(msg)).ConfigureAwait(false);
         }
 
@@ -141,49 +141,49 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         if (lines.Count != 0)
         {
             found = true;
-            var msg = "Previous Distribution Users:\n" + string.Join("\n", lines);
+            var msg = "Usuarios anteriores de distribución:\n" + string.Join("\n", lines);
             await ReplyAsync(Format.Code(msg)).ConfigureAwait(false);
         }
         if (!found)
-            await ReplyAsync("No previous users found.").ConfigureAwait(false);
+            await ReplyAsync("No se encontraron usuarios anteriores.").ConfigureAwait(false);
     }
 
     [Command("unbanID")]
-    [Summary("Bans online user IDs.")]
+    [Summary("Desbanea IDs de usuarios en línea.")]
     [RequireSudo]
-    public async Task UnBanOnlineIDs([Summary("Comma Separated Online IDs")][Remainder] string content)
+    public async Task UnBanOnlineIDs([Summary("IDs en línea separados por comas")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         var me = SysCord<T>.Runner;
         var hub = me.Hub;
         hub.Config.TradeAbuse.BannedIDs.RemoveAll(z => IDs.Any(o => o == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("unBlacklistId")]
-    [Summary("Removes Discord user IDs from the blacklist. (Useful if user is not in the server).")]
+    [Summary("Elimina IDs de usuarios de Discord de la lista negra. (Útil si el usuario no está en el servidor).")]
     [RequireSudo]
-    public async Task UnBlackListIDs([Summary("Comma Separated Discord IDs")][Remainder] string content)
+    public async Task UnBlackListIDs([Summary("IDs separados por comas")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         SysCordSettings.Settings.UserBlacklist.RemoveAll(z => IDs.Any(o => o == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("unblacklist")]
-    [Summary("Removes a mentioned Discord user from the blacklist.")]
+    [Summary("Elimina un usuario mencionado de Discord de la lista negra.")]
     [RequireSudo]
     public async Task UnBlackListUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.UserBlacklist.RemoveAll(z => objects.Any(o => o.ID == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("banTrade")]
     [Alias("bant")]
-    [Summary("Bans a user from trading with a reason.")]
+    [Summary("Banea a un usuario de intercambiar con un motivo.")]
     [RequireSudo]
     public async Task BanTradeUser(ulong userNID, string? userName = null, [Remainder] string? banReason = null)
     {
@@ -194,14 +194,14 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
             // Check if the ban reason is provided
             if (string.IsNullOrWhiteSpace(banReason))
             {
-                await dmChannel.SendMessageAsync("No reason was supplied. Please use the command as follows:\n.banTrade {NID} {optional: Name} {Reason}\nExample: .banTrade 123456789 Spamming trades");
+                await dmChannel.SendMessageAsync("No se proporcionó un motivo. Por favor, usa el comando de la siguiente manera:\n.banTrade {NID} {opcional: Nombre} {Motivo}\nEjemplo: .banTrade 123456789 Spamming trades");
                 return;
             }
 
             // Use a default name if none is provided
             if (string.IsNullOrWhiteSpace(userName))
             {
-                userName = "Unknown";
+                userName = "Desconocido";
             }
 
             var me = SysCord<T>.Runner;
@@ -210,15 +210,15 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
             {
                 ID = userNID,
                 Name = userName,
-                Comment = $"Banned by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}. Reason: {banReason}"
+                Comment = $"Baneado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}. Motivo: {banReason}"
             };
 
             hub.Config.TradeAbuse.BannedIDs.AddIfNew([bannedUser]);
-            await dmChannel.SendMessageAsync($"Done. User {userName} with NID {userNID} has been banned from trading.");
+            await dmChannel.SendMessageAsync($"Hecho. Usuario {userName} con NID {userNID} ha sido baneado de intercambiar.");
         }
         catch (Exception ex)
         {
-            await dmChannel.SendMessageAsync($"An error occurred: {ex.Message}");
+            await dmChannel.SendMessageAsync($"Ocurrió un error: {ex.Message}");
         }
     }
 
@@ -232,13 +232,13 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
     {
         ID = channel.Id,
         Name = channel.Username,
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
     };
 
     private RemoteControlAccess GetReference(ulong id) => new()
     {
         ID = id,
         Name = "Manual",
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
     };
 }

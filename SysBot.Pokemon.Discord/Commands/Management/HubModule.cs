@@ -13,7 +13,7 @@ public class HubModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new(
 {
     [Command("status")]
     [Alias("stats")]
-    [Summary("Gets the status of the bot environment.")]
+    [Summary("Obtiene el estado del entorno del bot.")]
     public async Task GetStatusAsync()
     {
         var me = SysCord<T>.Runner;
@@ -29,11 +29,11 @@ public class HubModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new(
         var botCount = allBots.Count;
         builder.AddField(x =>
         {
-            x.Name = "Summary";
+            x.Name = "Resumen";
             x.Value =
-                $"Bot Count: {botCount}\n" +
-                $"Bot State: {SummarizeBots(allBots)}\n" +
-                $"Pool Count: {hub.Ledy.Pool.Count}\n";
+                $"Número de Bots: {botCount}\n" +
+                $"Estado de los Bots: {SummarizeBots(allBots)}\n" +
+                $"Tamaño del Pool: {hub.Ledy.Pool.Count}\n";
             x.IsInline = false;
         });
 
@@ -43,8 +43,8 @@ public class HubModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new(
             var lines = bots.SelectMany(z => z.Counts.GetNonZeroCounts()).Distinct();
             var msg = string.Join("\n", lines);
             if (string.IsNullOrWhiteSpace(msg))
-                msg = "Nothing counted yet!";
-            x.Name = "Counts";
+                msg = "¡Aún no se ha contado nada!";
+            x.Name = "Conteos";
             x.Value = msg;
             x.IsInline = false;
         });
@@ -60,10 +60,10 @@ public class HubModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new(
             var nextMsg = GetNextName(q);
             builder.AddField(x =>
             {
-                x.Name = $"{q.Type} Queue";
+                x.Name = $"Cola: {q.Type}";
                 x.Value =
-                    $"Next: {nextMsg}\n" +
-                    $"Count: {c}\n";
+                    $"Siguiente: {nextMsg}\n" +
+                    $"Número: {c}\n";
                 x.IsInline = false;
             });
             count += c;
@@ -73,20 +73,20 @@ public class HubModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new(
         {
             builder.AddField(x =>
             {
-                x.Name = "Queues are empty.";
-                x.Value = "Nobody in line!";
+                x.Name = "Colas vacías.";
+                x.Value = "¡Nadie en la fila!";
                 x.IsInline = false;
             });
         }
 
-        await ReplyAsync("Bot Status", false, builder.Build()).ConfigureAwait(false);
+        await ReplyAsync("Estado del bot", false, builder.Build()).ConfigureAwait(false);
     }
 
     private static string GetNextName(PokeTradeQueue<T> q)
     {
         var next = q.TryPeek(out var detail, out _);
         if (!next)
-            return "None!";
+            return "¡Ninguno!";
 
         var name = detail.Trainer.TrainerName;
 
@@ -100,7 +100,7 @@ public class HubModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new(
     private static string SummarizeBots(IReadOnlyCollection<RoutineExecutor<PokeBotState>> bots)
     {
         if (bots.Count == 0)
-            return "No bots configured.";
+            return "Ningún bot configurado.";
         var summaries = bots.Select(z => $"- {z.GetSummary()}");
         return Environment.NewLine + string.Join(Environment.NewLine, summaries);
     }

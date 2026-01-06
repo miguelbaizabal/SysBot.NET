@@ -22,7 +22,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 {
     [Command("listguilds")]
     [Alias("lg", "servers", "listservers")]
-    [Summary("Lists all guilds the bot is part of.")]
+    [Summary("Lista todos los servidores en los que el bot está participando.")]
     [RequireSudo]
     public async Task ListGuilds(int page = 1)
     {
@@ -36,8 +36,8 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
             .Take(guildsPerPage);
 
         var embedBuilder = new EmbedBuilder()
-            .WithTitle($"List of Guilds - Page {page}/{totalPages}")
-            .WithDescription("Here are the guilds I'm currently in:")
+            .WithTitle($"Lista de Servidores - Página {page}/{totalPages}")
+            .WithDescription("Aquí están los servidores en los que estoy actualmente:")
             .WithColor((DiscordColor)Color.Blue);
 
         foreach (var guild in guilds)
@@ -47,7 +47,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         var dmChannel = await Context.User.CreateDMChannelAsync();
         await dmChannel.SendMessageAsync(embed: embedBuilder.Build());
 
-        await ReplyAsync($"{Context.User.Mention}, I've sent you a DM with the list of guilds (Page {page}).");
+        await ReplyAsync($"{Context.User.Mention}, Te he enviado un DM con la lista de servidores (Página {page}).");
 
         if (Context.Message is IUserMessage userMessage)
         {
@@ -58,7 +58,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
     [Command("blacklistserver")]
     [Alias("bls")]
-    [Summary("Adds a server ID to the bot's server blacklist.")]
+    [Summary("Agrega un ID de servidor a la lista negra del bot.")]
     [RequireOwner]
     public async Task BlacklistServer(ulong serverId)
     {
@@ -66,14 +66,14 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (settings.ServerBlacklist.Contains(serverId))
         {
-            await ReplyAsync("This server is already blacklisted.");
+            await ReplyAsync("Este servidor ya está en la lista negra.");
             return;
         }
 
         var server = Context.Client.GetGuild(serverId);
         if (server == null)
         {
-            await ReplyAsync("Cannot find a server with the provided ID. Ensure the bot is a member of the server you wish to blacklist.");
+            await ReplyAsync("No se puede encontrar un servidor con el ID proporcionado. Asegúrate de que el bot sea miembro del servidor que deseas incluir en la lista negra.");
             return;
         }
 
@@ -82,12 +82,12 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         settings.ServerBlacklist.AddIfNew([newServerAccess]);
 
         await server.LeaveAsync();
-        await ReplyAsync($"Left the server '{server.Name}' and added it to the blacklist.");
+        await ReplyAsync($"Dejé el servidor '{server.Name}' y lo agregué a la lista negra.");
     }
 
     [Command("unblacklistserver")]
     [Alias("ubls")]
-    [Summary("Removes a server ID from the bot's server blacklist.")]
+    [Summary("Elimina un ID de servidor de la lista negra del bot.")]
     [RequireOwner]
     public async Task UnblacklistServer(ulong serverId)
     {
@@ -95,7 +95,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (!settings.ServerBlacklist.Contains(serverId))
         {
-            await ReplyAsync("This server is not currently blacklisted.");
+            await ReplyAsync("Este servidor no está actualmente en la lista negra.");
             return;
         }
 
@@ -103,38 +103,38 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (wasRemoved)
         {
-            await ReplyAsync($"Server with ID {serverId} has been removed from the blacklist.");
+            await ReplyAsync($"El servidor con ID {serverId} ha sido eliminado de la lista negra.");
         }
         else
         {
-            await ReplyAsync("An error occurred while trying to remove the server from the blacklist. Please check the server ID and try again.");
+            await ReplyAsync("Ocurrió un error al intentar eliminar el servidor de la lista negra. Por favor, verifica el ID del servidor y vuelve a intentarlo.");
         }
     }
 
     [Command("addSudo")]
-    [Summary("Adds mentioned user to global sudo")]
+    [Summary("Agrega al usuario mencionado a la lista de usuarios sudo globales")]
     [RequireOwner]
     public async Task SudoUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.GlobalSudoList.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("removeSudo")]
-    [Summary("Removes mentioned user from global sudo")]
+    [Summary("Elimina al usuario mencionado de la lista de usuarios sudo globales")]
     [RequireOwner]
     public async Task RemoveSudoUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.GlobalSudoList.RemoveAll(z => objects.Any(o => o.ID == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("addChannel")]
-    [Summary("Adds a channel to the list of channels that are accepting commands.")]
+    [Summary("Agrega un canal a la lista de canales que aceptan comandos.")]
     [RequireOwner]
     public async Task AddChannel()
     {
@@ -145,7 +145,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
     [Command("syncChannels")]
     [Alias("sch", "syncchannels")]
-    [Summary("Copies all channels from ChannelWhitelist to AnnouncementChannel.")]
+    [Summary("Copia todos los canales de ChannelWhitelist a AnnouncementChannel.")]
     [RequireOwner]
     public async Task SyncChannels()
     {
@@ -165,63 +165,63 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (changesMade)
         {
-            await ReplyAsync("Channel whitelist has been successfully synchronized with the announcement channels.").ConfigureAwait(false);
+            await ReplyAsync("La lista blanca de canales ha sido sincronizada con los canales de anuncio.").ConfigureAwait(false);
         }
         else
         {
-            await ReplyAsync("All channels from the whitelist are already in the announcement channels, no changes made.").ConfigureAwait(false);
+            await ReplyAsync("Todos los canales de la lista blanca ya están en los canales de anuncio, no se realizaron cambios.").ConfigureAwait(false);
         }
     }
 
     [Command("removeChannel")]
-    [Summary("Removes a channel from the list of channels that are accepting commands.")]
+    [Summary("Elimina un canal de la lista de canales que aceptan comandos.")]
     [RequireOwner]
     public async Task RemoveChannel()
     {
         var obj = GetReference(Context.Message.Channel);
         SysCordSettings.Settings.ChannelWhitelist.RemoveAll(z => z.ID == obj.ID);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("Hecho.").ConfigureAwait(false);
     }
 
     [Command("leave")]
     [Alias("bye")]
-    [Summary("Leaves the current server.")]
+    [Summary("Abandona el servidor actual.")]
     [RequireOwner]
     public async Task Leave()
     {
-        await ReplyAsync("Goodbye.").ConfigureAwait(false);
+        await ReplyAsync("Adiós.").ConfigureAwait(false);
         await Context.Guild.LeaveAsync().ConfigureAwait(false);
     }
 
     [Command("leaveguild")]
     [Alias("lg")]
-    [Summary("Leaves guild based on supplied ID.")]
+    [Summary("Abandona un servidor basado en el ID proporcionado.")]
     [RequireOwner]
     public async Task LeaveGuild(string userInput)
     {
         if (!ulong.TryParse(userInput, out ulong id))
         {
-            await ReplyAsync("Please provide a valid Guild ID.").ConfigureAwait(false);
+            await ReplyAsync("Por favor, proporciona un ID de servidor válido.").ConfigureAwait(false);
             return;
         }
 
         var guild = Context.Client.Guilds.FirstOrDefault(x => x.Id == id);
         if (guild is null)
         {
-            await ReplyAsync($"Provided input ({userInput}) is not a valid guild ID or the bot is not in the specified guild.").ConfigureAwait(false);
+            await ReplyAsync($"La entrada proporcionada ({userInput}) no es un ID de servidor válido o el bot no está en el servidor especificado.").ConfigureAwait(false);
             return;
         }
 
-        await ReplyAsync($"Leaving {guild}.").ConfigureAwait(false);
+        await ReplyAsync($"Abandonando {guild}.").ConfigureAwait(false);
         await guild.LeaveAsync().ConfigureAwait(false);
     }
 
     [Command("leaveall")]
-    [Summary("Leaves all servers the bot is currently in.")]
+    [Summary("Abandona todos los servidores en los que el bot está actualmente.")]
     [RequireOwner]
     public async Task LeaveAll()
     {
-        await ReplyAsync("Leaving all servers.").ConfigureAwait(false);
+        await ReplyAsync("Abandonando todos los servidores.").ConfigureAwait(false);
         foreach (var guild in Context.Client.Guilds)
         {
             await guild.LeaveAsync().ConfigureAwait(false);
@@ -230,7 +230,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
     [Command("repeek")]
     [Alias("peek")]
-    [Summary("Take and send a screenshot from the currently configured Switch.")]
+    [Summary("Toma y envía una captura de pantalla desde la Switch configurada actualmente.")]
     [RequireSudo]
     public async Task RePeek()
     {
@@ -241,7 +241,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         var bot = SysCord<T>.Runner.GetBot(ip);
         if (bot == null)
         {
-            await ReplyAsync($"No bot found with the specified IP address ({ip}).").ConfigureAwait(false);
+            await ReplyAsync($"No se encontró ningún bot con la dirección IP especificada ({ip}).").ConfigureAwait(false);
             return;
         }
 
@@ -253,32 +253,31 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            await ReplyAsync($"Error while fetching pixels: {ex.Message}");
+            await ReplyAsync($"Error al obtener los píxeles: {ex.Message}");
             return;
         }
 
         if (bytes.Length == 0)
         {
-            await ReplyAsync("No screenshot data received.");
+            await ReplyAsync("No se recibieron datos de captura de pantalla.");
             return;
         }
 
         await using MemoryStream ms = new(bytes);
         const string img = "cap.jpg";
         var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = (DiscordColor?)Color.Purple }
-            .WithFooter(new EmbedFooterBuilder { Text = "Here's your screenshot." });
+            .WithFooter(new EmbedFooterBuilder { Text = "Aquí está tu captura de pantalla." });
 
         await Context.Channel.SendFileAsync(ms, img, embed: embed.Build());
     }
 
     [Command("video")]
     [Alias("video")]
-    [Summary("Take and send a GIF from the currently configured Switch.")]
+    [Summary("Toma y envía un GIF desde la Switch configurada actualmente.")]
     [RequireSudo]
     public async Task RePeekGIF()
     {
-        await Context.Channel.SendMessageAsync("Processing GIF request...").ConfigureAwait(false);
-
+        await Context.Channel.SendMessageAsync("Procesando solicitud de GIF...").ConfigureAwait(false);
         try
         {
             string ip = OwnerModule<T>.GetBotIPFromJsonConfig();
@@ -288,7 +287,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
             if (bot == null)
             {
-                await ReplyAsync($"No bot found with the specified IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"No se encontró ningún bot con la dirección IP especificada ({ip}).").ConfigureAwait(false);
                 return;
             }
 
@@ -305,13 +304,13 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
                 }
                 catch (Exception ex)
                 {
-                    await ReplyAsync($"Error while fetching pixels: {ex.Message}").ConfigureAwait(false);
+                    await ReplyAsync($"Error al obtener los píxeles: {ex.Message}").ConfigureAwait(false);
                     return;
                 }
 
                 if (bytes.Length == 0)
                 {
-                    await ReplyAsync("No screenshot data received.").ConfigureAwait(false);
+                    await ReplyAsync("No se recibieron datos de captura de pantalla.").ConfigureAwait(false);
                     return;
                 }
 
@@ -330,7 +329,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
                 ms.Position = 0;
                 const string gifFileName = "screenshot.gif";
                 var embed = new EmbedBuilder { ImageUrl = $"attachment://{gifFileName}", Color = (DiscordColor?)Color.Red }
-                    .WithFooter(new EmbedFooterBuilder { Text = "Here's your GIF." });
+                    .WithFooter(new EmbedFooterBuilder { Text = "Aquí está tu GIF." });
 
                 await Context.Channel.SendFileAsync(ms, gifFileName, embed: embed.Build()).ConfigureAwait(false);
             }
@@ -339,7 +338,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            await ReplyAsync($"Error while processing GIF: {ex.Message}").ConfigureAwait(false);
+            await ReplyAsync($"Error al procesar el GIF: {ex.Message}").ConfigureAwait(false);
         }
     }
 
@@ -379,23 +378,23 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error reading config file: {ex.Message}");
+            Console.WriteLine($"Error al leer el archivo de configuración: {ex.Message}");
             return "192.168.1.1";
         }
     }
 
     [Command("kill")]
     [Alias("shutdown")]
-    [Summary("Causes the entire process to end itself!")]
+    [Summary("¡Ocasiona la finalización del proceso completo!")]
     [RequireOwner]
     public async Task ExitProgram()
     {
-        await Context.Channel.EchoAndReply("Shutting down... goodbye! **Bot services are going offline.**").ConfigureAwait(false);
+        await Context.Channel.EchoAndReply("Apagando... ¡adiós! **Los servicios del bot están apagándose.**").ConfigureAwait(false);
         Environment.Exit(0);
     }
 
     [Command("dm")]
-    [Summary("Sends a direct message to a specified user.")]
+    [Summary("Envía un mensaje directo a un usuario especificado.")]
     [RequireOwner]
     public async Task DMUserAsync(SocketUser user, [Remainder] string message)
     {
@@ -404,7 +403,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         var embed = new EmbedBuilder
         {
-            Title = "Private Message from the Bot Owner",
+            Title = "Mensaje privado del propietario del bot",
             Description = message,
             Color = (DiscordColor?)Color.Gold,
             Timestamp = DateTimeOffset.Now,
@@ -430,19 +429,19 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
                 await dmChannel.SendMessageAsync(embed: embed.Build());
             }
 
-            var confirmationMessage = await ReplyAsync($"Message successfully sent to {user.Username}.");
+            var confirmationMessage = await ReplyAsync($"Mensaje enviado correctamente a {user.Username}.");
             await Context.Message.DeleteAsync();
             await Task.Delay(TimeSpan.FromSeconds(10));
             await confirmationMessage.DeleteAsync();
         }
         catch (Exception ex)
         {
-            await ReplyAsync($"Failed to send message to {user.Username}. Error: {ex.Message}");
+            await ReplyAsync($"Error al enviar el mensaje a {user.Username}. Error: {ex.Message}");
         }
     }
 
     [Command("say")]
-    [Summary("Sends a message to a specified channel.")]
+    [Summary("Envía un mensaje a un canal especificado.")]
     [RequireSudo]
     public async Task SayAsync([Remainder] string message)
     {
@@ -453,7 +452,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         var indexOfChannelMentionEnd = message.LastIndexOf('>');
         if (indexOfChannelMentionStart == -1 || indexOfChannelMentionEnd == -1)
         {
-            await ReplyAsync("Please mention a channel properly using #channel.");
+            await ReplyAsync("Por favor menciona un canal correctamente usando #canal.");
             return;
         }
 
@@ -464,13 +463,13 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (channel == null)
         {
-            await ReplyAsync("Channel not found.");
+            await ReplyAsync("Canal no encontrado.");
             return;
         }
 
         if (channel is not IMessageChannel messageChannel)
         {
-            await ReplyAsync("The mentioned channel is not a text channel.");
+            await ReplyAsync("El canal mencionado no es un canal de texto.");
             return;
         }
 
@@ -491,20 +490,20 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
 
         // Send confirmation message to the user
-        await ReplyAsync($"Message successfully posted in {channelMention}.");
+        await ReplyAsync($"Mensaje enviado correctamente en {channelMention}.");
     }
 
     private RemoteControlAccess GetReference(IUser channel) => new()
     {
         ID = channel.Id,
         Name = channel.Username,
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"Añadido por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
     };
 
     private RemoteControlAccess GetReference(IChannel channel) => new()
     {
         ID = channel.Id,
         Name = channel.Name,
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"Añadido por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
     };
 }

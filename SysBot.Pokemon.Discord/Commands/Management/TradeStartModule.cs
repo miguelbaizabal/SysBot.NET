@@ -43,7 +43,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
                 AddLogChannel(c, ch.ID);
         }
 
-        LogUtil.LogInfo("Discord", "Added Trade Start Notification to Discord channel(s) on Bot startup.");
+        LogUtil.LogInfo("Discord", "Se agregó la notificación de inicio de intercambio a los canales de Discord al iniciar el bot.");
     }
 
     public static bool IsStartChannel(ulong cid)
@@ -53,7 +53,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
     }
 
     [Command("startHere")]
-    [Summary("Makes the bot log trade starts to the channel.")]
+    [Summary("Hace que el bot registre los inicios de intercambio en el canal.")]
     [RequireSudo]
     public async Task AddLogAsync()
     {
@@ -61,7 +61,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
         var cid = c.Id;
         if (Channels.TryGetValue(cid, out _))
         {
-            await ReplyAsync("Already logging here.").ConfigureAwait(false);
+            await ReplyAsync("Ya está registrando aquí.").ConfigureAwait(false);
             return;
         }
 
@@ -69,7 +69,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
 
         // Add to discord global loggers (saves on program close)
         SysCordSettings.Settings.TradeStartingChannels.AddIfNew([GetReference(Context.Channel)]);
-        await ReplyAsync("Added Start Notification output to this channel!").ConfigureAwait(false);
+        await ReplyAsync("Se agregó la notificación de inicio de intercambio a este canal!").ConfigureAwait(false);
     }
 
     private static void AddLogChannel(ISocketMessageChannel c, ulong cid)
@@ -81,25 +81,25 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var user = _discordClient.GetUser(detail.Trainer.ID);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-            if (user == null) { Console.WriteLine($"User not found for ID {detail.Trainer.ID}."); return; }
+            if (user == null) { Console.WriteLine($"Ningún usuario encontrado para el ID {detail.Trainer.ID}."); return; }
 
             string speciesName = detail.TradeData != null ? GameInfo.Strings.Species[detail.TradeData.Species] : "";
             string ballImgUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/36e891cc02fe283cd70d9fc8fef2f3c490096d6c/imgs/difficulty.png";
 
             if (detail.TradeData != null && detail.Type != PokeTradeType.Clone && detail.Type != PokeTradeType.Dump && detail.Type != PokeTradeType.Seed && detail.Type != PokeTradeType.FixOT)
             {
-                var ballName = GameInfo.GetStrings("en").balllist[detail.TradeData.Ball]
+                var ballName = GameInfo.GetStrings("es").balllist[detail.TradeData.Ball]
                     .Replace(" ", "").Replace("(LA)", "").ToLower();
                 ballName = ballName == "pokéball" ? "pokeball" : (ballName.Contains("(la)") ? "la" + ballName : ballName);
                 ballImgUrl = $"https://raw.githubusercontent.com/hexbyt3/sprites/main/AltBallImg/28x28/{ballName}.png";
             }
 
-            string tradeTitle = detail.IsMysteryEgg ? "✨ Mystery Egg" : detail.Type switch
+            string tradeTitle = detail.IsMysteryEgg ? "✨ Huevo Misterioso" : detail.Type switch
             {
-                PokeTradeType.Clone => "Cloned Pokémon",
-                PokeTradeType.Dump => "Pokémon Dump",
-                PokeTradeType.FixOT => "Cloned Pokémon (Fixing OT Info)",
-                PokeTradeType.Seed => "Cloned Pokémon (Special Request)",
+                PokeTradeType.Clone => "Pokémon Clonado",
+                PokeTradeType.Dump => "Pokémon Dumpeado",
+                PokeTradeType.FixOT => "Pokémon Clonado (Corrigiendo Información de OT)",
+                PokeTradeType.Seed => "Pokémon Clonado (Solicitud Especial)",
                 _ => speciesName
             };
 
@@ -115,14 +115,14 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
             var (r, g, b) = await GetDominantColorAsync(embedImageUrl);
 
             string footerText = detail.Type == PokeTradeType.Clone || detail.Type == PokeTradeType.Dump || detail.Type == PokeTradeType.Seed || detail.Type == PokeTradeType.FixOT
-                ? "Initializing trade now."
-                : $"Initializing trade now. Enjoy your {(detail.IsMysteryEgg ? "✨ Mystery Egg" : speciesName)}!";
+                ? "Iniciando intercambio ahora."
+                : $"Iniciando intercambio ahora. ¡Disfruta tu {(detail.IsMysteryEgg ? "✨ Huevo Misterioso" : speciesName)}!";
 
             var embed = new EmbedBuilder()
                 .WithColor(new DiscordColor(r, g, b))
                 .WithThumbnailUrl(embedImageUrl)
-                .WithAuthor($"Up Next: {user.Username}", user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
-                .WithDescription($"**Receiving**: {tradeTitle}\n**Trade ID**: {detail.ID}")
+                .WithAuthor($"Siguiente: {user.Username}", user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
+                .WithDescription($"**Recibiendo**: {tradeTitle}\n**ID de intercamnio**: {detail.ID}")
                 .WithFooter($"{footerText}\u200B", ballImgUrl)
                 .WithTimestamp(DateTime.Now)
                 .Build();
@@ -135,7 +135,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
     }
 
     [Command("startInfo")]
-    [Summary("Dumps the Start Notification settings.")]
+    [Summary("Dumpea los ajustes de notificación de inicio.")]
     [RequireSudo]
     public async Task DumpLogInfoAsync()
     {
@@ -144,7 +144,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
     }
 
     [Command("startClear")]
-    [Summary("Clears the Start Notification settings in that specific channel.")]
+    [Summary("Limpia los ajustes de notificación de inicio en ese canal específico.")]
     [RequireSudo]
     public async Task ClearLogsAsync()
     {
@@ -152,30 +152,30 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
         if (Channels.TryGetValue(Context.Channel.Id, out var entry))
             Remove(entry);
         cfg.TradeStartingChannels.RemoveAll(z => z.ID == Context.Channel.Id);
-        await ReplyAsync($"Start Notifications cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+        await ReplyAsync($"Notificaciones de inicio limpiadas del canal: {Context.Channel.Name}").ConfigureAwait(false);
     }
 
     [Command("startClearAll")]
-    [Summary("Clears all the Start Notification settings.")]
+    [Summary("Limpia todos los ajustes de notificación de inicio.")]
     [RequireSudo]
     public async Task ClearLogsAllAsync()
     {
         foreach (var l in Channels)
         {
             var entry = l.Value;
-            await ReplyAsync($"Logging cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+            await ReplyAsync($"¡Registro limpiado de {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
             SysCord<T>.Runner.Hub.Queues.Forwarders.Remove(entry.Action);
         }
         Channels.Clear();
         SysCordSettings.Settings.TradeStartingChannels.Clear();
-        await ReplyAsync("Start Notifications cleared from all channels!").ConfigureAwait(false);
+        await ReplyAsync("¡Notificaciones de inicio limpiadas de todos los canales!").ConfigureAwait(false);
     }
 
     private RemoteControlAccess GetReference(IChannel channel) => new()
     {
         ID = channel.Id,
         Name = channel.Name,
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
     };
 
     public static async Task<(int R, int G, int B)> GetDominantColorAsync(string imagePath)
@@ -233,7 +233,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
         catch (Exception ex)
         {
             // Log or handle exceptions as needed
-            Console.WriteLine($"Error processing image from {imagePath}. Error: {ex.Message}");
+            Console.WriteLine($"Error al procesar imagen desde {imagePath}. Error: {ex.Message}");
             return (255, 255, 255);  // Default to white if an exception occurs
         }
     }

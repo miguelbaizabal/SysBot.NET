@@ -88,10 +88,10 @@ namespace SysBot.Pokemon.Discord
             var formattedTimestamp = $"<t:{unixTimestamp}:F>";
 
             var embedColor = isFull ? Color.Red : Color.Green;
-            var title = isFull ? "🚫 Queue is Now Full!" : "✅ Queue is Now Open!";
+            var title = isFull ? "🚫 ¡La cola está llena!" : "✅ ¡La cola está abierta!";
             var description = isFull
-                ? $"The queue has reached maximum capacity and is now **closed**.\n\n**Current Queue Count:** {currentCount}/{maxCount}\n\nThe queue will automatically open when trades are completed and space becomes available.\n\n**Status Updated:** {formattedTimestamp}"
-                : $"The queue is now **open** and accepting new trades!\n\n**Current Queue Count:** {currentCount}/{maxCount}\n\n**Status Updated:** {formattedTimestamp}";
+                ? $"La cola ha alcanzado su capacidad máxima y ahora está **cerrada**.\n\n**Cantidad actual de la cola:** {currentCount}/{maxCount}\n\nLa cola se abrirá automáticamente cuando se completen los intercambios y haya espacio disponible.\n\n**Estado actualizado:** {formattedTimestamp}"
+                : $"¡La cola está ahora **abierta** y aceptando nuevos intercambios!\n\n**Cantidad actual de la cola:** {currentCount}/{maxCount}\n\n**Estado actualizado:** {formattedTimestamp}";
 
             var thumbnailUrl = Settings.AnnouncementSettings.RandomAnnouncementThumbnail ? GetRandomThumbnail() : GetSelectedThumbnail();
 
@@ -102,7 +102,7 @@ namespace SysBot.Pokemon.Discord
             }
             .WithTitle(title)
             .WithThumbnailUrl(thumbnailUrl)
-            .WithFooter("Queue status updates are automatic")
+            .WithFooter("Las actualizaciones del estado de la cola son automáticas")
             .Build();
 
             foreach (var channelEntry in Channels)
@@ -117,14 +117,14 @@ namespace SysBot.Pokemon.Discord
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to send queue status to channel {channelId}: {ex.Message}", nameof(SendQueueStatusEmbedAsync));
+                    LogUtil.LogError($"Error al enviar el estado de la cola al canal {channelId}: {ex.Message}", nameof(SendQueueStatusEmbedAsync));
                 }
             }
         }
 
         [Command("Announce", RunMode = RunMode.Async)]
         [Alias("announce")]
-        [Summary("Sends an announcement to all EchoChannels added by the aec command.")]
+        [Summary("Envía un anuncio a todos los canales de eco agregados por el comando aec.")]
         [RequireOwner]
         public async Task AnnounceAsync([Remainder] string announcement)
         {
@@ -135,14 +135,14 @@ namespace SysBot.Pokemon.Discord
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             var thumbnailUrl = Settings.AnnouncementSettings.RandomAnnouncementThumbnail ? GetRandomThumbnail() : GetSelectedThumbnail();
 
-            var embedDescription = $"## {announcement}\n\n**Sent: {formattedTimestamp}**";
+            var embedDescription = $"## {announcement}\n\n**Enviado: {formattedTimestamp}**";
 
             var embed = new EmbedBuilder
             {
                 Color = embedColor,
                 Description = embedDescription
             }
-            .WithTitle("Important Announcement!")
+            .WithTitle("¡Anuncio Importante!")
             .WithThumbnailUrl(thumbnailUrl)
             .Build();
 
@@ -152,7 +152,7 @@ namespace SysBot.Pokemon.Discord
                 var channelId = channelEntry.Key;
                 if (client.GetChannel(channelId) is not ISocketMessageChannel channel)
                 {
-                    LogUtil.LogError($"Failed to find or access channel {channelId}", nameof(AnnounceAsync));
+                    LogUtil.LogError($"Error al encontrar o acceder al canal {channelId}", nameof(AnnounceAsync));
                     continue;
                 }
 
@@ -162,10 +162,10 @@ namespace SysBot.Pokemon.Discord
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to send announcement to channel {channel.Name}: {ex.Message}", nameof(AnnounceAsync));
+                    LogUtil.LogError($"Error al enviar el anuncio al canal {channel.Name}: {ex.Message}", nameof(AnnounceAsync));
                 }
             }
-            var confirmationMessage = await ReplyAsync("Announcement sent to all EchoChannels.").ConfigureAwait(false);
+            var confirmationMessage = await ReplyAsync("Anuncio enviado a todos los canales de eco.").ConfigureAwait(false);
             await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
             await confirmationMessage.DeleteAsync().ConfigureAwait(false);
             await Context.Message.DeleteAsync().ConfigureAwait(false);
@@ -225,7 +225,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("addEmbedChannel")]
         [Alias("aec")]
-        [Summary("Makes the bot post raid embeds to the channel.")]
+        [Summary("Hace que el bot publique embeds de raid en el canal.")]
         [RequireSudo]
         public async Task AddEchoAsync()
         {
@@ -233,14 +233,14 @@ namespace SysBot.Pokemon.Discord
             var cid = c.Id;
             if (Channels.TryGetValue(cid, out _))
             {
-                await ReplyAsync("Already notifying here.").ConfigureAwait(false);
+                await ReplyAsync("Ya se está notificando aquí.").ConfigureAwait(false);
                 return;
             }
 
             AddEchoChannel(c, cid);
 
             SysCordSettings.Settings.AnnouncementChannels.AddIfNew([GetReference(Context.Channel)]);
-            await ReplyAsync("Added Trade Embed output to this channel!").ConfigureAwait(false);
+            await ReplyAsync("Se añadió la salida de embed de intercambio a este canal!").ConfigureAwait(false);
         }
 
         private static async Task<bool> SendMessageWithRetry(ISocketMessageChannel c, string message, int maxRetries = 3)
@@ -255,7 +255,7 @@ namespace SysBot.Pokemon.Discord
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to send message to channel '{c.Name}' (Attempt {retryCount + 1}): {ex.Message}", nameof(AddEchoChannel));
+                    LogUtil.LogError($"Error al enviar el mensaje al canal '{c.Name}' (Intento {retryCount + 1}): {ex.Message}", nameof(AddEchoChannel));
                     retryCount++;
                     await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false); // Wait for 5 seconds before retrying.
                 }
@@ -282,7 +282,7 @@ namespace SysBot.Pokemon.Discord
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to send embed to channel '{c.Name}' (Attempt {retryCount + 1}): {ex.Message}", nameof(AddEchoChannel));
+                    LogUtil.LogError($"Error al enviar el embed al canal '{c.Name}' (Intento {retryCount + 1}): {ex.Message}", nameof(AddEchoChannel));
                     retryCount++;
                     if (retryCount < maxRetries)
                         await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false); // Wait for a second before retrying.
@@ -314,7 +314,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("echoInfo")]
-        [Summary("Dumps the special message (Echo) settings.")]
+        [Summary("Muestra la configuración de mensajes especiales (Echo).")]
         [RequireSudo]
         public async Task DumpEchoInfoAsync()
         {
@@ -324,45 +324,45 @@ namespace SysBot.Pokemon.Discord
 
         [Command("echoClear")]
         [Alias("rec")]
-        [Summary("Clears the special message echo settings in that specific channel.")]
+        [Summary("Limpia la configuración de mensajes especiales (Echo) en ese canal específico.")]
         [RequireSudo]
         public async Task ClearEchosAsync()
         {
             var id = Context.Channel.Id;
             if (!Channels.TryGetValue(id, out var echo))
             {
-                await ReplyAsync("Not echoing in this channel.").ConfigureAwait(false);
+                await ReplyAsync("No se está haciendo eco en este canal.").ConfigureAwait(false);
                 return;
             }
             EchoUtil.Forwarders.Remove(echo.Action);
             Channels.Remove(Context.Channel.Id);
             SysCordSettings.Settings.AnnouncementChannels.RemoveAll(z => z.ID == id);
-            await ReplyAsync($"Echoes cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+            await ReplyAsync($"Se han limpiado los mensajes especiales del canal: {Context.Channel.Name}").ConfigureAwait(false);
         }
 
         [Command("echoClearAll")]
         [Alias("raec")]
-        [Summary("Clears all the special message Echo channel settings.")]
+        [Summary("Limpiar todas las configuraciones de mensajes especiales (Echo) en todos los canales.")]
         [RequireSudo]
         public async Task ClearEchosAllAsync()
         {
             foreach (var l in Channels)
             {
                 var entry = l.Value;
-                await ReplyAsync($"Echoing cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+                await ReplyAsync($"¡Se ha limpiado el eco de {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
                 EchoUtil.Forwarders.Remove(entry.Action);
             }
             EchoUtil.Forwarders.RemoveAll(y => Channels.Select(x => x.Value.Action).Contains(y));
             Channels.Clear();
             SysCordSettings.Settings.AnnouncementChannels.Clear();
-            await ReplyAsync("Echoes cleared from all channels!").ConfigureAwait(false);
+            await ReplyAsync("¡Se han limpiado los mensajes especiales de todos los canales!").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(IChannel channel) => new()
         {
             ID = channel.Id,
             Name = channel.Name,
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+            Comment = $"Añadido por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
     }
 }
