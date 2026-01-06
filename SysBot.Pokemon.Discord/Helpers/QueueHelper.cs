@@ -46,22 +46,22 @@ public static class QueueHelper<T> where T : PKM, new()
     {
         return tradeCount switch
         {
-            1 => "Congratulations on your first trade!\n**Status:** Newbie Trainer.",
-            50 => "You've reached 50 trades!\n**Status:** Novice Trainer.",
-            100 => "You've reached 100 trades!\n**Status:** Pokémon Professor.",
-            150 => "You've reached 150 trades!\n**Status:** Pokémon Specialist.",
-            200 => "You've reached 200 trades!\n**Status:** Pokémon Champion.",
-            250 => "You've reached 250 trades!\n**Status:** Pokémon Hero.",
-            300 => "You've reached 300 trades!\n**Status:** Pokémon Elite.",
-            350 => "You've reached 350 trades!\n**Status:** Pokémon Trader.",
-            400 => "You've reached 400 trades!\n**Status:** Pokémon Sage.",
-            450 => "You've reached 450 trades!\n**Status:** Pokémon Legend.",
-            500 => "You've reached 500 trades!\n**Status:** Region Master.",
-            550 => "You've reached 550 trades!\n**Status:** Trade Master.",
-            600 => "You've reached 600 trades!\n**Status:** World Famous.",
-            650 => "You've reached 650 trades!\n**Status:** Pokémon Master.",
-            700 => "You've reached 700 trades!\n**Status:** Pokémon God.",
-            _ => $"Congratulations on reaching {tradeCount} trades! Keep it going!"
+            1 => "¡Felicitaciones por tu primer intercambio!\n**Estado:** Entrenador Novato.",
+            50 => "¡Has alcanzado 50 intercambios!\n**Estado:** Entrenador Principiante.",
+            100 => "¡Has alcanzado 100 intercambios!\n**Estado:** Profesor Pokémon.",
+            150 => "¡Has alcanzado 150 intercambios!\n**Estado:** Especialista Pokémon.",
+            200 => "¡Has alcanzado 200 intercambios!\n**Estado:** Campeón Pokémon.",
+            250 => "¡Has alcanzado 250 intercambios!\n**Estado:** Héroe Pokémon.",
+            300 => "¡Has alcanzado 300 intercambios!\n**Estado:** Élite Pokémon.",
+            350 => "¡Has alcanzado 350 intercambios!\n**Estado:** Comerciante Pokémon.",
+            400 => "¡Has alcanzado 400 intercambios!\n**Estado:** Sabio Pokémon.",
+            450 => "¡Has alcanzado 450 intercambios!\n**Estado:** Leyenda Pokémon.",
+            500 => "¡Has alcanzado 500 intercambios!\n**Estado:** Maestro de la Región.",
+            550 => "¡Has alcanzado 550 intercambios!\n**Estado:** Maestro del Intercambio.",
+            600 => "¡Has alcanzado 600 intercambios!\n**Estado:** Famoso Mundial.",
+            650 => "¡Has alcanzado 650 intercambios!\n**Estado:** Maestro Pokémon.",
+            700 => "¡Has alcanzado 700 intercambios!\n**Estado:** Dios Pokémon.",
+            _ => $"¡Felicitaciones por alcanzar {tradeCount} intercambios! ¡Sigue así!"
         };
     }
 
@@ -69,7 +69,7 @@ public static class QueueHelper<T> where T : PKM, new()
     {
         if ((uint)code > MaxTradeCode)
         {
-            await context.Channel.SendMessageAsync("Trade code should be 00000000-99999999!").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync("¡ El código de intercambio debe estar entre 00000000-99999999!").ConfigureAwait(false);
             return;
         }
 
@@ -81,7 +81,7 @@ public static class QueueHelper<T> where T : PKM, new()
                 if (trade is PB7 && lgcode != null)
                 {
                     var (thefile, lgcodeembed) = CreateLGLinkCodeSpriteEmbed(lgcode);
-                    await trader.SendFileAsync(thefile, "Your trade code will be.", embed: lgcodeembed).ConfigureAwait(false);
+                    await trader.SendFileAsync(thefile, "Tu código de intercambio será.", embed: lgcodeembed).ConfigureAwait(false);
                 }
                 else
                 {
@@ -148,7 +148,7 @@ public static class QueueHelper<T> where T : PKM, new()
 
         if (added == QueueResultAdd.AlreadyInQueue)
         {
-            await context.Channel.SendMessageAsync($"{trader.Mention} - You are already in the queue!").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync($"{trader.Mention} - ¡Ya estás en la cola!").ConfigureAwait(false);
             return new TradeQueueResult(false);
         }
 
@@ -157,9 +157,9 @@ public static class QueueHelper<T> where T : PKM, new()
             var maxCount = SysCord<T>.Runner.Config.Queues.MaxQueueCount;
             var embed = new EmbedBuilder()
                 .WithColor(DiscordColor.Red)
-                .WithTitle("🚫 Queue Full")
-                .WithDescription($"The queue is currently full ({maxCount}/{maxCount}). Please try again later when space becomes available.")
-                .WithFooter("Queue will open up as trades are completed")
+                .WithTitle("🚫 Cola Llena")
+                .WithDescription($"La cola está actualmente llena ({maxCount}/{maxCount}). Por favor, inténtalo de nuevo más tarde cuando haya espacio disponible.")
+                .WithFooter("La cola se abrirá a medida que se completen los intercambios")
                 .WithTimestamp(DateTimeOffset.Now)
                 .Build();
 
@@ -170,8 +170,8 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = pk.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(none)";
-            await context.Channel.SendMessageAsync($"{trader.Mention} - Trade blocked: the held item '{itemName}' cannot be traded in PLZA.").ConfigureAwait(false);
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("es").Item[held] : "(ninguno)";
+            await context.Channel.SendMessageAsync($"{trader.Mention} - Intercambio bloqueado: el objeto '{itemName}' no puede ser intercambiado en PLZA.").ConfigureAwait(false);
             return new TradeQueueResult(false);
         }
 
@@ -203,8 +203,8 @@ public static class QueueHelper<T> where T : PKM, new()
             var position = Info.CheckPosition(userID, uniqueTradeID, type);
             var botct = Info.Hub.Bots.Count;
             var baseEta = position.Position > botct ? Info.Hub.Config.Queues.EstimateDelay(position.Position, botct) : 0;
-            var etaMessage = $"Estimated: {baseEta:F1} min(s) for trade.";
-            string footerText = $"Current Position: {(position.Position == -1 ? 1 : position.Position)}";
+            var etaMessage = $"Tiempo estimado: {baseEta:F1} min(s) para el intercambio.";
+            string footerText = $"Posición actual: {(position.Position == -1 ? 1 : position.Position)}";
 
             string userDetailsText = DetailsExtractor<T>.GetUserDetails(totalTradeCount, tradeDetails);
             if (!string.IsNullOrEmpty(userDetailsText))
@@ -239,23 +239,23 @@ public static class QueueHelper<T> where T : PKM, new()
                 if (homeTrack.HasTracker && isNonNative)
                 {
                     embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                    embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native & Has Home Tracker.**", "*AutoOT not applied.*");
+                    embedBuilder.AddField("**__Aviso__**: **Este Pokémon no es nativo y tiene rastreador de HOME.**", "*No se aplicó el AutoOT.*");
                 }
                 else if (homeTrack.HasTracker)
                 {
                     embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                    embedBuilder.AddField("**__Notice__**: **Home Tracker Detected.**", "*AutoOT not applied.*");
+                    embedBuilder.AddField("**__Aviso__**: **Rastreador de HOME detectado.**", "*No se aplicó el AutoOT.*");
                 }
                 else if (isNonNative)
                 {
                     embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                    embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native.**", "*Cannot enter HOME & AutoOT not applied.*");
+                    embedBuilder.AddField("**__Aviso__**: **Este Pokémon no es nativo.**", "*No puede entrar en HOME y el AutoOT no se aplicó.*");
                 }
             }
             else if (isNonNative)
             {
                 embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native.**", "*Cannot enter HOME & AutoOT not applied.*");
+                embedBuilder.AddField("**__Aviso__**: **Este Pokémon no es nativo.**", "*No puede entrar en HOME y el AutoOT no se aplicó.*");
             }
 
             DetailsExtractor<T>.AddThumbnails(embedBuilder, type == PokeRoutineType.Clone, type == PokeRoutineType.SeedCheck, embedData.HeldItemUrl);
@@ -265,8 +265,8 @@ public static class QueueHelper<T> where T : PKM, new()
                 var embed = embedBuilder.Build();
                 if (embed == null)
                 {
-                    Console.WriteLine("Error: Embed is null.");
-                    await context.Channel.SendMessageAsync("An error occurred while preparing the trade details.");
+                    Console.WriteLine("Error: El embed es nulo.");
+                    await context.Channel.SendMessageAsync("Ocurrió un error mientras se preparaban los detalles del intercambio.");
                     return new TradeQueueResult(false);
                 }
 
@@ -282,7 +282,7 @@ public static class QueueHelper<T> where T : PKM, new()
             }
             else
             {
-                var message = $"{trader.Mention} - Added to the LinkTrade queue. Current Position: {position.Position}. Receiving: {embedData.SpeciesName}.\n{etaMessage}";
+                var message = $"{trader.Mention} - Agregado a la cola de intercambio en línea. Posición actual: {position.Position}. Recibiendo: {embedData.SpeciesName}.\n{etaMessage}";
                 await context.Channel.SendMessageAsync(message);
             }
         }
@@ -337,7 +337,7 @@ public static class QueueHelper<T> where T : PKM, new()
         // Handle the display
         if (added == QueueResultAdd.AlreadyInQueue)
         {
-            await context.Channel.SendMessageAsync($"{trader.Mention} - You are already in the queue!").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync($"{trader.Mention} - ¡Ya estás en la cola!").ConfigureAwait(false);
             return;
         }
 
@@ -346,9 +346,9 @@ public static class QueueHelper<T> where T : PKM, new()
             var maxCount = SysCord<T>.Runner.Config.Queues.MaxQueueCount;
             var embed = new EmbedBuilder()
                 .WithColor(DiscordColor.Red)
-                .WithTitle("🚫 Queue Full")
-                .WithDescription($"The queue is currently full ({maxCount}/{maxCount}). Please try again later when space becomes available.")
-                .WithFooter("Queue will open up as trades are completed")
+                .WithTitle("🚫 Cola Llena")
+                .WithDescription($"La cola está actualmente llena ({maxCount}/{maxCount}). Por favor inténtalo de nuevo más tarde cuando haya espacio disponible.")
+                .WithFooter("La cola se abrirá a medida que se completen los intercambios")
                 .WithTimestamp(DateTimeOffset.Now)
                 .Build();
 
@@ -359,8 +359,8 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = firstTrade.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(none)";
-            await context.Channel.SendMessageAsync($"{trader.Mention} - Trade blocked: the held item '{itemName}' cannot be traded in PLZA.").ConfigureAwait(false);
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("es").Item[held] : "(ninguno)";
+            await context.Channel.SendMessageAsync($"{trader.Mention} - Intercambio bloqueado: el objeto equipado '{itemName}' no puede ser intercambiado en PLZA.").ConfigureAwait(false);
             return;
         }
 
@@ -379,7 +379,7 @@ public static class QueueHelper<T> where T : PKM, new()
         }
 
         // Send initial batch summary message
-        await context.Channel.SendMessageAsync($"{trader.Mention} - Added batch trade with {totalBatchTrades} Pokémon to the queue! Position: {position.Position}. Estimated: {baseEta:F1} min(s).").ConfigureAwait(false);
+        await context.Channel.SendMessageAsync($"{trader.Mention} - ¡Intercambio por lotes agregado con {totalBatchTrades} Pokémon a la cola! Posición: {position.Position}. Tiempo estimado: {baseEta:F1} min(s).").ConfigureAwait(false);
 
         // Create and send embeds for each Pokémon in the batch
         if (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.UseEmbeds)
@@ -410,16 +410,16 @@ public static class QueueHelper<T> where T : PKM, new()
                     embedData.IsLocalFile = File.Exists(embedData.EmbedImageUrl);
 
                     // Build footer text with batch info
-                    string footerText = $"Batch Trade {batchTradeNumber} of {totalBatchTrades}";
+                    string footerText = $"Intercambio por lotes {batchTradeNumber} de {totalBatchTrades}";
                     if (i == 0) // Only show position and ETA on first embed
                     {
-                        footerText += $" | Position: {position.Position}";
+                        footerText += $" | Posición: {position.Position}";
                         string userDetailsText = DetailsExtractor<T>.GetUserDetails(totalTradeCount, tradeDetails);
                         if (!string.IsNullOrEmpty(userDetailsText))
                         {
                             footerText += $"\n{userDetailsText}";
                         }
-                        footerText += $"\nEstimated: {baseEta:F1} min(s) for batch";
+                        footerText += $"\nTiempo estimado: {baseEta:F1} min(s) para el intercambio por lotes";
                     }
 
                     // Create embed
@@ -441,7 +441,7 @@ public static class QueueHelper<T> where T : PKM, new()
                         if (homeTrack.HasTracker)
                         {
                             embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                            embedBuilder.AddField("**__Notice__**: **Home Tracker Detected.**", "*AutoOT not applied.*");
+                            embedBuilder.AddField("**__Aviso__**: **Rastreador de Home detectado.**", "*No se aplicó el AutoOT.*");
                         }
                     }
 
@@ -533,7 +533,7 @@ public static class QueueHelper<T> where T : PKM, new()
             embedImageUrl = speciesImageUrl;
         }
 
-        var strings = GameInfo.GetStrings("en");
+        var strings = GameInfo.GetStrings("es");
         string ballName = strings.balllist[pk.Ball];
         if (ballName.Contains("(LA)"))
         {
@@ -579,7 +579,7 @@ public static class QueueHelper<T> where T : PKM, new()
 
             if (!ballImageLoaded)
             {
-                Console.WriteLine($"Ball image could not be loaded: {ballImgUrl}");
+                Console.WriteLine($"La imagen de la Pokéball no pudo ser cargada: {ballImgUrl}");
             }
         }
 
@@ -592,14 +592,14 @@ public static class QueueHelper<T> where T : PKM, new()
         using var speciesImage = await LoadImageFromUrl(speciesImageUrl);
         if (speciesImage == null)
         {
-            Console.WriteLine("Species image could not be loaded.");
+            Console.WriteLine("La imagen del Pokémon no pudo ser cargada.");
             return (null, false);
         }
 
         var ballImage = await LoadImageFromUrl(ballImageUrl);
         if (ballImage == null)
         {
-            Console.WriteLine($"Ball image could not be loaded: {ballImageUrl}");
+            Console.WriteLine($"La imagen de la Pokéball no pudo ser cargada: {ballImageUrl}");
 #pragma warning disable CA1416 // Validate platform compatibility
             return ((System.Drawing.Image)speciesImage.Clone(), false);
 #pragma warning restore CA1416 // Validate platform compatibility
@@ -628,7 +628,7 @@ public static class QueueHelper<T> where T : PKM, new()
         
         if (eggImage == null || speciesImage == null)
         {
-            throw new InvalidOperationException("Failed to load egg or species image.");
+            throw new InvalidOperationException("Error al cargar la imagen del huevo o del Pokémon.");
         }
 
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -670,14 +670,14 @@ public static class QueueHelper<T> where T : PKM, new()
         HttpResponseMessage response = await client.GetAsync(url);
         if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Failed to load image from {url}. Status code: {response.StatusCode}");
+            Console.WriteLine($"Error al cargar la imagen desde {url}. Código de estado: {response.StatusCode}");
             return null;
         }
 
         Stream stream = await response.Content.ReadAsStreamAsync();
         if (stream == null || stream.Length == 0)
         {
-            Console.WriteLine($"No data or empty stream received from {url}");
+            Console.WriteLine($"Ningún dato o stream vacío recibido desde {url}");
             return null;
         }
 
@@ -689,7 +689,7 @@ public static class QueueHelper<T> where T : PKM, new()
         }
         catch (ArgumentException ex)
         {
-            Console.WriteLine($"Failed to create image from stream. URL: {url}, Exception: {ex}");
+            Console.WriteLine($"Error al crear la imagen desde el stream. URL: {url}, Excepción: {ex}");
             return null;
         }
     }
@@ -710,7 +710,7 @@ public static class QueueHelper<T> where T : PKM, new()
             }
             catch (IOException ex)
             {
-                Console.WriteLine($"Error deleting file: {ex.Message}");
+                Console.WriteLine($"Error al eliminar el archivo: {ex.Message}");
             }
         }
     }
@@ -720,7 +720,7 @@ public static class QueueHelper<T> where T : PKM, new()
         if (MilestoneImages.TryGetValue(tradeCount, out string? imageUrl))
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"{user.Username}'s Milestone Medal")
+                .WithTitle($"Medallade Logro de {user.Username}")
                 .WithDescription(GetMilestoneDescription(tradeCount))
                 .WithColor(new DiscordColor(255, 215, 0)) // Gold color
                 .WithThumbnailUrl(imageUrl)
@@ -781,7 +781,7 @@ public static class QueueHelper<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error processing image from {imagePath}. Error: {ex.Message}");
+            Console.WriteLine($"Error al procesar la imagen desde {imagePath}. Error: {ex.Message}");
             return (255, 255, 255);
         }
     }
@@ -815,7 +815,7 @@ public static class QueueHelper<T> where T : PKM, new()
                     var permissions = context.Guild.CurrentUser.GetPermissions(context.Channel as IGuildChannel);
                     if (!permissions.SendMessages)
                     {
-                        message = "You must grant me \"Send Messages\" permissions!";
+                        message = "¡Debes darme permisos para \"Enviar Mensajes\"!";
                         Base.LogUtil.LogError("QueueHelper", message);
                         return;
                     }
@@ -823,20 +823,20 @@ public static class QueueHelper<T> where T : PKM, new()
                     {
                         var app = await context.Client.GetApplicationInfoAsync().ConfigureAwait(false);
                         var owner = app.Owner.Id;
-                        message = $"<@{owner}> You must grant me \"Manage Messages\" permissions!";
+                        message = $"<@{owner}> ¡Debes darme permisos para \"Administrar Mensajes\"!";
                     }
                 }
                 break;
 
             case DiscordErrorCode.CannotSendMessageToUser:
                 {
-                    message = context.User == trader ? "You must enable private messages in order to be queued!" : "The mentioned user must enable private messages in order for them to be queued!";
+                    message = context.User == trader ? "¡Debes habilitar los mensajes privados para ser encolado!" : "¡El usuario mencionado debe habilitar los mensajes privados para ser encolado!";
                 }
                 break;
 
             default:
                 {
-                    message = ex.DiscordCode != null ? $"Discord error {(int)ex.DiscordCode}: {ex.Reason}" : $"Http error {(int)ex.HttpCode}: {ex.Message}";
+                    message = ex.DiscordCode != null ? $"Error de Discord {(int)ex.DiscordCode}: {ex.Reason}" : $"Error HTTP {(int)ex.HttpCode}: {ex.Message}";
                 }
                 break;
         }

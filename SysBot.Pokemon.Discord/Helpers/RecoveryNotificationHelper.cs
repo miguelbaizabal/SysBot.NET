@@ -13,7 +13,7 @@ public static class RecoveryNotificationHelper
 {
     private static DiscordSocketClient? _client;
     private static ulong? _notificationChannelId;
-    private static string _hubName = "Bot Hub";
+    private static string _hubName = "Centro de control del Bot";
 
     /// <summary>
     /// Initializes the recovery notification system with Discord client and channel.
@@ -42,12 +42,12 @@ public static class RecoveryNotificationHelper
     private static async Task OnBotCrashed(BotCrashEventArgs e)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("⚠️ Bot Crash Detected")
-            .WithDescription($"**Bot**: {e.BotName}\n**Time**: {e.CrashTime:yyyy-MM-dd HH:mm:ss} UTC")
+            .WithTitle("⚠️ Crash del Bot Detectado")
+            .WithDescription($"**Bot**: {e.BotName}\n**Fecha y Hora**: {e.CrashTime:yyyy-MM-dd HH:mm:ss} UTC")
             .WithColor(Color.Orange)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .AddField("Status", "Attempting automatic recovery...", false)
-            .WithFooter($"{_hubName} Recovery System")
+            .AddField("Status", "Intentando recuperación automática...", false)
+            .WithFooter($"{_hubName} Sistema de Recuperación")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -58,11 +58,11 @@ public static class RecoveryNotificationHelper
         if (!e.IsSuccess) // Only notify on attempts, not successes (handled separately)
         {
             var embed = new EmbedBuilder()
-                .WithTitle("🔄 Recovery Attempt")
-                .WithDescription($"**Bot**: {e.BotName}\n**Attempt**: {e.AttemptNumber}")
+                .WithTitle("🔄 Intento de Recuperación")
+                .WithDescription($"**Bot**: {e.BotName}\n**Intento**: {e.AttemptNumber}")
                 .WithColor(Color.Blue)
                 .WithTimestamp(DateTimeOffset.UtcNow)
-                .WithFooter($"{_hubName} Recovery System")
+                .WithFooter($"{_hubName} Sistema de Recuperación")
                 .Build();
 
             await SendNotificationAsync(embed);
@@ -72,12 +72,12 @@ public static class RecoveryNotificationHelper
     private static async Task OnRecoverySucceeded(BotRecoveryEventArgs e)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("✅ Bot Recovery Successful")
-            .WithDescription($"**Bot**: {e.BotName}\n**Attempts**: {e.AttemptNumber}")
+            .WithTitle("✅ Recuperación del Bot Exitosa")
+            .WithDescription($"**Bot**: {e.BotName}\n**Intentos**: {e.AttemptNumber}")
             .WithColor(Color.Green)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .AddField("Status", "Bot is now running normally", false)
-            .WithFooter($"{_hubName} Recovery System")
+            .AddField("Status", "El bot ahora está funcionando normalmente", false)
+            .WithFooter($"{_hubName} Sistema de Recuperación")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -86,13 +86,13 @@ public static class RecoveryNotificationHelper
     private static async Task OnRecoveryFailed(BotRecoveryEventArgs e)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("❌ Bot Recovery Failed")
-            .WithDescription($"**Bot**: {e.BotName}\n**Attempts**: {e.AttemptNumber}")
+            .WithTitle("❌ Recuperación del Bot Fallida")
+            .WithDescription($"**Bot**: {e.BotName}\n**Intentos**: {e.AttemptNumber}")
             .WithColor(Color.Red)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .AddField("Reason", e.FailureReason ?? "Unknown error", false)
-            .AddField("Action Required", "Manual intervention needed to restart this bot", false)
-            .WithFooter($"{_hubName} Recovery System")
+            .AddField("Reason", e.FailureReason ?? "Error desconocido", false)
+            .AddField("Action Required", "Se requiere intervención manual para reiniciar este bot", false)
+            .WithFooter($"{_hubName} Sistema de Recuperación")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -112,7 +112,7 @@ public static class RecoveryNotificationHelper
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Failed to send recovery notification to Discord: {ex.Message}", "RecoveryNotification");
+            LogUtil.LogError($"Error al enviar notificación de recuperación a Discord: {ex.Message}", "RecoveryNotification");
         }
     }
 
@@ -126,7 +126,7 @@ public static class RecoveryNotificationHelper
             .WithDescription(description)
             .WithColor(color)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .WithFooter($"{_hubName} Recovery System")
+            .WithFooter($"{_hubName} Sistema de Recuperación")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -139,20 +139,20 @@ public static class RecoveryNotificationHelper
         where T : class, IConsoleBotConfig
     {
         var embedBuilder = new EmbedBuilder()
-            .WithTitle("📊 Bot Recovery Summary")
+            .WithTitle("📊 Resumen de Recuperación del Bot")
             .WithColor(Color.Blue)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .WithFooter($"{_hubName} Recovery System");
+            .WithFooter($"{_hubName} Sistema de Recuperación");
 
         foreach (var bot in runner.Bots)
         {
             var state = bot.GetRecoveryState();
             if (state != null && (state.ConsecutiveFailures > 0 || state.CrashHistory.Count > 0))
             {
-                var status = bot.IsRunning ? "🟢 Running" : "🔴 Stopped";
-                var fieldValue = $"Status: {status}\n" +
-                                $"Crashes: {state.CrashHistory.Count}\n" +
-                                $"Failed Attempts: {state.ConsecutiveFailures}";
+                var status = bot.IsRunning ? "🟢 En ejecución" : "🔴 Detenido";
+                var fieldValue = $"Estado: {status}\n" +
+                                $"Crasheos: {state.CrashHistory.Count}\n" +
+                                $"Intentos Fallidos: {state.ConsecutiveFailures}";
                 
                 embedBuilder.AddField(bot.Bot.Connection.Name, fieldValue, true);
             }
@@ -160,7 +160,7 @@ public static class RecoveryNotificationHelper
 
         if (embedBuilder.Fields.Count == 0)
         {
-            embedBuilder.WithDescription("All bots are running normally with no recent crashes.");
+            embedBuilder.WithDescription("Todos los bots están funcionando normalmente sin crasheos recientes.");
         }
 
         await SendNotificationAsync(embedBuilder.Build());

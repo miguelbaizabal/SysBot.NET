@@ -36,22 +36,22 @@ public static class DetailsExtractor<T> where T : PKM, new()
     /// <param name="pk">Pokémon data.</param>
     public static void AddNormalTradeFields(EmbedBuilder embedBuilder, EmbedData embedData, string trainerMention, T pk)
     {
-        string leftSideContent = $"**Trainer:** {trainerMention}\n";
+        string leftSideContent = $"**Entrenador:** {trainerMention}\n";
         leftSideContent +=
-            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowTeraType ? $"**Tera Type:** {embedData.TeraType}\n" : "") +
-            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowScale ? $"**Scale:** {embedData.Scale.Item1} ({embedData.Scale.Item2})\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLevel ? $"**Level:** {embedData.Level}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowMetDate ? $"**Met Date:** {embedData.MetDate}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowAbility ? $"**Ability:** {embedData.Ability}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowNature ? $"**Nature**: {embedData.Nature}\n" : "") +
+            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowTeraType ? $"**Teratipo:** {embedData.TeraType}\n" : "") +
+            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowScale ? $"**Tamaño:** {embedData.Scale.Item1} ({embedData.Scale.Item2})\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLevel ? $"**Nivel:** {embedData.Level}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowMetDate ? $"**Fecha de Captura:** {embedData.MetDate}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowAbility ? $"**Habilidad:** {embedData.Ability}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowNature ? $"**Naturaleza**: {embedData.Nature}\n" : "") +
             (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowIVs ? $"**IVs**: {embedData.IVsDisplay}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLanguage ? $"**Language**: {embedData.Language}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLanguage ? $"**Idioma**: {embedData.Language}\n" : "") +
             (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowEVs && !string.IsNullOrWhiteSpace(embedData.EVsDisplay) ? $"**EVs**: {embedData.EVsDisplay}\n" : "");
 
         leftSideContent = leftSideContent.TrimEnd('\n');
         embedBuilder.AddField($"**{embedData.SpeciesName}{(string.IsNullOrEmpty(embedData.FormName) ? "" : $"-{embedData.FormName}")} {embedData.SpecialSymbols}**", leftSideContent, inline: true);
         embedBuilder.AddField("\u200B", "\u200B", inline: true);
-        embedBuilder.AddField("**Moves:**", embedData.MovesDisplay, inline: true);
+        embedBuilder.AddField("**Movimientos:**", embedData.MovesDisplay, inline: true);
     }
 
     /// <summary>
@@ -65,8 +65,8 @@ public static class DetailsExtractor<T> where T : PKM, new()
     /// <param name="trainerMention">Discord mention for the trainer.</param>
     public static void AddSpecialTradeFields(EmbedBuilder embedBuilder, bool isMysteryEgg, bool isSpecialRequest, bool isCloneRequest, bool isFixOTRequest, string trainerMention)
     {
-        string specialDescription = $"**Trainer:** {trainerMention}\n" +
-                                    (isMysteryEgg ? "Mystery Egg" : isSpecialRequest ? "Special Request" : isCloneRequest ? "Clone Request" : isFixOTRequest ? "FixOT Request" : "Dump Request");
+        string specialDescription = $"**Entrenador:** {trainerMention}\n" +
+                                    (isMysteryEgg ? "Huevo Misterioso" : isSpecialRequest ? "Solicitud Especial" : isCloneRequest ? "Solicitud de Clonación" : isFixOTRequest ? "Solicitud de Corrección de OT" : "Solicitud de Dump");
         embedBuilder.AddField("\u200B", specialDescription, inline: false);
     }
 
@@ -188,7 +188,7 @@ public static class DetailsExtractor<T> where T : PKM, new()
         string userDetailsText = "";
         if (totalTradeCount > 0)
         {
-            userDetailsText = $"Trades: {totalTradeCount}";
+            userDetailsText = $"Intercambios: {totalTradeCount}";
         }
         if (SysCord<T>.Runner.Config.Trade.TradeConfiguration.StoreTradeCodes && tradeDetails != null)
         {
@@ -212,7 +212,7 @@ public static class DetailsExtractor<T> where T : PKM, new()
     {
         int safeLanguage = pk.Language;
 
-        string languageName = "Unknown";
+        string languageName = "Desconocido";
         var languageList = GameInfo.LanguageDataSource(pk.Format, pk.Context);
         var languageEntry = languageList.FirstOrDefault(l => l.Value == pk.Language);
 
@@ -228,7 +228,7 @@ public static class DetailsExtractor<T> where T : PKM, new()
         if (safeLanguage != pk.Language)
         {
             string safeLanguageName = languageList.FirstOrDefault(l => l.Value == safeLanguage)?.Text ?? ((LanguageID)safeLanguage).GetLanguageCode();
-            return $"{languageName} (Safe: {safeLanguageName})";
+            return $"{languageName} (Seguro: {safeLanguageName})";
         }
 
         return languageName;
@@ -344,12 +344,12 @@ public static class DetailsExtractor<T> where T : PKM, new()
     private static string GetTradeTitle(bool isMysteryEgg, bool isCloneRequest, bool isDumpRequest, bool isFixOTRequest, bool isSpecialRequest, bool isBatchTrade, int batchTradeNumber, string pokemonDisplayName, bool isShiny)
     {
         string shinyEmoji = isShiny ? "✨ " : "";
-        return isMysteryEgg ? "✨ Shiny Mystery Egg ✨" :
-               isBatchTrade ? $"Batch Trade #{batchTradeNumber} - {shinyEmoji}{pokemonDisplayName}" :
-               isFixOTRequest ? "FixOT Request" :
-               isSpecialRequest ? "Special Request" :
-               isCloneRequest ? "Clone Pod Activated!" :
-               isDumpRequest ? "Pokémon Dump" :
+        return isMysteryEgg ? "✨ Huevo Misterioso Shiny ✨" :
+               isBatchTrade ? $"Intercambio por lotes #{batchTradeNumber} - {shinyEmoji}{pokemonDisplayName}" :
+               isFixOTRequest ? "Solicitud de Corrección de OT" :
+               isSpecialRequest ? "Solicitud Especial" :
+               isCloneRequest ? "¡Clonación Activado!" :
+               isDumpRequest ? "Dump de Pokémon" :
                "";
     }
 }

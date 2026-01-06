@@ -105,16 +105,16 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
                     // Send notification that they're up next - only sent ONCE
                     _almostUpNotificationSent = true;
 
-                    var batchInfo = TotalBatchTrades > 1 ? $"\n\n**Important:** This is a batch trade with {TotalBatchTrades} Pokémon. Please stay in the trade until all are completed!" : "";
+                    var batchInfo = TotalBatchTrades > 1 ? $"\n\n**Importante:** Este es un intercambio por lotes con {TotalBatchTrades} Pokémon. ¡Por favor, mantente en el intercambio hasta que todos estén completados!" : "";
 
                     var upNextEmbed = new EmbedBuilder
                     {
                         Color = Color.Gold,
-                        Title = "🎯 You're Up Next!",
-                        Description = $"Your trade will begin very soon. Please be ready!{batchInfo}",
+                        Title = "🎯 ¡Eres el siguiente!",
+                        Description = $"Tu intercambio comenzará muy pronto. ¡Por favor, prepárate!{batchInfo}",
                         Footer = new EmbedFooterBuilder
                         {
-                            Text = "Get ready to connect!"
+                            Text = "¡Prepárate para conectarte!"
                         },
                         Timestamp = DateTimeOffset.Now
                     }.Build();
@@ -146,17 +146,17 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         _lastReportedPosition = currentPosition;
 
         var batchDescription = TotalBatchTrades > 1
-            ? $"Your batch trade request ({TotalBatchTrades} Pokémon) has been queued.\n\n⚠️ **Important Instructions:**\n• Stay in the trade for all {TotalBatchTrades} trades\n• Have all {TotalBatchTrades} Pokémon ready to trade\n• Do not exit until you see the completion message\n\nPosition in queue: **{currentPosition}**"
-            : $"Your trade request has been queued. Position in queue: **{currentPosition}**";
+            ? $"Tu solicitud de intercambio por lotes ({TotalBatchTrades} Pokémon) ha sido encolada.\n\n⚠️ **Instrucciones importantes:**\n• Mantente en el intercambio para todos los {TotalBatchTrades} Pokémon\n• Ten todos los {TotalBatchTrades} Pokémon listos para intercambiar\n• No salgas hasta que veas el mensaje de finalización\n\nPosición en la cola: **{currentPosition}**"
+            : $"Tu solicitud de intercambio ha sido encolada. Posición en la cola: **{currentPosition}**";
 
         var initialEmbed = new EmbedBuilder
         {
             Color = Color.Green,
-            Title = TotalBatchTrades > 1 ? "🎁 Batch Trade Request Queued" : "Trade Request Queued",
+            Title = TotalBatchTrades > 1 ? "🎁 Solicitud de Intercambio por Lotes Encolada" : "Solicitud de Intercambio Encolada",
             Description = batchDescription,
             Footer = new EmbedFooterBuilder
             {
-                Text = $"Estimated wait time: {(currentETA > 0 ? $"{currentETA} minutes" : "Less than a minute")}"
+                Text = $"Tiempo estimado de espera: {(currentETA > 0 ? $"{currentETA} minutos" : "Menos de un minuto")}"
             },
             Timestamp = DateTimeOffset.Now
         }.Build();
@@ -181,7 +181,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         _almostUpNotificationSent = true;
 
         int language = 2;
-        var speciesName = IsMysteryEgg ? "Mystery Egg" : SpeciesName.GetSpeciesName(Data.Species, language);
+        var speciesName = IsMysteryEgg ? "Huevo Misterioso" : SpeciesName.GetSpeciesName(Data.Species, language);
         var receive = Data.Species == 0 ? string.Empty : (IsMysteryEgg ? "" : $" ({Data.Nickname})");
 
         if (Data is PK9)
@@ -191,18 +191,18 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
             {
                 if (BatchTradeNumber == 1)
                 {
-                    message = $"Starting your batch trade! Trading {TotalBatchTrades} Pokémon.\n\n" +
-                             $"**Trade 1/{TotalBatchTrades}**: {speciesName}{receive}\n\n" +
-                             $"⚠️ **IMPORTANT:** Stay in the trade until all {TotalBatchTrades} trades are completed!";
+                    message = $"¡Comenzando tu intercambio por lotes! Intercambiando {TotalBatchTrades} Pokémon.\n\n" +
+                             $"**Intercambio 1/{TotalBatchTrades}**: {speciesName}{receive}\n\n" +
+                             $"⚠️ **IMPORTANTE:** ¡Mantente en el intercambio hasta que se completen todos los {TotalBatchTrades} intercambios!";
                 }
                 else
                 {
-                    message = $"Preparing trade {BatchTradeNumber}/{TotalBatchTrades}: {speciesName}{receive}";
+                    message = $"Preparando intercambio {BatchTradeNumber}/{TotalBatchTrades}: {speciesName}{receive}";
                 }
             }
             else
             {
-                message = $"Initializing trade{receive}. Please be ready.";
+                message = $"Inicializando intercambio{receive}. Por favor, prepárate.";
             }
 
             EmbedHelper.SendTradeInitializingEmbedAsync(Trader, speciesName, Code, IsMysteryEgg, message).ConfigureAwait(false);
@@ -210,7 +210,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         else if (Data is PB7)
         {
             var (thefile, lgcodeembed) = CreateLGLinkCodeSpriteEmbed(LGCode);
-            Trader.SendFileAsync(thefile, $"Initializing trade{receive}. Please be ready. Your code is", embed: lgcodeembed).ConfigureAwait(false);
+            Trader.SendFileAsync(thefile, $"Inicializando intercambio{receive}. Por favor, prepárate. Tu código es", embed: lgcodeembed).ConfigureAwait(false);
         }
         else
         {
@@ -228,8 +228,8 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
 
         if (Data is PB7 && LGCode != null && LGCode.Count != 0)
         {
-            var batchInfo = TotalBatchTrades > 1 ? $" (Trade {BatchTradeNumber}/{TotalBatchTrades})" : "";
-            var message = $"I'm waiting for you{trainer}{batchInfo}! My IGN is **{routine.InGameName}**.";
+            var batchInfo = TotalBatchTrades > 1 ? $" (Intercambio {BatchTradeNumber}/{TotalBatchTrades})" : "";
+            var message = $"¡Te estoy esperando{trainer}{batchInfo}! Mi IGN es **{routine.InGameName}**.";
             Trader.SendMessageAsync(message).ConfigureAwait(false);
         }
         else
@@ -239,12 +239,12 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
             {
                 if (BatchTradeNumber == 1)
                 {
-                    additionalMessage = $"Starting batch trade ({TotalBatchTrades} Pokémon total). **Please select your first Pokémon!**";
+                    additionalMessage = $"¡Comenzando intercambio por lotes ({TotalBatchTrades} Pokémon total). **¡Por favor, selecciona tu primer Pokémon!**";
                 }
                 else
                 {
-                    var speciesName = IsMysteryEgg ? "Mystery Egg" : SpeciesName.GetSpeciesName(Data.Species, 2);
-                    additionalMessage = $"Trade {BatchTradeNumber}/{TotalBatchTrades}: Now trading {speciesName}. **Select your next Pokémon!**";
+                    var speciesName = IsMysteryEgg ? "Huevo Misterioso" : SpeciesName.GetSpeciesName(Data.Species, 2);
+                    additionalMessage = $"Intercambio {BatchTradeNumber}/{TotalBatchTrades}: Ahora intercambiando {speciesName}. **¡Selecciona tu siguiente Pokémon!**";
                 }
             }
 
@@ -258,7 +258,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         StopPeriodicUpdates();
 
         var cancelMessage = TotalBatchTrades > 1
-            ? $"Batch trade canceled: {msg}. All remaining trades have been canceled."
+            ? $"Intercambio por lotes cancelado: {msg}. Todos los intercambios restantes han sido cancelados."
             : msg.ToString();
 
         EmbedHelper.SendTradeCanceledEmbedAsync(Trader, cancelMessage).ConfigureAwait(false);
@@ -282,20 +282,20 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
             if (BatchTradeNumber == TotalBatchTrades)
             {
                 // Final trade in the batch - this is now called only once at the very end
-                message = $"✅ **All {TotalBatchTrades} trades completed successfully!** Thank you for trading!";
+                message = $"✅ **¡Todos los {TotalBatchTrades} intercambios completados con éxito!** ¡Gracias por intercambiar!";
             }
             else
             {
                 // Mid-batch trade
-                var speciesName = IsMysteryEgg ? "Mystery Egg" : SpeciesName.GetSpeciesName(Data.Species, 2);
-                message = $"✅ Trade {BatchTradeNumber}/{TotalBatchTrades} completed! ({speciesName})\n" +
-                         $"Preparing trade {BatchTradeNumber + 1}/{TotalBatchTrades}...";
+                var speciesName = IsMysteryEgg ? "Huevo Misterioso" : SpeciesName.GetSpeciesName(Data.Species, 2);
+                message = $"✅ ¡Intercambio {BatchTradeNumber}/{TotalBatchTrades} completado! ({speciesName})\n" +
+                         $"Preparando intercambio {BatchTradeNumber + 1}/{TotalBatchTrades}...";
             }
         }
         else
         {
             // Standard single trade message
-            message = tradedToUser != 0 ? $"Trade finished. Enjoy!" : "Trade finished!";
+            message = tradedToUser != 0 ? $"Intercambio finalizado. ¡Disfruta!" : "Intercambio finalizado!";
         }
 
         Trader.SendMessageAsync(message).ConfigureAwait(false);
@@ -304,7 +304,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         // Batch trades will have their Pokemon returned separately via SendNotification
         if (result is not null && Hub.Config.Discord.ReturnPKMs && TotalBatchTrades <= 1)
         {
-            Trader.SendPKMAsync(result, "Here's what you traded me!").ConfigureAwait(false);
+            Trader.SendPKMAsync(result, "¡Aquí está lo que me intercambiaste!").ConfigureAwait(false);
         }
     }
 
@@ -313,7 +313,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         // Add batch context to notifications if applicable
         if (TotalBatchTrades > 1 && !message.Contains("Trade") && !message.Contains("batch"))
         {
-            message = $"Trade {BatchTradeNumber}/{TotalBatchTrades}: {message}";
+            message = $"Intercambio {BatchTradeNumber}/{TotalBatchTrades}: {message}";
         }
 
         EmbedHelper.SendNotificationEmbedAsync(Trader, message).ConfigureAwait(false);
@@ -349,11 +349,11 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         var embed = new EmbedBuilder { Color = Color.LighterGrey };
         embed.AddField(x =>
         {
-            x.Name = $"Seed: {r.Seed:X16}";
+            x.Name = $"Semilla: {r.Seed:X16}";
             x.Value = lines;
             x.IsInline = false;
         });
-        var msg = $"Here are the details for `{r.Seed:X16}`:";
+        var msg = $"Aquí están los detalles para `{r.Seed:X16}`:";
         Trader.SendMessageAsync(msg, embed: embed.Build()).ConfigureAwait(false);
     }
 

@@ -22,7 +22,7 @@ public static class NetUtil
         var isMyg = MysteryGift.IsMysteryGift(att.Size) && extension != ".pb7";
         if (!EntityDetection.IsSizePlausible(att.Size) && !isMyg)
         {
-            result.ErrorMessage = $"{result.SanitizedFileName}: Invalid size.";
+            result.ErrorMessage = $"{result.SanitizedFileName}: Tamaño invalido.";
             return result;
         }
         string url = att.Url;
@@ -46,7 +46,7 @@ public static class NetUtil
         }
         if (pkm is null)
         {
-            result.ErrorMessage = $"{result.SanitizedFileName}: Invalid pkm attachment.";
+            result.ErrorMessage = $"{result.SanitizedFileName}: Archivo PKM inválido.";
             return result;
         }
         result.Data = pkm;
@@ -72,7 +72,7 @@ public static class NetUtil
 
             if (!EntityDetection.IsSizePlausible(buffer.Length) && !isMyg)
             {
-                result.ErrorMessage = $"{result.SanitizedFileName}: Invalid size.";
+                result.ErrorMessage = $"{result.SanitizedFileName}: Tamaño invalido.";
                 return result;
             }
 
@@ -95,7 +95,7 @@ public static class NetUtil
 
             if (pkm is null)
             {
-                result.ErrorMessage = $"{result.SanitizedFileName}: Invalid pkm file.";
+                result.ErrorMessage = $"{result.SanitizedFileName}: Archivo PKM inválido.";
                 return result;
             }
 
@@ -104,7 +104,7 @@ public static class NetUtil
         }
         catch (Exception ex)
         {
-            result.ErrorMessage = $"Failed to download {result.SanitizedFileName}: {ex.Message}";
+            result.ErrorMessage = $"Error al descargar {result.SanitizedFileName}: {ex.Message}";
         }
 
         return result;

@@ -18,7 +18,7 @@ public sealed class GengarNamer : IFileNamer<PKM>
         int abilityIndex = pk.Ability;
 
         // You need to implement a method similar to Util.GetNaturesList for abilities
-        var abilityStrings = Util.GetAbilitiesList("en");
+        var abilityStrings = Util.GetAbilitiesList("es");
         if ((uint)abilityIndex >= abilityStrings.Length)
             abilityIndex = 0;
         return abilityStrings[abilityIndex];
@@ -29,7 +29,7 @@ public sealed class GengarNamer : IFileNamer<PKM>
         if (pk is not ITeraType t)
             return string.Empty;
         var type = t.GetTeraType();
-        var type_str = ((byte)type == TeraTypeUtil.Stellar) ? "Stellar" : type.ToString();
+        var type_str = ((byte)type == TeraTypeUtil.Stellar) ? "Astral" : type.ToString();
         return $"Tera({type_str})";
     }
 
@@ -47,7 +47,7 @@ public sealed class GengarNamer : IFileNamer<PKM>
     private static string GetNature(PKM pk)
     {
         var nature = pk.Nature;
-        var strings = Util.GetNaturesList("en");
+        var strings = Util.GetNaturesList("es");
         if ((uint)nature >= strings.Length)
             nature = 0;
         return strings[(uint)nature];
