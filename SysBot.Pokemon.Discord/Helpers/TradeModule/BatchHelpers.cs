@@ -32,17 +32,17 @@ public static class BatchHelpers<T> where T : PKM, new()
     public static async Task SendBatchErrorEmbedAsync(SocketCommandContext context, List<BatchTradeError> errors, int totalTrades)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("❌ Batch Trade Validation Failed")
+            .WithTitle("❌ Falló la validación de intercambio por lotes")
             .WithColor(Color.Red)
-            .WithDescription($"{errors.Count} out of {totalTrades} Pokémon could not be processed.")
-            .WithFooter("Please fix the invalid sets and try again.");
+            .WithDescription($"{errors.Count} de {totalTrades} Pokémon no pudieron ser procesados.")
+            .WithFooter("Por favor, corrige los sets inválidos e intenta de nuevo.");
 
         foreach (var error in errors)
         {
             var fieldValue = $"**Error:** {error.ErrorMessage}";
             if (!string.IsNullOrEmpty(error.LegalizationHint))
             {
-                fieldValue += $"\n💡 **Hint:** {error.LegalizationHint}";
+                fieldValue += $"\n💡 **Sugerencia:** {error.LegalizationHint}";
             }
 
             if (!string.IsNullOrEmpty(error.ShowdownSet))
@@ -56,7 +56,7 @@ public static class BatchHelpers<T> where T : PKM, new()
                 fieldValue = fieldValue[..1021] + "...";
             }
 
-            embed.AddField($"Trade #{error.TradeNumber} - {error.SpeciesName}", fieldValue);
+            embed.AddField($"Intercambio #{error.TradeNumber} - {error.SpeciesName}", fieldValue);
         }
 
         var replyMessage = await context.Channel.SendMessageAsync(embed: embed.Build());
@@ -76,29 +76,29 @@ public static class BatchHelpers<T> where T : PKM, new()
     public static string BuildDetailedBatchErrorMessage(List<BatchTradeError> errors, int totalTrades)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"**Batch Trade Validation Failed**");
-        sb.AppendLine($"❌ {errors.Count} out of {totalTrades} Pokémon could not be processed.\n");
+        sb.AppendLine($"**Falló la validación de intercambio por lotes**");
+        sb.AppendLine($"❌ {errors.Count} de {totalTrades} Pokémon no pudieron ser procesados.\n");
 
         foreach (var error in errors)
         {
-            sb.AppendLine($"**Trade #{error.TradeNumber} - {error.SpeciesName}**");
+            sb.AppendLine($"**Intercambio #{error.TradeNumber} - {error.SpeciesName}**");
             sb.AppendLine($"Error: {error.ErrorMessage}");
 
             if (!string.IsNullOrEmpty(error.LegalizationHint))
             {
-                sb.AppendLine($"💡 Hint: {error.LegalizationHint}");
+                sb.AppendLine($"💡 Sugerencia: {error.LegalizationHint}");
             }
 
             if (!string.IsNullOrEmpty(error.ShowdownSet))
             {
                 var lines = error.ShowdownSet.Split('\n').Take(3);
-                sb.AppendLine($"Set Preview: {string.Join(" | ", lines)}...");
+                sb.AppendLine($"Vista previa del Set: {string.Join(" | ", lines)}...");
             }
 
             sb.AppendLine();
         }
 
-        sb.AppendLine("**Please fix the invalid sets and try again.**");
+        sb.AppendLine("**Por favor, corrige los sets inválidos e intenta de nuevo.**");
         return sb.ToString();
     }
 }

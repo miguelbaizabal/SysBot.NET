@@ -16,31 +16,31 @@ public static class MedalHelpers
     {
         string status = milestone switch
         {
-            1 => "Newbie Trainer",
-            50 => "Novice Trainer",
-            100 => "Pokémon Professor",
-            150 => "Pokémon Specialist",
-            200 => "Pokémon Champion",
-            250 => "Pokémon Hero",
-            300 => "Pokémon Elite",
-            350 => "Pokémon Trader",
-            400 => "Pokémon Sage",
-            450 => "Pokémon Legend",
-            500 => "Region Master",
-            550 => "Trade Master",
-            600 => "World Famous",
-            650 => "Pokémon Master",
-            700 => "Pokémon God",
-            _ => "New Trainer"
+            1 => "Entrenador Novato",
+            50 => "Entrenador Principiante",
+            100 => "Profesor Pokémon",
+            150 => "Especialista Pokémon",
+            200 => "Campeón Pokémon",
+            250 => "Héroe Pokémon",
+            300 => "Élite Pokémon",
+            350 => "Comerciante Pokémon",
+            400 => "Sabio Pokémon",
+            450 => "Leyenda Pokémon",
+            500 => "Maestro Regional",
+            550 => "Maestro de Intercambio",
+            600 => "Famoso Mundial",
+            650 => "Maestro Pokémon",
+            700 => "Dios Pokémon",
+            _ => "Nuevo Entrenador"
         };
 
-        string description = $"Total Trades: **{totalTrades}**\n**Current Status:** {status}";
+        string description = $"Intercambios Totales: **{totalTrades}**\n**Estado Actual:** {status}";
 
         if (milestone > 0)
         {
             string imageUrl = $"https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/{milestone:D3}.png";
             return new EmbedBuilder()
-                .WithTitle($"{user.Username}'s Trading Status")
+                .WithTitle($"Estado de intercambio de {user.Username}")
                 .WithColor(new Color(255, 215, 0))
                 .WithDescription(description)
                 .WithThumbnailUrl(imageUrl)
@@ -49,7 +49,7 @@ public static class MedalHelpers
         else
         {
             return new EmbedBuilder()
-                .WithTitle($"{user.Username}'s Trading Status")
+                .WithTitle($"Estado de intercambio de {user.Username}")
                 .WithColor(new Color(255, 215, 0))
                 .WithDescription(description)
                 .Build();

@@ -130,7 +130,7 @@ public static class Helpers<T> where T : PKM, new()
         {
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
-                Error = "Unable to parse Showdown set. Could not identify the Pokémon species.",
+                Error = "No fue posible analizar el set de Showdown. No se pudo identificar la especie del Pokémon.",
                 ShowdownSet = set
             });
         }
@@ -154,7 +154,7 @@ public static class Helpers<T> where T : PKM, new()
         {
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
-                Error = $"Unable to parse Showdown Set:\n{string.Join("\n", actualInvalidLines.Select(l => l.Value))}",
+                Error = $"No fue posible analizar el set de Showdown:\n{string.Join("\n", actualInvalidLines.Select(l => l.Value))}",
                 ShowdownSet = set
             });
         }
@@ -181,7 +181,7 @@ public static class Helpers<T> where T : PKM, new()
         {
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
-                Error = "Set took too long to legalize.",
+                Error = "El set tomó demasiado tiempo para legalizarse.",
                 ShowdownSet = set
             });
         }
@@ -203,7 +203,7 @@ public static class Helpers<T> where T : PKM, new()
             {
                 return Task.FromResult(new ProcessedPokemonResult<T>
                 {
-                    Error = "Mew can **not** be Shiny in LGPE. PoGo Mew does not transfer and Pokeball Plus Mew is shiny locked.",
+                    Error = "Mew **no** puede ser Shiny en LGPE. Mew de Pokémon Go no se transfiere y Mew de Pokéball Plus tiene Shiny Lock.",
                     ShowdownSet = set
                 });
             }
@@ -213,7 +213,7 @@ public static class Helpers<T> where T : PKM, new()
         if (pkm is not T pk || !la.Valid)
         {
             var reason = GetFailureReason(result, spec);
-            var hint = result == "Failed" ? GetLegalizationHint(template, sav, pkm, spec) : null;
+            var hint = result == "Error" ? GetLegalizationHint(template, sav, pkm, spec) : null;
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
                 Error = reason,
@@ -232,7 +232,7 @@ public static class Helpers<T> where T : PKM, new()
             {
                 return Task.FromResult(new ProcessedPokemonResult<T>
                 {
-                    Error = "Detected Adname in the Pokémon's name or trainer name, which is not allowed.",
+                    Error = "Se detectó un nombre de anuncio en el nombre del Pokémon o en el nombre del entrenador, lo cual no está permitido.",
                     ShowdownSet = set
                 });
             }
@@ -279,9 +279,9 @@ public static class Helpers<T> where T : PKM, new()
     {
         return result switch
         {
-            "Timeout" => $"That {speciesName} set took too long to generate.",
-            "VersionMismatch" => "Request refused: PKHeX and Auto-Legality Mod version mismatch.",
-            _ => $"I wasn't able to create a {speciesName} from that set."
+            "Timeout" => $"Ese set de {speciesName} tomó demasiado tiempo para generarse.",
+            "VersionMismatch" => "Solicitud rechazada: PKHeX y Auto-Legality Mod no coinciden en versión.",
+            _ => $"No fue posible crear un {speciesName} a partir de ese set."
         };
     }
 
@@ -299,21 +299,21 @@ public static class Helpers<T> where T : PKM, new()
     {
         var spec = result.ShowdownSet != null && result.ShowdownSet.Species > 0
             ? GameInfo.Strings.Species[result.ShowdownSet.Species]
-            : "Unknown";
+            : "Desconocido";
 
         var embedBuilder = new EmbedBuilder()
-            .WithTitle("Trade Creation Failed.")
+            .WithTitle("Falló la creación del intercambio.")
             .WithColor(Color.Red)
-            .AddField("Status", $"Failed to create {spec}.")
-            .AddField("Reason", result.Error ?? "Unknown error");
+            .AddField("Estado", $"No se pudo crear {spec}.")
+            .AddField("Motivo", result.Error ?? "Error desconocido");
 
         if (!string.IsNullOrEmpty(result.LegalizationHint))
         {
-            _ = embedBuilder.AddField("Hint", result.LegalizationHint);
+            _ = embedBuilder.AddField("Sugerencia", result.LegalizationHint);
         }
 
         string userMention = context.User.Mention;
-        string messageContent = $"{userMention}, here's the report for your request:";
+        string messageContent = $"{userMention}, aquí está el informe para tu solicitud:";
         var message = await context.Channel.SendMessageAsync(text: messageContent, embed: embedBuilder.Build()).ConfigureAwait(false);
         _ = DeleteMessagesAfterDelayAsync(message, context.Message, 30);
     }
@@ -350,7 +350,7 @@ public static class Helpers<T> where T : PKM, new()
         var attachment = context.Message.Attachments.FirstOrDefault();
         if (attachment == default)
         {
-            _ = await context.Channel.SendMessageAsync("No attachment provided!").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync("¡No se proporcionó ningún archivo adjunto!").ConfigureAwait(false);
             return null;
         }
 
@@ -359,7 +359,7 @@ public static class Helpers<T> where T : PKM, new()
 
         if (pk == null)
         {
-            _ = await context.Channel.SendMessageAsync("Attachment provided is not compatible with this module!").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync("¡El archivo adjunto proporcionado no es compatible con este módulo!").ConfigureAwait(false);
             return null;
         }
 
@@ -398,7 +398,7 @@ public static class Helpers<T> where T : PKM, new()
 
         if (pk is not null && !pk.CanBeTraded())
         {
-            var reply = await context.Channel.SendMessageAsync("Provided Pokémon content is blocked from trading!").ConfigureAwait(false);
+            var reply = await context.Channel.SendMessageAsync("¡El contenido del Pokémon proporcionado está bloqueado para intercambiar!").ConfigureAwait(false);
             await Task.Delay(6000).ConfigureAwait(false);
             await reply.DeleteAsync().ConfigureAwait(false);
             return;
@@ -407,8 +407,8 @@ public static class Helpers<T> where T : PKM, new()
         // Block non-tradable items using PKHeX's ItemRestrictions
         if (pk is not null && TradeExtensions<T>.IsItemBlocked(pk))
         {
-            var itemName = pk.HeldItem > 0 ? GameInfo.GetStrings("en").Item[pk.HeldItem] : "(none)";
-            var reply = await context.Channel.SendMessageAsync($"Trade blocked: The held item '{itemName}' cannot be traded.").ConfigureAwait(false);
+            var itemName = pk.HeldItem > 0 ? GameInfo.GetStrings("es").Item[pk.HeldItem] : "(ninguno)";
+            var reply = await context.Channel.SendMessageAsync($"Intercambio bloqueado: El objeto '{itemName}' no puede ser intercambiado.").ConfigureAwait(false);
             await Task.Delay(6000).ConfigureAwait(false);
             await reply.DeleteAsync().ConfigureAwait(false);
             return;
@@ -422,12 +422,12 @@ public static class Helpers<T> where T : PKM, new()
             if (pk?.IsEgg == true)
             {
                 string speciesName = SpeciesName.GetSpeciesName(pk.Species, (int)LanguageID.English);
-                responseMessage = $"Invalid Showdown Set for the {speciesName} egg. Please review your information and try again.\n\nLegality Report:\n```\n{la.Report()}\n```";
+                responseMessage = $"Set de Showdown inválido para el huevo de {speciesName}. Por favor, revise su información e inténtelo de nuevo.\n\nInforme de legalidad:\n```\n{la.Report()}\n```";
             }
             else
             {
                 string speciesName = SpeciesName.GetSpeciesName(pk!.Species, (int)LanguageID.English);
-                responseMessage = $"{speciesName} attachment is not legal, and cannot be traded!\n\nLegality Report:\n```\n{la.Report()}\n```";
+                responseMessage = $"¡El archivo adjunto de {speciesName} no es legal, y no puede ser intercambiado!\n\nInforme de legalidad:\n```\n{la.Report()}\n```";
             }
             var reply = await context.Channel.SendMessageAsync(responseMessage).ConfigureAwait(false);
             await Task.Delay(6000);
@@ -438,14 +438,14 @@ public static class Helpers<T> where T : PKM, new()
         if (Info.Hub.Config.Legality.DisallowNonNatives && isNonNative)
         {
             string speciesName = SpeciesName.GetSpeciesName(pk!.Species, (int)LanguageID.English);
-            _ = await context.Channel.SendMessageAsync($"This **{speciesName}** is not native to this game, and cannot be traded! Trade with the correct bot, then trade to HOME.").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync($"¡Este **{speciesName}** no es nativo de este juego, y no puede ser intercambiado! Intercambia con el bot correcto, luego intercambia a HOME.").ConfigureAwait(false);
             return;
         }
 
         if (Info.Hub.Config.Legality.DisallowTracked && pk is IHomeTrack { HasTracker: true })
         {
             string speciesName = SpeciesName.GetSpeciesName(pk.Species, (int)LanguageID.English);
-            _ = await context.Channel.SendMessageAsync($"This {speciesName} file is tracked by HOME, and cannot be traded!").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync($"¡Este archivo de {speciesName} está rastreado por HOME, y no puede ser intercambiado!").ConfigureAwait(false);
             return;
         }
 

@@ -22,7 +22,7 @@ public static class ListHelpers<T> where T : PKM, new()
 
         if (string.IsNullOrEmpty(folderPath))
         {
-            await Helpers<T>.ReplyAndDeleteAsync(context, "This bot does not have this feature set up.", 2);
+            await Helpers<T>.ReplyAndDeleteAsync(context, "Este bot no tiene esta función configurada.", 2);
             return;
         }
 
@@ -41,7 +41,7 @@ public static class ListHelpers<T> where T : PKM, new()
 
         if (filteredFiles.Count == 0)
         {
-            var replyMessage = await context.Channel.SendMessageAsync($"No {itemType} found matching the filter '{filter}'.");
+            var replyMessage = await context.Channel.SendMessageAsync($"No se encontraron {itemType} que coincidan con el filtro '{filter}'.");
             _ = Helpers<T>.DeleteMessagesAfterDelayAsync(replyMessage, context.Message, 10);
             return;
         }
@@ -52,14 +52,14 @@ public static class ListHelpers<T> where T : PKM, new()
         var pageItems = filteredFiles.Skip((page - 1) * itemsPerPage).Take(itemsPerPage);
 
         var embed = new EmbedBuilder()
-            .WithTitle($"Available {char.ToUpper(itemType[0]) + itemType[1..]} - Filter: '{filter}'")
-            .WithDescription($"Page {page} of {pageCount}")
+            .WithTitle($"Disponible {char.ToUpper(itemType[0]) + itemType[1..]} - Filtro: '{filter}'")
+            .WithDescription($"Página {page} de {pageCount}")
             .WithColor(Color.Blue);
 
         foreach (var item in pageItems)
         {
             var index = allFiles.IndexOf(item) + 1;
-            embed.AddField($"{index}. {item}", $"Use `{botPrefix}{commandPrefix} {index}` to request this {itemType.TrimEnd('s')}.");
+            embed.AddField($"{index}. {item}", $"Usa `{botPrefix}{commandPrefix} {index}` para solicitar este {itemType.TrimEnd('s')}.");
         }
 
         await SendDMOrReplyAsync(context, embed.Build());
@@ -75,16 +75,16 @@ public static class ListHelpers<T> where T : PKM, new()
             {
                 var dmChannel = await user.CreateDMChannelAsync();
                 await dmChannel.SendMessageAsync(embed: embed);
-                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}, I've sent you a DM with the list.");
+                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}, Te he enviado un DM con la lista.");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
-                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}, I'm unable to send you a DM. Please check your **Server Privacy Settings**.");
+                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}, No puedo enviarte un DM. Por favor, revisa tus **Configuraciones de Privacidad del Servidor**.");
             }
         }
         else
         {
-            replyMessage = await context.Channel.SendMessageAsync("**Error**: Unable to send a DM. Please check your **Server Privacy Settings**.");
+            replyMessage = await context.Channel.SendMessageAsync("**Error**: No pude enviar un DM. Por favor, revisa tus **Configuraciones de Privacidad del Servidor**.");
         }
 
         _ = Helpers<T>.DeleteMessagesAfterDelayAsync(replyMessage, context.Message, 10);
@@ -97,7 +97,7 @@ public static class ListHelpers<T> where T : PKM, new()
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "Ya tienes un intercambio en cola que no se puede borrar. Por favor, espera hasta que sea procesado.", 2);
             return;
         }
 
@@ -105,7 +105,7 @@ public static class ListHelpers<T> where T : PKM, new()
         {
             if (string.IsNullOrEmpty(folderPath))
             {
-                await Helpers<T>.ReplyAndDeleteAsync(context, "This bot does not have this feature set up.", 2);
+                await Helpers<T>.ReplyAndDeleteAsync(context, "Este bot no tiene esta función configurada.", 2);
                 return;
             }
 
@@ -118,7 +118,7 @@ public static class ListHelpers<T> where T : PKM, new()
             if (index < 1 || index > files.Count)
             {
                 await Helpers<T>.ReplyAndDeleteAsync(context,
-                    $"Invalid {itemType} index. Please use a valid number from the `.{listCommand}` command.", 2);
+                    $"Índice de {itemType} inválido. Por favor, usa un número válido en el comando `.{listCommand}`.", 2);
                 return;
             }
 
@@ -134,7 +134,7 @@ public static class ListHelpers<T> where T : PKM, new()
             if (pk == null)
             {
                 await Helpers<T>.ReplyAndDeleteAsync(context,
-                    $"Failed to convert {itemType} file to the required PKM type.", 2);
+                    $"Error al convertir el archivo {itemType} al tipo PKM requerido.", 2);
                 return;
             }
 
@@ -142,13 +142,13 @@ public static class ListHelpers<T> where T : PKM, new()
             var lgcode = Info.GetRandomLGTradeCode();
             var sig = context.User.GetFavor();
 
-            await context.Channel.SendMessageAsync($"{char.ToUpper(itemType[0]) + itemType[1..]} request added to queue.").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync($"Solicitud de {char.ToUpper(itemType[0]) + itemType[1..]} añadida a la cola.").ConfigureAwait(false);
             await Helpers<T>.AddTradeToQueueAsync(context, code, context.User.Username, pk, sig,
                 context.User, lgcode: lgcode).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await Helpers<T>.ReplyAndDeleteAsync(context, $"An error occurred: {ex.Message}", 2);
+            await Helpers<T>.ReplyAndDeleteAsync(context, $"Ocurrió un error: {ex.Message}", 2);
         }
         finally
         {
