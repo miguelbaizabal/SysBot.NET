@@ -9,9 +9,9 @@ namespace SysBot.Pokemon.Discord
     public class LegalizerModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         [Command("convert"), Alias("showdown")]
-        [Summary("Tries to convert the Showdown Set to RegenTemplate format.")]
+        [Summary("Intenta convertir el conjunto de Showdown al formato RegenTemplate.")]
         [Priority(1)]
-        public async Task ConvertShowdown([Summary("Generation/Format")] byte gen, [Remainder][Summary("Showdown Set")] string content)
+        public async Task ConvertShowdown([Summary("Generación/Formato")] byte gen, [Remainder][Summary("Conjunto de Showdown")] string content)
         {
             var deleteMessageTask = LegalizerModule<T>.DeleteCommandMessageAsync(Context.Message, 2000);
             var convertTask = Context.Channel.ReplyWithLegalizedSetAsync(content, gen);
@@ -19,9 +19,9 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("convert"), Alias("showdown")]
-        [Summary("Tries to convert the Showdown Set to RegenTemplate format.")]
+        [Summary("Intenta convertir el conjunto de Showdown al formato RegenTemplate.")]
         [Priority(0)]
-        public async Task ConvertShowdown([Remainder][Summary("Showdown Set")] string content)
+        public async Task ConvertShowdown([Remainder][Summary("Conjunto de Showdown")] string content)
         {
             var deleteMessageTask = LegalizerModule<T>.DeleteCommandMessageAsync(Context.Message, 2000);
             var convertTask = Context.Channel.ReplyWithLegalizedSetAsync<T>(content);
@@ -29,7 +29,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("legalize"), Alias("alm")]
-        [Summary("Tries to legalize the attached pkm data and output as RegenTemplate.")]
+        [Summary("Intenta legalizar los datos adjuntos de Pokémon y mostrarlos como RegenTemplate.")]
         public async Task LegalizeAsync()
         {
             var deleteMessageTask = LegalizerModule<T>.DeleteCommandMessageAsync(Context.Message, 2000);
