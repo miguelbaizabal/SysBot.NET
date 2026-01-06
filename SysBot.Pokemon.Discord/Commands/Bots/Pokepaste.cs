@@ -114,7 +114,7 @@ namespace SysBot.Pokemon.Discord
                                     continue;
                                 }
 
-                                var speciesName = GameInfo.GetStrings("es").Species[set.Species];
+                                var speciesName = GameInfo.GetStrings("en").Species[set.Species];
                                 var fileName = namer.GetName(pk); // Use GengarNamer to generate the file name
                                 var entry = archive.CreateEntry($"{fileName}.{pk.Extension}");
                                 await using var entryStream = entry.Open();
@@ -130,7 +130,7 @@ namespace SysBot.Pokemon.Discord
                             }
                             catch (Exception ex)
                             {
-                                var speciesName = GameInfo.GetStrings("es").Species[set.Species];
+                                var speciesName = GameInfo.GetStrings("en").Species[set.Species];
                                 await ReplyAndDeleteAsync($"Ocurrió un error mientras se procesaba {speciesName}: {ex.Message}", 10, generatingMessage).ConfigureAwait(false);
                             }
                         }

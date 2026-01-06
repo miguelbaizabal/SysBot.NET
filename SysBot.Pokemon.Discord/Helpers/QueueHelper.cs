@@ -170,7 +170,7 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = pk.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("es").Item[held] : "(ninguno)";
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(ninguno)";
             await context.Channel.SendMessageAsync($"{trader.Mention} - Intercambio bloqueado: el objeto '{itemName}' no puede ser intercambiado en PLZA.").ConfigureAwait(false);
             return new TradeQueueResult(false);
         }
@@ -359,7 +359,7 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = firstTrade.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("es").Item[held] : "(ninguno)";
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(ninguno)";
             await context.Channel.SendMessageAsync($"{trader.Mention} - Intercambio bloqueado: el objeto equipado '{itemName}' no puede ser intercambiado en PLZA.").ConfigureAwait(false);
             return;
         }
@@ -533,7 +533,7 @@ public static class QueueHelper<T> where T : PKM, new()
             embedImageUrl = speciesImageUrl;
         }
 
-        var strings = GameInfo.GetStrings("es");
+        var strings = GameInfo.GetStrings("en");
         string ballName = strings.balllist[pk.Ball];
         if (ballName.Contains("(LA)"))
         {

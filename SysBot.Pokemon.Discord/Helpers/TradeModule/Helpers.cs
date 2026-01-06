@@ -407,7 +407,7 @@ public static class Helpers<T> where T : PKM, new()
         // Block non-tradable items using PKHeX's ItemRestrictions
         if (pk is not null && TradeExtensions<T>.IsItemBlocked(pk))
         {
-            var itemName = pk.HeldItem > 0 ? GameInfo.GetStrings("es").Item[pk.HeldItem] : "(ninguno)";
+            var itemName = pk.HeldItem > 0 ? GameInfo.GetStrings("en").Item[pk.HeldItem] : "(ninguno)";
             var reply = await context.Channel.SendMessageAsync($"Intercambio bloqueado: El objeto '{itemName}' no puede ser intercambiado.").ConfigureAwait(false);
             await Task.Delay(6000).ConfigureAwait(false);
             await reply.DeleteAsync().ConfigureAwait(false);
