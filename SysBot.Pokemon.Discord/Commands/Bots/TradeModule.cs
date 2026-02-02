@@ -243,4 +243,59 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         await QueueHelper<T>.AddToQueueAsync(Context, code, trainerName, sig, pk, PokeRoutineType.LinkTrade, PokeTradeType.Specific, usr).ConfigureAwait(false);
     }
+    
+    [Command("itemtrade")]
+    [Alias("it")]
+    [Summary("Trades you a predefined Pokémon holding the requested item.")]
+    [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
+    public async Task ItemTradeAsync([Summary("Item to attach")][Remainder] string itemName)
+    {
+        // Limpia el input
+        itemName = ReusableActions.StripCodeBlock(itemName).Trim();
+
+        // Verifica que el objeto exista
+        var itemID = GameInfo.Strings.Item.ToList().FindIndex(x =>
+            string.Equals(x, itemName, StringComparison.OrdinalIgnoreCase));
+        if (itemID < 0)
+        {
+            await ReplyAsync($"I couldn't find the item **{itemName}**. Check the spelling.").ConfigureAwait(false);
+            return;
+        }
+
+        try
+        {
+            // Obtiene la info del entrenador
+            var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
+
+            // Crea un Pokémon base (Pikachu nivel 100)
+            var template = new ShowdownSet("Pikachu @ None\nLevel: 100");
+            var pkm = sav.GetLegal(template, out _);
+
+            // Convierte al tipo correcto
+            pkm = EntityConverter.ConvertToType(pkm, typeof(T), out _) ?? pkm;
+            if (pkm is not T pk)
+            {
+                await ReplyAsync("Failed to generate the base Pokémon.").ConfigureAwait(false);
+                return;
+            }
+
+            // Asigna el objeto solicitado
+            pk.HeldItem = itemID;
+
+            // Limpia stats
+            pk.ResetPartyStats();
+
+            // Código de intercambio
+            var code = Info.GetRandomTradeCode();
+            var sig = Context.User.GetFavor();
+
+            // Enviar a la cola
+            await AddTradeToQueueAsync(code, Context.User.Username, pk, sig, Context.User).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            LogUtil.LogSafe(ex, nameof(TradeModule<>));
+            await ReplyAsync($"Oops! Something went wrong while creating the Pokémon with **{itemName}**.").ConfigureAwait(false);
+        }
+    }
 }
