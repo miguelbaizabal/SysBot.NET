@@ -202,4 +202,17 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         return content.Split([",", ", ", " "], StringSplitOptions.RemoveEmptyEntries)
             .Select(z => ulong.TryParse(z, out var x) ? x : 0).Where(z => z != 0);
     }
+    
+    [Command("autoot")]
+    [Alias("aot")]
+    public async Task AutoOTToggle()
+    {
+        var hub = SysCord<T>.Runner.Hub;
+
+        // Alternar AutoOT
+        hub.Config.Trade.UseTradePartnerInfo = !hub.Config.Trade.UseTradePartnerInfo;
+
+        bool state = hub.Config.Trade.UseTradePartnerInfo;
+        await ReplyAsync($"AutoOT ahora está **{(state ? "ACTIVADO" : "DESACTIVADO")}**.");
+    }
 }

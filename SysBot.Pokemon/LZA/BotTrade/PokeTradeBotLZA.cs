@@ -733,6 +733,14 @@ public class PokeTradeBotLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : PokeR
 
     protected virtual async Task<(PA9 toSend, PokeTradeResult check)> GetEntityToSend(SAV9ZA sav, PokeTradeDetail<PA9> poke, PA9 offered, PA9 toSend, PartnerDataHolder partnerID, CancellationToken token)
     {
+        // AUTOOT REAL
+        if (Hub.Config.Trade.UseTradePartnerInfo)
+        {
+            var tradePartner = await GetTradePartnerInfo(token).ConfigureAwait(false);
+            toSend = await ApplyAutoOT(toSend, tradePartner, sav, token).ConfigureAwait(false);
+        }
+
+        // Continue normal logic
         return poke.Type switch
         {
             PokeTradeType.Random => await HandleRandomLedy(sav, poke, offered, toSend, partnerID, token).ConfigureAwait(false),
@@ -892,5 +900,69 @@ public class PokeTradeBotLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : PokeR
             Hub.BotSync.Barrier.RemoveParticipant();
             Log($"Left the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
         }
+    }
+
+    private void ApplyTrainerInfo(PA9 pk, TradePartnerLZA tp)
+    {
+        pk.OriginalTrainerName = tp.TrainerName;
+
+        // Convert TID7 (string) → int
+        int tid7 = int.Parse(tp.TID7);
+
+        // Extract TID16 and SID16
+        pk.TID16 = (ushort)(tid7 & 0xFFFF);
+        pk.SID16 = (ushort)((tid7 >> 16) & 0xFFFF);
+
+        // ZA does NOT support OT_Gender — do NOT set it
+    }
+
+    private void ClearOTTrash(PA9 pk, TradePartnerLZA tp)
+    {
+        // ZA does not use OT trash bytes. Nothing to clear.
+    }
+
+    private async Task<PA9> ApplyAutoOT(PA9 toSend, TradePartnerLZA tradePartner, SAV9ZA sav, CancellationToken token)
+    {
+        // Skip if OT is empty
+        if (string.IsNullOrWhiteSpace(tradePartner.TrainerName))
+            return toSend;
+
+        var clone = toSend.Clone();
+
+        // Apply OT/TID/SID
+        ApplyTrainerInfo(clone, tradePartner);
+
+        // Language validation
+        if (clone.Language < 1 || clone.Language > 12)
+            clone.Language = 2; // English fallback
+
+        ClearOTTrash(clone, tradePartner);
+
+        // Force version to ZA
+        clone.Version = GameVersion.ZA;
+
+        // Reset nickname if not nicknamed
+        if (!clone.IsNicknamed)
+            clone.ClearNickname();
+
+        // Make the partner the OT
+        clone.CurrentHandler = 0;
+
+        // Fix shiny PID if needed
+        if (clone.IsShiny)
+            clone.PID = (uint)((clone.TID16 ^ clone.SID16 ^ (clone.PID & 0xFFFF) ^ toSend.ShinyXor) << 16) | (clone.PID & 0xFFFF);
+
+        clone.RefreshChecksum();
+
+        // Validate
+        var la = new LegalityAnalysis(clone);
+        if (la.Valid)
+        {
+            await SetBoxPokemonAbsolute(BoxStartOffset, clone, token, null).ConfigureAwait(false);
+            return clone;
+        }
+
+        // If invalid, return original
+        return toSend;
     }
 }

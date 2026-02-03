@@ -128,4 +128,5 @@ public class TradeSettings : IBotStateSettings, ICountSettings
         if (CompletedSurprise != 0)
             yield return $"Surprise Trades: {CompletedSurprise}";
     }
+    public bool UseTradePartnerInfo { get; set; } = false;
 }
