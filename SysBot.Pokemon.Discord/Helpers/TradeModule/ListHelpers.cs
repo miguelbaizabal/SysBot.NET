@@ -18,7 +18,7 @@ public static class ListHelpers<T> where T : PKM, new()
         string commandPrefix, string args)
     {
         const int itemsPerPage = 20;
-        var botPrefix = SysCord<T>.Runner.Config.Discord.CommandPrefix;
+        var botPrefix = SysCord<T>.Runner.Config.Discord.CommandPrefix.FirstOrDefault() ?? "$";
 
         if (string.IsNullOrEmpty(folderPath))
         {

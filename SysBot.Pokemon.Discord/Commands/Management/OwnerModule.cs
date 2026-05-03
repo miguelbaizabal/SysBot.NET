@@ -11,6 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Color = System.Drawing.Color;
@@ -557,6 +558,16 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
             await Context.Message.DeleteAsync();
             await Task.Delay(TimeSpan.FromSeconds(10));
         }
+    }
+
+    [Command("AutoOT")]
+    [Alias("aot")]
+    [Summary("Habilita o deshabilita UseTradePartnerInfo (AutoOT).")]
+    [RequireSudo]
+    public async Task SetAutoOT(bool enable)
+    {
+        SysCord<T>.Runner.Hub.Config.Legality.UseTradePartnerInfo = enable;
+        await ReplyAsync($"AutoOT {(enable ? "habilitado" : "deshabilitado")}. Reinicia el bot para guardar el cambio.");
     }
 
     private RemoteControlAccess GetReference(IUser channel) => new()
